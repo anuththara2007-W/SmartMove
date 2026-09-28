@@ -9,7 +9,7 @@ const Layout = () => {
   const location = useLocation();
 
   const menuItems = [
-    { text: 'Passenger View', icon: <Users />, path: '/' },
+    { text: 'Passenger View', icon: <Users />, path: '/' },//errors
     { text: 'Admin Dashboard', icon: <LayoutDashboard />, path: '/admin' },
     { text: 'Reports', icon: <BarChart3 />, path: '/reports' },
   ];
