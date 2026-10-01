@@ -15,10 +15,17 @@ const SIDEBAR_WIDTH = 240;
 function MainLayout() {
   const currentLocation = useLocation();
 
+<<<<<<< HEAD
   const navigationLinks = [
     { label: 'Passenger View', icon: <Users />, urlPath: '/' },
     { label: 'Admin Dashboard', icon: <LayoutDashboard />, urlPath: '/admin' },
     { label: 'Reports', icon: <BarChart3 />, urlPath: '/reports' },
+=======
+  const menuItems = [
+    { text: 'Passenger View', icon: <Users />, path: '/' },//errors
+    { text: 'Admin Dashboard', icon: <LayoutDashboard />, path: '/admin' },
+    { text: 'Reports', icon: <BarChart3 />, path: '/reports' },
+>>>>>>> c9e6bf1b3b4f81ef895de5ebc020c5aa34e786e5
   ];
 
   return (
