@@ -1,32 +1,40 @@
+/**
+ * File: ReportsView.tsx
+ * Purpose: Displays statistical data and reports regarding the transport system.
+ * What it has: Total revenue summary and a table of the most frequent routes.
+ * Why it exists: To help management analyze performance and make data-driven decisions.
+ * Technologies used: React, Material UI (MUI) components (Table, Card).
+ */
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { TrendingUp, Map } from 'lucide-react';
-import axios from 'axios';
+// import axios from 'axios';
 
-const ReportsView = () => {
-  const [revenue, setRevenue] = useState<number>(0);
-  const [frequentRoutes, setFrequentRoutes] = useState<any[]>([]);
+function ReportsView() {
+  const [totalRevenue, setTotalRevenue] = useState<number>(0);
+  const [popularRoutes, setPopularRoutes] = useState<any[]>([]);
 
+  // Fetch data when the page loads
   useEffect(() => {
-    fetchReports();
+    loadReportData();
   }, []);
 
-  const fetchReports = async () => {
+  async function loadReportData() {
     try {
-      // Mocking fetch as backend might not have Oracle DB running
-      // const revRes = await axios.get('http://localhost:3000/api/reports/revenue');
-      // const routesRes = await axios.get('http://localhost:3000/api/reports/routes');
-      
-      setRevenue(12540.50);
-      setFrequentRoutes([
-        { ROUTEID: 1, ROUTENAME: 'Campus to City Center', TRIPCOUNT: 150 },
-        { ROUTEID: 2, ROUTENAME: 'City Center to Tech Park', TRIPCOUNT: 120 },
-        { ROUTEID: 3, ROUTENAME: 'Tech Park to Mall', TRIPCOUNT: 95 },
-      ]);
-    } catch (err) {
-      console.error(err);
+      // Mock data for the demonstration
+      const simulatedRevenue = 12540.50;
+      const simulatedRoutes = [
+        { routeId: 1, routeName: 'Campus to City Center', tripCount: 150 },
+        { routeId: 2, routeName: 'City Center to Tech Park', tripCount: 120 },
+        { routeId: 3, routeName: 'Tech Park to Mall', tripCount: 95 },
+      ];
+
+      setTotalRevenue(simulatedRevenue);
+      setPopularRoutes(simulatedRoutes);
+    } catch (error) {
+      console.error('Failed to load report data:', error);
     }
-  };
+  }
 
   return (
     <Box>
@@ -35,18 +43,20 @@ const ReportsView = () => {
       </Typography>
 
       <Grid container spacing={4}>
+        {/* Revenue Card Section */}
         <Grid item xs={12} md={4}>
           <Card sx={{ boxShadow: 3, borderRadius: 2, background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)', color: 'white' }}>
             <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 4 }}>
               <Box>
                 <Typography variant="h6" sx={{ opacity: 0.9 }}>Total Revenue (Month)</Typography>
-                <Typography variant="h3" fontWeight="bold">${revenue.toLocaleString()}</Typography>
+                <Typography variant="h3" fontWeight="bold">${totalRevenue.toLocaleString()}</Typography>
               </Box>
               <TrendingUp size={48} opacity={0.8} />
             </CardContent>
           </Card>
         </Grid>
 
+        {/* Popular Routes Table Section */}
         <Grid item xs={12} md={8}>
           <Typography variant="h5" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
             <Map style={{ marginRight: '8px' }} /> Frequent Routes
@@ -61,11 +71,11 @@ const ReportsView = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {frequentRoutes.map((row) => (
-                  <TableRow key={row.ROUTEID} hover>
-                    <TableCell>{row.ROUTEID}</TableCell>
-                    <TableCell>{row.ROUTENAME}</TableCell>
-                    <TableCell align="right">{row.TRIPCOUNT}</TableCell>
+                {popularRoutes.map((routeData) => (
+                  <TableRow key={routeData.routeId} hover>
+                    <TableCell>{routeData.routeId}</TableCell>
+                    <TableCell>{routeData.routeName}</TableCell>
+                    <TableCell align="right">{routeData.tripCount}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -75,6 +85,6 @@ const ReportsView = () => {
       </Grid>
     </Box>
   );
-};
+}
 
 export default ReportsView;

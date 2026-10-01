@@ -1,17 +1,24 @@
+/**
+ * File: Layout.tsx
+ * Purpose: Provides a consistent layout structure across all pages.
+ * It includes a top navigation bar and a side drawer with navigation links.
+ * Why it exists: To prevent code duplication for the navigation menu on every page.
+ * Technologies used: React, React Router DOM, Material UI (MUI), Lucide React (icons).
+ */
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Bus, LayoutDashboard, BarChart3, Users } from 'lucide-react';
 import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Box, CssBaseline } from '@mui/material';
 
-const drawerWidth = 240;
+const SIDEBAR_WIDTH = 240;
 
-const Layout = () => {
-  const location = useLocation();
+function MainLayout() {
+  const currentLocation = useLocation();
 
-  const menuItems = [
-    { text: 'Passenger View', icon: <Users />, path: '/' },
-    { text: 'Admin Dashboard', icon: <LayoutDashboard />, path: '/admin' },
-    { text: 'Reports', icon: <BarChart3 />, path: '/reports' },
+  const navigationLinks = [
+    { label: 'Passenger View', icon: <Users />, urlPath: '/' },
+    { label: 'Admin Dashboard', icon: <LayoutDashboard />, urlPath: '/admin' },
+    { label: 'Reports', icon: <BarChart3 />, urlPath: '/reports' },
   ];
 
   return (
@@ -25,49 +32,55 @@ const Layout = () => {
           </Typography>
         </Toolbar>
       </AppBar>
+      
       <Drawer
         variant="permanent"
         sx={{
-          width: drawerWidth,
+          width: SIDEBAR_WIDTH,
           flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+          [`& .MuiDrawer-paper`]: { width: SIDEBAR_WIDTH, boxSizing: 'border-box' },
         }}
       >
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            {menuItems.map((item) => (
-              <ListItem key={item.text} disablePadding>
-                <ListItemButton 
-                  component={Link} 
-                  to={item.path}
-                  selected={location.pathname === item.path}
-                  sx={{
-                    '&.Mui-selected': {
-                      backgroundColor: '#eff6ff',
-                      color: '#1d4ed8',
-                      '& .MuiListItemIcon-root': {
+            {navigationLinks.map((navItem) => {
+              const isCurrentlySelected = currentLocation.pathname === navItem.urlPath;
+              return (
+                <ListItem key={navItem.label} disablePadding>
+                  <ListItemButton 
+                    component={Link} 
+                    to={navItem.urlPath}
+                    selected={isCurrentlySelected}
+                    sx={{
+                      '&.Mui-selected': {
+                        backgroundColor: '#eff6ff',
                         color: '#1d4ed8',
+                        '& .MuiListItemIcon-root': {
+                          color: '#1d4ed8',
+                        }
                       }
-                    }
-                  }}
-                >
-                  <ListItemIcon sx={{ color: location.pathname === item.path ? '#1d4ed8' : 'inherit' }}>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText primary={item.text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
+                    }}
+                  >
+                    <ListItemIcon sx={{ color: isCurrentlySelected ? '#1d4ed8' : 'inherit' }}>
+                      {navItem.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={navItem.label} />
+                  </ListItemButton>
+                </ListItem>
+              );
+            })}
           </List>
         </Box>
       </Drawer>
+      
       <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: '#f8fafc', minHeight: '100vh' }}>
         <Toolbar />
+        {/* The Outlet component renders the current page content based on the route */}
         <Outlet />
       </Box>
     </Box>
   );
-};
+}
 
-export default Layout;
+export default MainLayout;

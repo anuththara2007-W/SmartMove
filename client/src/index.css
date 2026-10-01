@@ -1,3 +1,10 @@
+/**
+ * File: index.css
+ * Purpose: Global stylesheet for the application.
+ * What it has: Tailwind CSS directives and global font settings.
+ * Why it exists: To reset default browser styles and apply standard typography across the app.
+ * Technologies used: CSS, Tailwind CSS framework.
+ */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
