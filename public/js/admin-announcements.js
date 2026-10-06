@@ -1,17 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Security check
-    if (sessionStorage.getItem('smartmove_admin_token') !== 'true') {
-        window.location.href = 'login.html';
-        return;
-    }
-
-    gsap.fromTo('.gsap-fade-up', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out' });
-
-    document.getElementById('logoutBtn').addEventListener('click', (e) => {
-        e.preventDefault();
-        sessionStorage.removeItem('smartmove_admin_token');
-        window.location.href = 'login.html';
-    });
+    if (!SmartMoveUtils.setupAdminAuth()) return;
 
     const form = document.getElementById('announcementForm');
     const submitBtn = document.getElementById('submitBtn');

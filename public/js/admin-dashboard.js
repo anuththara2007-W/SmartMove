@@ -1,20 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Security check
-    if (sessionStorage.getItem('smartmove_admin_token') !== 'true') {
-        window.location.href = 'login.html';
-        return;
-    }
-
-    // GSAP initial animations
-    gsap.fromTo('.gsap-fade-down', { y: -30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out' });
-    gsap.fromTo('.gsap-fade-up', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: 0.2, delay: 0.2, ease: 'power3.out' });
-
-    // Logout
-    document.getElementById('logoutBtn').addEventListener('click', (e) => {
-        e.preventDefault();
-        sessionStorage.removeItem('smartmove_admin_token');
-        window.location.href = 'login.html';
-    });
+    if (!SmartMoveUtils.setupAdminAuth()) return;
     
     fetchFrequentRoutes();
 
@@ -106,9 +91,4 @@ function renderFrequentRoutesTable(tbody, routes) {
         
         tbody.appendChild(tr);
     });
-
-    gsap.fromTo('.table-row-anim', 
-        { opacity: 0, x: -20 },
-        { opacity: 1, x: 0, duration: 0.5, stagger: 0.1, delay: 0.5, ease: 'power2.out' }
-    );
 }
