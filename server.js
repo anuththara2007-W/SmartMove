@@ -45,7 +45,7 @@ async function initializeDatabases() {
         console.log('Successfully connected to Oracle Database (xe)!');
 
         // 2. Connect to MongoDB
-        await mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/smartmove');
+        await mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/TransportManagementDB');
         console.log('Successfully connected to MongoDB!');
         
     } catch (err) {
