@@ -52,7 +52,7 @@ async function loadVehiclesForSelection() {
             const capacity = Array.isArray(v) ? v[3] : (v.CAPACITY || v.capacity);
 
             const matchedImg = images.find(img => img.resourceId == id);
-            const imgUrl = matchedImg ? matchedImg.imageUrl : 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&q=80';
+            const imgHtml = matchedImg ? `<img src="${matchedImg.imageUrl}" alt="Vehicle" style="width: 100%; height: 100px; object-fit: cover; display: block;">` : '';
 
             const card = document.createElement('div');
             card.className = 'glass-panel vehicle-card';
@@ -63,7 +63,7 @@ async function loadVehiclesForSelection() {
             card.style.transition = 'all 0.2s';
             
             card.innerHTML = `
-                <img src="${imgUrl}" alt="Vehicle" style="width: 100%; height: 100px; object-fit: cover; display: block;">
+                ${imgHtml}
                 <div style="padding: 1rem;">
                     <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">${type}</h4>
                     <p style="font-size: 0.8rem; color: var(--text-secondary);">${reg}</p>

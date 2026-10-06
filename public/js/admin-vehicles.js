@@ -90,12 +90,12 @@ function renderFleet(gridElement, vehiclesList) {
         
         const imageUrl = (vehicle.imageUrls && vehicle.imageUrls.length > 0) 
             ? vehicle.imageUrls[0] 
-            : 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=500&q=80'; // high-end fallback
+            : ''; // high-end fallback
             
         const docsCount = vehicle.pdfDocumentPaths ? vehicle.pdfDocumentPaths.length : 0;
         
         card.innerHTML = `
-            <img src="${imageUrl}" alt="Vehicle ${vehicle.vehicleID}" class="fleet-img" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=500&q=80'">
+            <img src="${imageUrl}" alt="Vehicle ${vehicle.vehicleID}" class="fleet-img" onerror="this.src=''">
             <div class="fleet-info">
                 <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Vehicle #${vehicle.vehicleID}</h3>
                 <p style="margin-bottom: 1rem; font-size: 0.9rem;">

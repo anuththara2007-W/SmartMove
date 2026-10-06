@@ -43,7 +43,7 @@ function renderRoutes(gridElement, routesList) {
         const distance = route.DISTANCEKM ? `${route.DISTANCEKM} Km` : 'N/A';
         
         card.innerHTML = `
-            <div style="height: 150px; margin: -2rem -2rem 1.5rem -2rem; background: url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&q=80') center/cover;"></div>
+            <div style="height: 150px; margin: -2rem -2rem 1.5rem -2rem; background: var(--card-bg);"></div>
             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
                 <h3 style="font-size: 1.25rem;">${routeName}</h3>
                 <span style="background: #e0f2fe; color: #0284c7; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600;">
