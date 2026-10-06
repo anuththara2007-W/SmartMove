@@ -1,641 +1,296 @@
 const { oracledb } = require('../config/oracle');
 
-// GET /api/routes
-const getRoutes = async (req, res) => {
+// --- Helper Functions ---
+const withConnection = async (req, res, action, errorMessage = 'Database operation failed') => {
     let connection;
     try {
         connection = await oracledb.getConnection();
-        const result = await connection.execute(`SELECT * FROM Routes`, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-        res.json(result.rows);
+        await action(connection, req, res);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Failed to fetch routes' });
+        if (connection) {
+             try { await connection.rollback(); } catch (e) { console.error(e); }
+        }
+        if (!res.headersSent) {
+            res.status(err.status || 500).json({ error: err.customMessage || errorMessage });
+        }
     } finally {
         if (connection) {
-            try {
-                await connection.close();
-            } catch (err) {
-                console.error(err);
-            }
+            try { await connection.close(); } catch (err) { console.error(err); }
         }
     }
 };
 
-// POST /api/tickets
-const bookTicket = async (req, res) => {
-    let connection;
-    try {
-        const { passengerID, routeID, tripID: providedTripID, amount, paymentMethod, seatNumber } = req.body;
-        connection = await oracledb.getConnection();
+const executeQuery = async (connection, query, params = {}, autoCommit = false) => {
+    return await connection.execute(query, params, { 
+        outFormat: oracledb.OUT_FORMAT_OBJECT, 
+        autoCommit 
+    });
+};
 
+const fetchAll = (query, errorMessage) => async (req, res) => {
+    await withConnection(req, res, async (connection) => {
+        const result = await executeQuery(connection, query);
+        res.json(result.rows);
+    }, errorMessage);
+};
+
+const deleteRecord = (tableName, idCol, errorMsg) => async (req, res) => {
+    await withConnection(req, res, async (connection) => {
+        await executeQuery(connection, `DELETE FROM ${tableName} WHERE ${idCol} = :id`, { id: req.params.id }, true);
+        res.json({ message: 'Record deleted successfully' });
+    }, errorMsg);
+};
+
+// --- Routes ---
+const getRoutes = fetchAll(`SELECT * FROM Routes`, 'Failed to fetch routes');
+const deleteRoute = deleteRecord('Routes', 'RouteID', 'Failed to delete route');
+
+const createRoute = async (req, res) => {
+    await withConnection(req, res, async (conn) => {
+        const { startLocation, endLocation, distanceKm, estimatedDuration } = req.body;
+        await executeQuery(conn, 
+            `INSERT INTO Routes (StartLocation, EndLocation, DistanceKm, EstimatedDuration) VALUES (:startLocation, :endLocation, :distanceKm, :estimatedDuration)`,
+            { startLocation, endLocation, distanceKm, estimatedDuration }, true
+        );
+        res.status(201).json({ message: 'Route created successfully' });
+    }, 'Failed to create route');
+};
+
+const updateRoute = async (req, res) => {
+    await withConnection(req, res, async (conn) => {
+        const { startLocation, endLocation, distanceKm, estimatedDuration } = req.body;
+        await executeQuery(conn, 
+            `UPDATE Routes SET StartLocation = :startLocation, EndLocation = :endLocation, DistanceKm = :distanceKm, EstimatedDuration = :estimatedDuration WHERE RouteID = :id`,
+            { startLocation, endLocation, distanceKm, estimatedDuration, id: req.params.id }, true
+        );
+        res.json({ message: 'Route updated successfully' });
+    }, 'Failed to update route');
+};
+
+// --- Tickets / Bookings ---
+const bookTicket = async (req, res) => {
+    await withConnection(req, res, async (conn) => {
+        const { passengerID, routeID, tripID: providedTripID, amount, paymentMethod, seatNumber } = req.body;
         let tripID = providedTripID;
         let fare = amount || 15.00;
 
-        // Find the most recent Trip for this route if no tripID is provided
+        // Auto-assign trip if missing
         if (!tripID && routeID) {
-            try {
-                const tripRes = await connection.execute(
-                    `SELECT TripID, NVL(BaseFare, 15) AS BASEFARE FROM (SELECT TripID, BaseFare FROM Trips WHERE RouteID = :routeID ORDER BY TripID DESC) WHERE ROWNUM = 1`,
-                    { routeID },
-                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
-                );
-                if (tripRes.rows.length > 0) {
-                    tripID = tripRes.rows[0].TRIPID;
-                    if (tripRes.rows[0].BASEFARE) {
-                        fare = tripRes.rows[0].BASEFARE;
-                    }
-                } else {
-                    tripID = routeID; // fallback if no trip found
-                }
-            } catch (e) { 
-                tripID = routeID; // fallback on error
+            const tripRes = await executeQuery(conn, `SELECT TripID, NVL(BaseFare, 15) AS BASEFARE FROM (SELECT TripID, BaseFare FROM Trips WHERE RouteID = :routeID ORDER BY TripID DESC) WHERE ROWNUM = 1`, { routeID });
+            if (tripRes.rows.length > 0) {
+                tripID = tripRes.rows[0].TRIPID;
+                fare = tripRes.rows[0].BASEFARE || fare;
+            } else {
+                tripID = routeID;
             }
         } else if (tripID) {
-            // Fetch trip's BaseFare if explicitly provided
-            try {
-                const fareRes = await connection.execute(
-                    `SELECT NVL(BaseFare, 15) AS BASEFARE FROM Trips WHERE TripID = :tripID`,
-                    { tripID },
-                    { outFormat: oracledb.OUT_FORMAT_OBJECT }
-                );
-                if (fareRes.rows.length > 0 && fareRes.rows[0].BASEFARE) {
-                    fare = fareRes.rows[0].BASEFARE;
-                }
-            } catch (e) { /* use default fare */ }
+            const fareRes = await executeQuery(conn, `SELECT NVL(BaseFare, 15) AS BASEFARE FROM Trips WHERE TripID = :tripID`, { tripID });
+            if (fareRes.rows.length > 0 && fareRes.rows[0].BASEFARE) {
+                fare = fareRes.rows[0].BASEFARE;
+            }
         } else {
             tripID = routeID || 1;
         }
 
+        const validMethod = ['Card', 'Cash', 'Bank Transfer'].includes(paymentMethod) ? paymentMethod : 'Card';
         const assignedSeat = seatNumber || '1A';
 
-        // Map payment method to valid ENUM values ('Card', 'Cash', 'Bank Transfer')
-        const validMethod = ['Card', 'Cash', 'Bank Transfer'].includes(paymentMethod) ? paymentMethod : 'Card';
-
-        const result = await connection.execute(`
+        const result = await conn.execute(`
             INSERT INTO Tickets (TripID, PassengerID, SeatNumber, BookingDate, FareAmount, TicketStatus) 
             VALUES (:tripID, :passengerID, :assignedSeat, SYSDATE, :fare, 'Booked')
             RETURNING TicketID INTO :outTicketID
         `, { 
-            tripID, 
-            passengerID, 
-            assignedSeat,
-            fare,
+            tripID, passengerID, assignedSeat, fare,
             outTicketID: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
         }, { autoCommit: false });
 
         const ticketID = result.outBinds.outTicketID[0];
 
-        await connection.execute(`
+        await executeQuery(conn, `
             INSERT INTO Payments (TicketID, Amount, PaymentDate, Method, PaymentStatus) 
             VALUES (:ticketID, :fare, SYSDATE, :validMethod, 'Completed')
-        `, { ticketID, fare, validMethod }, { autoCommit: true });
+        `, { ticketID, fare, validMethod }, true);
 
         res.status(201).json({ message: 'Ticket booked successfully', fare });
-    } catch (err) {
-        console.error(err);
-        if (connection) {
-            await connection.rollback();
-        }
-        res.status(500).json({ error: 'Failed to book ticket' });
-    } finally {
-        if (connection) {
-            try {
-                await connection.close();
-            } catch (err) {
-                console.error(err);
-            }
-        }
-    }
+    }, 'Failed to book ticket');
 };
 
-// GET /api/reports/revenue
+const getTickets = fetchAll(`
+    SELECT tk.TicketID, tk.TripID, tk.PassengerID, tk.SeatNumber, tk.FareAmount, tk.TicketStatus,
+           p.FirstName, p.LastName, t.DepartureDateTime, r.StartLocation, r.EndLocation
+    FROM Tickets tk
+    JOIN Passengers p ON tk.PassengerID = p.PassengerID
+    JOIN Trips t ON tk.TripID = t.TripID
+    JOIN Routes r ON t.RouteID = r.RouteID
+    ORDER BY tk.TicketID DESC
+`, 'Failed to fetch tickets');
+
+// --- Reports ---
 const getRevenue = async (req, res) => {
-    let connection;
-    try {
+    await withConnection(req, res, async (conn) => {
         const { startDate, endDate } = req.query;
-        connection = await oracledb.getConnection();
-        const result = await connection.execute(`
+        const result = await conn.execute(`
             BEGIN
                 :ret := CalculateTotalRevenue(TO_DATE(:startDate, 'YYYY-MM-DD'), TO_DATE(:endDate, 'YYYY-MM-DD'));
             END;
         `, {
-            startDate: startDate,
-            endDate: endDate,
+            startDate, endDate,
             ret: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
         });
         res.json({ totalRevenue: result.outBinds.ret });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to calculate revenue' });
-    } finally {
-        if (connection) {
-            try {
-                await connection.close();
-            } catch (err) {
-                console.error(err);
-            }
-        }
-    }
+    }, 'Failed to calculate revenue');
 };
 
-// GET /api/reports/routes
-const getFrequentRoutes = async (req, res) => {
-    let connection;
-    try {
-        connection = await oracledb.getConnection();
-        const result = await connection.execute(`
-            SELECT r.RouteID AS ROUTEID, 
-                   (r.StartLocation || ' to ' || r.EndLocation) AS ROUTENAME, 
-                   COUNT(DISTINCT t.TripID) AS TRIPCOUNT,
-                   r.DistanceKm AS DISTANCEKM,
-                   r.EstimatedDuration AS ESTIMATEDDURATION
-            FROM Routes r
-            LEFT JOIN Trips t ON r.RouteID = t.RouteID
-            GROUP BY r.RouteID, r.StartLocation, r.EndLocation, r.DistanceKm, r.EstimatedDuration
-            ORDER BY TRIPCOUNT DESC, r.RouteID ASC
-        `, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-        
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to fetch frequent routes' });
-    } finally {
-        if (connection) {
-            try {
-                await connection.close();
-            } catch (err) {
-                console.error(err);
-            }
-        }
-    }
-};
+const getFrequentRoutes = fetchAll(`
+    SELECT r.RouteID AS ROUTEID, (r.StartLocation || ' to ' || r.EndLocation) AS ROUTENAME, 
+           COUNT(DISTINCT t.TripID) AS TRIPCOUNT, r.DistanceKm AS DISTANCEKM, r.EstimatedDuration AS ESTIMATEDDURATION
+    FROM Routes r
+    LEFT JOIN Trips t ON r.RouteID = t.RouteID
+    GROUP BY r.RouteID, r.StartLocation, r.EndLocation, r.DistanceKm, r.EstimatedDuration
+    ORDER BY TRIPCOUNT DESC, r.RouteID ASC
+`, 'Failed to fetch frequent routes');
 
-// --- Payments CRUD ---
-const getPayments = async (req, res) => {
-    let connection;
-    try {
-        connection = await oracledb.getConnection();
-        const result = await connection.execute(`SELECT * FROM Payments ORDER BY PAYMENTID DESC`, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to fetch payments' });
-    } finally {
-        if (connection) await connection.close();
-    }
-};
+// --- Payments ---
+const getPayments = fetchAll(`SELECT * FROM Payments ORDER BY PAYMENTID DESC`, 'Failed to fetch payments');
+const deletePayment = deleteRecord('Payments', 'PAYMENTID', 'Failed to delete payment');
 
 const createPayment = async (req, res) => {
-    let connection;
-    try {
+    await withConnection(req, res, async (conn) => {
         const { ticketID, method, amount } = req.body;
-        connection = await oracledb.getConnection();
-        const result = await connection.execute(
-            `INSERT INTO Payments (TICKETID, PAYMENTMETHOD, AMOUNT, PAYMENTDATE) VALUES (:ticketID, :method, :amount, SYSDATE)`,
-            { ticketID, method, amount },
-            { autoCommit: true }
-        );
+        await executeQuery(conn, `INSERT INTO Payments (TICKETID, PAYMENTMETHOD, AMOUNT, PAYMENTDATE) VALUES (:ticketID, :method, :amount, SYSDATE)`, { ticketID, method, amount }, true);
         res.status(201).json({ message: 'Payment created' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to create payment' });
-    } finally {
-        if (connection) await connection.close();
-    }
+    }, 'Failed to create payment');
 };
 
 const updatePayment = async (req, res) => {
-    let connection;
-    try {
-        const { id } = req.params;
+    await withConnection(req, res, async (conn) => {
         const { method, amount } = req.body;
-        connection = await oracledb.getConnection();
-        await connection.execute(
-            `UPDATE Payments SET PAYMENTMETHOD = :method, AMOUNT = :amount WHERE PAYMENTID = :id`,
-            { method, amount, id },
-            { autoCommit: true }
-        );
+        await executeQuery(conn, `UPDATE Payments SET PAYMENTMETHOD = :method, AMOUNT = :amount WHERE PAYMENTID = :id`, { method, amount, id: req.params.id }, true);
         res.json({ message: 'Payment updated' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to update payment' });
-    } finally {
-        if (connection) await connection.close();
-    }
+    }, 'Failed to update payment');
 };
 
-const deletePayment = async (req, res) => {
-    let connection;
-    try {
-        const { id } = req.params;
-        connection = await oracledb.getConnection();
-        await connection.execute(`DELETE FROM Payments WHERE PAYMENTID = :id`, { id }, { autoCommit: true });
-        res.json({ message: 'Payment deleted' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to delete payment' });
-    } finally {
-        if (connection) await connection.close();
-    }
-};
-
-// --- DRIVERS CRUD ---
-const getDrivers = async (req, res) => {
-    let connection;
-    try {
-        connection = await oracledb.getConnection();
-        const result = await connection.execute(`SELECT * FROM Drivers ORDER BY DriverID DESC`, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to fetch drivers' });
-    } finally {
-        if (connection) await connection.close();
-    }
-};
+// --- Drivers ---
+const getDrivers = fetchAll(`SELECT * FROM Drivers ORDER BY DriverID DESC`, 'Failed to fetch drivers');
+const deleteDriver = deleteRecord('Drivers', 'DriverID', 'Failed to delete driver');
 
 const createDriver = async (req, res) => {
-    let connection;
-    try {
+    await withConnection(req, res, async (conn) => {
         const { firstName, lastName, licenseNumber, phone, hireDate, status } = req.body;
-        connection = await oracledb.getConnection();
-        await connection.execute(
-            `INSERT INTO Drivers (FirstName, LastName, LicenseNumber, Phone, HireDate, Status) 
-             VALUES (:firstName, :lastName, :licenseNumber, :phone, TO_DATE(:hireDate, 'YYYY-MM-DD'), :status)`,
-            { firstName, lastName, licenseNumber, phone, hireDate, status },
-            { autoCommit: true }
-        );
+        await executeQuery(conn, `INSERT INTO Drivers (FirstName, LastName, LicenseNumber, Phone, HireDate, Status) VALUES (:firstName, :lastName, :licenseNumber, :phone, TO_DATE(:hireDate, 'YYYY-MM-DD'), :status)`, { firstName, lastName, licenseNumber, phone, hireDate, status }, true);
         res.status(201).json({ message: 'Driver created successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to create driver' });
-    } finally {
-        if (connection) await connection.close();
-    }
+    }, 'Failed to create driver');
 };
 
 const updateDriver = async (req, res) => {
-    let connection;
-    try {
-        const { id } = req.params;
+    await withConnection(req, res, async (conn) => {
         const { firstName, lastName, licenseNumber, phone, hireDate, status } = req.body;
-        connection = await oracledb.getConnection();
-        await connection.execute(
-            `UPDATE Drivers SET FirstName = :firstName, LastName = :lastName, LicenseNumber = :licenseNumber, 
-             Phone = :phone, HireDate = TO_DATE(:hireDate, 'YYYY-MM-DD'), Status = :status WHERE DriverID = :id`,
-            { firstName, lastName, licenseNumber, phone, hireDate, status, id },
-            { autoCommit: true }
-        );
+        await executeQuery(conn, `UPDATE Drivers SET FirstName = :firstName, LastName = :lastName, LicenseNumber = :licenseNumber, Phone = :phone, HireDate = TO_DATE(:hireDate, 'YYYY-MM-DD'), Status = :status WHERE DriverID = :id`, { firstName, lastName, licenseNumber, phone, hireDate, status, id: req.params.id }, true);
         res.json({ message: 'Driver updated successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to update driver' });
-    } finally {
-        if (connection) await connection.close();
-    }
+    }, 'Failed to update driver');
 };
 
-const deleteDriver = async (req, res) => {
-    let connection;
-    try {
-        const { id } = req.params;
-        connection = await oracledb.getConnection();
-        await connection.execute(`DELETE FROM Drivers WHERE DriverID = :id`, { id }, { autoCommit: true });
-        res.json({ message: 'Driver deleted successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to delete driver (May be referenced by trips)' });
-    } finally {
-        if (connection) await connection.close();
-    }
-};
-
-// --- PASSENGERS CRUD ---
-const getPassengers = async (req, res) => {
-    let connection;
-    try {
-        connection = await oracledb.getConnection();
-        const result = await connection.execute(`SELECT * FROM Passengers ORDER BY PassengerID DESC`, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to fetch passengers' });
-    } finally {
-        if (connection) await connection.close();
-    }
-};
+// --- Passengers ---
+const getPassengers = fetchAll(`SELECT * FROM Passengers ORDER BY PassengerID DESC`, 'Failed to fetch passengers');
+const deletePassenger = deleteRecord('Passengers', 'PassengerID', 'Failed to delete passenger');
 
 const createPassenger = async (req, res) => {
-    let connection;
-    try {
+    await withConnection(req, res, async (conn) => {
         const { firstName, lastName, email, phone } = req.body;
-        connection = await oracledb.getConnection();
-        await connection.execute(
-            `INSERT INTO Passengers (FirstName, LastName, Email, Phone, RegisteredDate) 
-             VALUES (:firstName, :lastName, :email, :phone, SYSDATE)`,
-            { firstName, lastName, email, phone },
-            { autoCommit: true }
-        );
+        await executeQuery(conn, `INSERT INTO Passengers (FirstName, LastName, Email, Phone, RegisteredDate) VALUES (:firstName, :lastName, :email, :phone, SYSDATE)`, { firstName, lastName, email, phone }, true);
         res.status(201).json({ message: 'Passenger created successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to create passenger' });
-    } finally {
-        if (connection) await connection.close();
-    }
+    }, 'Failed to create passenger');
 };
 
 const updatePassenger = async (req, res) => {
-    let connection;
-    try {
-        const { id } = req.params;
+    await withConnection(req, res, async (conn) => {
         const { firstName, lastName, email, phone } = req.body;
-        connection = await oracledb.getConnection();
-        await connection.execute(
-            `UPDATE Passengers SET FirstName = :firstName, LastName = :lastName, Email = :email, Phone = :phone WHERE PassengerID = :id`,
-            { firstName, lastName, email, phone, id },
-            { autoCommit: true }
-        );
+        await executeQuery(conn, `UPDATE Passengers SET FirstName = :firstName, LastName = :lastName, Email = :email, Phone = :phone WHERE PassengerID = :id`, { firstName, lastName, email, phone, id: req.params.id }, true);
         res.json({ message: 'Passenger updated successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to update passenger' });
-    } finally {
-        if (connection) await connection.close();
-    }
+    }, 'Failed to update passenger');
 };
 
-const deletePassenger = async (req, res) => {
-    let connection;
-    try {
-        const { id } = req.params;
-        connection = await oracledb.getConnection();
-        await connection.execute(`DELETE FROM Passengers WHERE PassengerID = :id`, { id }, { autoCommit: true });
-        res.json({ message: 'Passenger deleted successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to delete passenger' });
-    } finally {
-        if (connection) await connection.close();
-    }
-};
+// --- Vehicles ---
+const getVehicles = fetchAll(`SELECT * FROM Vehicles ORDER BY VehicleID DESC`, 'Failed to fetch vehicles');
 
-// --- ROUTES CRUD (CREATE, UPDATE, DELETE) ---
-const createRoute = async (req, res) => {
-    let connection;
-    try {
-        const { startLocation, endLocation, distanceKm, estimatedDuration } = req.body;
-        connection = await oracledb.getConnection();
-        await connection.execute(
-            `INSERT INTO Routes (StartLocation, EndLocation, DistanceKm, EstimatedDuration) 
-             VALUES (:startLocation, :endLocation, :distanceKm, :estimatedDuration)`,
-            { startLocation, endLocation, distanceKm, estimatedDuration },
-            { autoCommit: true }
-        );
-        res.status(201).json({ message: 'Route created successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to create route' });
-    } finally {
-        if (connection) await connection.close();
-    }
-};
+// --- Trips ---
+const getTrips = fetchAll(`
+    SELECT t.TripID, t.RouteID, t.VehicleID, t.DriverID, t.DepartureDateTime, t.ArrivalDateTime, t.TripStatus, t.BaseFare,
+           r.StartLocation, r.EndLocation, v.RegNumber, v.VehicleType, v.Capacity, d.FirstName as DriverFirstName, d.LastName as DriverLastName
+    FROM Trips t
+    JOIN Routes r ON t.RouteID = r.RouteID
+    JOIN Vehicles v ON t.VehicleID = v.VehicleID
+    JOIN Drivers d ON t.DriverID = d.DriverID
+    ORDER BY t.DepartureDateTime DESC
+`, 'Failed to fetch trips');
+const deleteTrip = deleteRecord('Trips', 'TripID', 'Failed to delete trip');
 
-const updateRoute = async (req, res) => {
-    let connection;
-    try {
-        const { id } = req.params;
-        const { startLocation, endLocation, distanceKm, estimatedDuration } = req.body;
-        connection = await oracledb.getConnection();
-        await connection.execute(
-            `UPDATE Routes SET StartLocation = :startLocation, EndLocation = :endLocation, DistanceKm = :distanceKm, EstimatedDuration = :estimatedDuration WHERE RouteID = :id`,
-            { startLocation, endLocation, distanceKm, estimatedDuration, id },
-            { autoCommit: true }
-        );
-        res.json({ message: 'Route updated successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to update route' });
-    } finally {
-        if (connection) await connection.close();
-    }
-};
-
-const deleteRoute = async (req, res) => {
-    let connection;
-    try {
-        const { id } = req.params;
-        connection = await oracledb.getConnection();
-        await connection.execute(`DELETE FROM Routes WHERE RouteID = :id`, { id }, { autoCommit: true });
-        res.json({ message: 'Route deleted successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to delete route' });
-    } finally {
-        if (connection) await connection.close();
-    }
-};
-
-// --- VEHICLES READ ---
-const getVehicles = async (req, res) => {
-    let connection;
-    try {
-        connection = await oracledb.getConnection();
-        const result = await connection.execute(`SELECT * FROM Vehicles ORDER BY VehicleID DESC`, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to fetch vehicles' });
-    } finally {
-        if (connection) await connection.close();
-    }
-};
-
-// --- TRIPS CRUD ---
-const getTrips = async (req, res) => {
-    let connection;
-    try {
-        connection = await oracledb.getConnection();
-        // Join with Routes, Vehicles, Drivers to get meaningful info
-        const query = `
-            SELECT t.TripID, t.RouteID, t.VehicleID, t.DriverID, 
-                   t.DepartureDateTime, t.ArrivalDateTime, t.TripStatus, t.BaseFare,
-                   r.StartLocation, r.EndLocation,
-                   v.RegNumber, v.VehicleType, v.Capacity,
-                   d.FirstName as DriverFirstName, d.LastName as DriverLastName
-            FROM Trips t
-            JOIN Routes r ON t.RouteID = r.RouteID
-            JOIN Vehicles v ON t.VehicleID = v.VehicleID
-            JOIN Drivers d ON t.DriverID = d.DriverID
-            ORDER BY t.DepartureDateTime DESC
-        `;
-        const result = await connection.execute(query, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to fetch trips' });
-    } finally {
-        if (connection) await connection.close();
+const checkTripConflict = async (conn, driverID, vehicleID, start, end, excludeId = null) => {
+    const q = `
+        SELECT TripID FROM Trips 
+        WHERE (DriverID = :driverID OR VehicleID = :vehicleID)
+        ${excludeId ? 'AND TripID != :excludeId' : ''}
+        AND TripStatus NOT IN ('Completed', 'Cancelled')
+        AND (
+            (TO_TIMESTAMP(:startDt, 'YYYY-MM-DD"T"HH24:MI') BETWEEN DepartureDateTime AND ArrivalDateTime) OR
+            (TO_TIMESTAMP(:endDt, 'YYYY-MM-DD"T"HH24:MI') BETWEEN DepartureDateTime AND ArrivalDateTime) OR
+            (DepartureDateTime BETWEEN TO_TIMESTAMP(:startDt, 'YYYY-MM-DD"T"HH24:MI') AND TO_TIMESTAMP(:endDt, 'YYYY-MM-DD"T"HH24:MI'))
+        )
+    `;
+    const params = { driverID, vehicleID, startDt: start, endDt: end };
+    if (excludeId) params.excludeId = excludeId;
+    
+    const conflicts = await executeQuery(conn, q, params);
+    if (conflicts.rows.length > 0) {
+        const err = new Error();
+        err.status = 409;
+        err.customMessage = 'Scheduling conflict: Driver or Vehicle is already booked during this time.';
+        throw err;
     }
 };
 
 const createTrip = async (req, res) => {
-    let connection;
-    try {
+    await withConnection(req, res, async (conn) => {
         const { routeID, vehicleID, driverID, departureDateTime, arrivalDateTime, tripStatus, baseFare } = req.body;
-        connection = await oracledb.getConnection();
-        
-        // Ensure baseFare has a default value if not provided
         const fare = baseFare || 15.00;
         
-        // Simple conflict check: 
-        // 1. Is driver already assigned to a trip that overlaps?
-        // 2. Is vehicle already assigned?
-        // (For simplicity in this coursework, we might just trust the frontend, but the prompt says:
-        // "Prefer backend validation because concurrency means frontend-only checks are insufficient.")
-        
-        const conflictQuery = `
-            SELECT TripID FROM Trips 
-            WHERE (DriverID = :driverID OR VehicleID = :vehicleID)
-            AND TripStatus NOT IN ('Completed', 'Cancelled')
-            AND (
-                (TO_TIMESTAMP(:departureDateTime, 'YYYY-MM-DD"T"HH24:MI') BETWEEN DepartureDateTime AND ArrivalDateTime) OR
-                (TO_TIMESTAMP(:arrivalDateTime, 'YYYY-MM-DD"T"HH24:MI') BETWEEN DepartureDateTime AND ArrivalDateTime) OR
-                (DepartureDateTime BETWEEN TO_TIMESTAMP(:departureDateTime, 'YYYY-MM-DD"T"HH24:MI') AND TO_TIMESTAMP(:arrivalDateTime, 'YYYY-MM-DD"T"HH24:MI'))
-            )
-        `;
-        const conflicts = await connection.execute(conflictQuery, { driverID, vehicleID, departureDateTime, arrivalDateTime }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
-        
-        if (conflicts.rows.length > 0) {
-            return res.status(409).json({ error: 'Scheduling conflict: Driver or Vehicle is already booked during this time.' });
-        }
+        await checkTripConflict(conn, driverID, vehicleID, departureDateTime, arrivalDateTime);
 
-        await connection.execute(
-            `INSERT INTO Trips (RouteID, VehicleID, DriverID, DepartureDateTime, ArrivalDateTime, TripStatus, BaseFare) 
-             VALUES (:routeID, :vehicleID, :driverID, TO_TIMESTAMP(:departureDateTime, 'YYYY-MM-DD"T"HH24:MI'), TO_TIMESTAMP(:arrivalDateTime, 'YYYY-MM-DD"T"HH24:MI'), :tripStatus, :fare)`,
-            { routeID, vehicleID, driverID, departureDateTime, arrivalDateTime, tripStatus, fare },
-            { autoCommit: true }
-        );
+        await executeQuery(conn, `
+            INSERT INTO Trips (RouteID, VehicleID, DriverID, DepartureDateTime, ArrivalDateTime, TripStatus, BaseFare) 
+            VALUES (:routeID, :vehicleID, :driverID, TO_TIMESTAMP(:departureDateTime, 'YYYY-MM-DD"T"HH24:MI'), TO_TIMESTAMP(:arrivalDateTime, 'YYYY-MM-DD"T"HH24:MI'), :tripStatus, :fare)
+        `, { routeID, vehicleID, driverID, departureDateTime, arrivalDateTime, tripStatus, fare }, true);
+        
         res.status(201).json({ message: 'Trip created successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to create trip' });
-    } finally {
-        if (connection) await connection.close();
-    }
+    }, 'Failed to create trip');
 };
 
 const updateTrip = async (req, res) => {
-    let connection;
-    try {
-        const { id } = req.params;
+    await withConnection(req, res, async (conn) => {
         const { routeID, vehicleID, driverID, departureDateTime, arrivalDateTime, tripStatus, baseFare } = req.body;
-        connection = await oracledb.getConnection();
-        
         const fare = baseFare || 15.00;
-        
-        // Similar conflict check, excluding the current trip ID
-        const conflictQuery = `
-            SELECT TripID FROM Trips 
-            WHERE (DriverID = :driverID OR VehicleID = :vehicleID)
-            AND TripID != :id
-            AND TripStatus NOT IN ('Completed', 'Cancelled')
-            AND (
-                (TO_TIMESTAMP(:departureDateTime, 'YYYY-MM-DD"T"HH24:MI') BETWEEN DepartureDateTime AND ArrivalDateTime) OR
-                (TO_TIMESTAMP(:arrivalDateTime, 'YYYY-MM-DD"T"HH24:MI') BETWEEN DepartureDateTime AND ArrivalDateTime) OR
-                (DepartureDateTime BETWEEN TO_TIMESTAMP(:departureDateTime, 'YYYY-MM-DD"T"HH24:MI') AND TO_TIMESTAMP(:arrivalDateTime, 'YYYY-MM-DD"T"HH24:MI'))
-            )
-        `;
-        const conflicts = await connection.execute(conflictQuery, { driverID, vehicleID, id, departureDateTime, arrivalDateTime }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
-        
-        if (conflicts.rows.length > 0) {
-            return res.status(409).json({ error: 'Scheduling conflict: Driver or Vehicle is already booked during this time.' });
-        }
-
-        await connection.execute(
-            `UPDATE Trips SET RouteID = :routeID, VehicleID = :vehicleID, DriverID = :driverID, 
-             DepartureDateTime = TO_TIMESTAMP(:departureDateTime, 'YYYY-MM-DD"T"HH24:MI'), 
-             ArrivalDateTime = TO_TIMESTAMP(:arrivalDateTime, 'YYYY-MM-DD"T"HH24:MI'), 
-             TripStatus = :tripStatus, BaseFare = :fare 
-             WHERE TripID = :id`,
-            { routeID, vehicleID, driverID, departureDateTime, arrivalDateTime, tripStatus, fare, id },
-            { autoCommit: true }
-        );
-        res.json({ message: 'Trip updated successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to update trip' });
-    } finally {
-        if (connection) await connection.close();
-    }
-};
-
-const deleteTrip = async (req, res) => {
-    let connection;
-    try {
         const { id } = req.params;
-        connection = await oracledb.getConnection();
-        await connection.execute(`DELETE FROM Trips WHERE TripID = :id`, { id }, { autoCommit: true });
-        res.json({ message: 'Trip deleted successfully' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to delete trip (Tickets might be associated)' });
-    } finally {
-        if (connection) await connection.close();
-    }
-};
 
-// --- TICKETS READ ---
-const getTickets = async (req, res) => {
-    let connection;
-    try {
-        connection = await oracledb.getConnection();
-        // Join Tickets with Trips and Passengers
-        const query = `
-            SELECT tk.TicketID, tk.TripID, tk.PassengerID, tk.SeatNumber, tk.FareAmount, tk.TicketStatus,
-                   p.FirstName, p.LastName,
-                   t.DepartureDateTime,
-                   r.StartLocation, r.EndLocation
-            FROM Tickets tk
-            JOIN Passengers p ON tk.PassengerID = p.PassengerID
-            JOIN Trips t ON tk.TripID = t.TripID
-            JOIN Routes r ON t.RouteID = r.RouteID
-            ORDER BY tk.TicketID DESC
-        `;
-        const result = await connection.execute(query, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to fetch tickets' });
-    } finally {
-        if (connection) await connection.close();
-    }
+        await checkTripConflict(conn, driverID, vehicleID, departureDateTime, arrivalDateTime, id);
+
+        await executeQuery(conn, `
+            UPDATE Trips SET RouteID = :routeID, VehicleID = :vehicleID, DriverID = :driverID, 
+            DepartureDateTime = TO_TIMESTAMP(:departureDateTime, 'YYYY-MM-DD"T"HH24:MI'), 
+            ArrivalDateTime = TO_TIMESTAMP(:arrivalDateTime, 'YYYY-MM-DD"T"HH24:MI'), 
+            TripStatus = :tripStatus, BaseFare = :fare WHERE TripID = :id
+        `, { routeID, vehicleID, driverID, departureDateTime, arrivalDateTime, tripStatus, fare, id }, true);
+        
+        res.json({ message: 'Trip updated successfully' });
+    }, 'Failed to update trip');
 };
 
 module.exports = {
-    getRoutes,
-    createRoute,
-    updateRoute,
-    deleteRoute,
-    bookTicket,
-    getRevenue,
-    getFrequentRoutes,
-    getPayments,
-    createPayment,
-    updatePayment,
-    deletePayment,
-    getDrivers,
-    createDriver,
-    updateDriver,
-    deleteDriver,
-    getPassengers,
-    createPassenger,
-    updatePassenger,
-    deletePassenger,
-    getVehicles,
-    getTrips,
-    createTrip,
-    updateTrip,
-    deleteTrip,
-    getTickets
+    getRoutes, createRoute, updateRoute, deleteRoute,
+    bookTicket, getTickets,
+    getRevenue, getFrequentRoutes,
+    getPayments, createPayment, updatePayment, deletePayment,
+    getDrivers, createDriver, updateDriver, deleteDriver,
+    getPassengers, createPassenger, updatePassenger, deletePassenger,
+    getVehicles, getTrips, createTrip, updateTrip, deleteTrip
 };
