@@ -126,6 +126,25 @@ const getTickets = fetchAll(`
     ORDER BY tk.TicketID DESC
 `, 'Failed to fetch tickets');
 
+const updateTicketStatus = async (req, res) => {
+    await withConnection(req, res, async (conn) => {
+        const { ticketID } = req.params;
+        const { newStatus } = req.body;
+        
+        // PL/SQL Block executing business logic to update status
+        await conn.execute(`
+            BEGIN
+                UPDATE Tickets 
+                SET TicketStatus = :newStatus 
+                WHERE TicketID = :ticketID;
+                COMMIT;
+            END;
+        `, { newStatus, ticketID }, { autoCommit: false });
+        
+        res.json({ message: 'Ticket status updated via PL/SQL block' });
+    }, 'Failed to update ticket status');
+};
+
 // --- Reports ---
 const getRevenue = async (req, res) => {
     await withConnection(req, res, async (conn) => {
@@ -287,7 +306,7 @@ const updateTrip = async (req, res) => {
 
 module.exports = {
     getRoutes, createRoute, updateRoute, deleteRoute,
-    bookTicket, getTickets,
+    bookTicket, getTickets, updateTicketStatus,
     getRevenue, getFrequentRoutes,
     getPayments, createPayment, updatePayment, deletePayment,
     getDrivers, createDriver, updateDriver, deleteDriver,

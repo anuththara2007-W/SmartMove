@@ -10,7 +10,8 @@ router.put('/routes/:id', oracleController.updateRoute);
 router.delete('/routes/:id', oracleController.deleteRoute);
 
 router.post('/tickets', oracleController.bookTicket);
-router.get('/tickets', oracleController.getTickets); // Admin panel read
+router.get('/tickets', oracleController.getTickets);
+router.put('/tickets/:ticketID/status', oracleController.updateTicketStatus); // Admin panel read
 
 router.get('/reports/revenue', oracleController.getRevenue);
 router.get('/reports/routes', oracleController.getFrequentRoutes);

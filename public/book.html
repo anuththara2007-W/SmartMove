@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartMove - Book a Ticket</title>
+    <link rel="stylesheet" href="global.css">
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+<body>
+    <header class="standard-header">
+        <a href="index.html" class="logo">SmartMove.</a>
+        <nav class="standard-nav">
+            <a href="routes.html">Routes</a>
+            <a href="reviews.html">Reviews</a>
+            <a href="book.html" style="color: var(--primary-accent);">Book Ticket</a>
+        </nav>
+        <div class="hero-actions">
+            <a href="system-portal/login.html" class="btn-transparent" style="color: var(--text-main);">Admin Login</a>
+        </div>
+    </header>
+    
+    <main class="page-main">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start;">
+            
+            <!-- Left Column: Submit Booking -->
+            <div class="gsap-fade-right">
+                <h1 class="section-title">Book Your Journey</h1>
+                <p style="margin-bottom: 2rem; color: var(--text-secondary);">Select your route and book your ticket instantly.</p>
+                
+                <div class="glass-panel" style="padding: 3rem;">
+                    <form id="bookingForm" novalidate>
+                        <div class="form-group">
+                            <label>Passenger</label>
+                            <div style="display: flex; gap: 1rem;">
+                                <input type="text" id="passengerDisplay" class="form-control" placeholder="Select your profile" readonly style="background: #f8fafc; cursor: not-allowed; flex: 1;">
+                                <input type="hidden" id="bookingPassengerId">
+                                <button type="button" class="btn-primary" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-size: 0.9rem;" onclick="SmartMoveUtils.openModal('passengerModal')">Select</button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Route</label>
+                            <div style="display: flex; gap: 1rem;">
+                                <input type="text" id="routeDisplay" class="form-control" placeholder="Where are you going?" readonly style="background: #f8fafc; cursor: not-allowed; flex: 1;">
+                                <input type="hidden" id="bookingRouteId">
+                                <button type="button" class="btn-primary" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-size: 0.9rem;" onclick="SmartMoveUtils.openModal('routeModal')">Select</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="paymentMethod">Payment Method</label>
+                            <select id="paymentMethod" class="form-control check-valid">
+                                <option value="Card" selected>Credit / Debit Card</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Cash">Cash on Board</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" id="submitBtn" class="btn-primary" style="width: 100%; padding: 1rem;" disabled>Confirm Booking</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Column: Info -->
+            <div class="gsap-fade-left">
+                <h2 style="font-size: 1.8rem; margin-bottom: 2rem;">Why book with us?</h2>
+                <div class="glass-panel" style="padding: 2rem; margin-bottom: 1.5rem;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">💳 Flexible Payments</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem;">Pay securely online or choose to pay cash when you board the vehicle.</p>
+                </div>
+                <div class="glass-panel" style="padding: 2rem;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">🔔 Real-time Updates</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem;">Get instant notifications on trip delays or route changes powered by MongoDB.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2026 SmartMove Transport Solutions. All rights reserved.</p>
+    </footer>
+    
+    <!-- Modals -->
+    <div id="passengerModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-size: 1.5rem; font-weight: 700;">Select Passenger</h3>
+                <button class="modal-close" onclick="SmartMoveUtils.closeModal('passengerModal')">&times;</button>
+            </div>
+            <div id="passengerModalBody">
+                <div class="skeleton-text"></div><div class="skeleton-text"></div><div class="skeleton-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="routeModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-size: 1.5rem; font-weight: 700;">Select Route</h3>
+                <button class="modal-close" onclick="SmartMoveUtils.closeModal('routeModal')">&times;</button>
+            </div>
+            <div id="routeModalBody">
+                <div class="skeleton-text"></div><div class="skeleton-text"></div><div class="skeleton-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/book.js"></script>
+</body>
+</html>

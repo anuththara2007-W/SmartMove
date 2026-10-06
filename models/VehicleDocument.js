@@ -12,6 +12,6 @@ const vehicleDocumentSchema = new mongoose.Schema({
     pdfDocumentPaths: [{
         type: String
     }]
-}, { timestamps: true });
+}, { timestamps: true, collection: 'vehicleDocuments' });
 
 module.exports = mongoose.model('VehicleDocument', vehicleDocumentSchema);

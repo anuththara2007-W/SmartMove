@@ -66,6 +66,15 @@ async function fetchRoutesPreview() {
         
         const routes = await response.json();
         
+        // Fetch MongoDB images for routes
+        let routeImages = [];
+        try {
+            const imgRes = await fetch('/api/images?type=route');
+            if (imgRes.ok) routeImages = await imgRes.json();
+        } catch (e) {
+            console.error('Failed to fetch MongoDB route images');
+        }
+        
         if (!routes || routes.length === 0) {
             SmartMoveUtils.renderEmptyState(container, 'No routes available', 'We are currently expanding our network.');
             return;
@@ -77,14 +86,23 @@ async function fetchRoutesPreview() {
         routes.slice(0, 5).forEach((route) => {
             const card = document.createElement('div');
             card.className = 'route-mini-card route-card-anim';
+            card.style.padding = '0';
+            card.style.overflow = 'hidden';
             
             const routeName = route.STARTLOCATION ? `${route.STARTLOCATION} to ${route.ENDLOCATION}` : 'Unknown Route';
-            const routeId = route.ROUTEID || 'N/A';
+            const routeId = route.ROUTEID || route.routeId || 'N/A';
+            
+            // Find matched image from MongoDB or use fallback
+            const matchedImg = routeImages.find(img => img.resourceId == routeId);
+            const imgUrl = matchedImg ? matchedImg.imageUrl : 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&q=80'; // Default bus image
 
             card.innerHTML = `
-                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">${routeName}</h3>
-                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Route ID: ${routeId}</p>
-                <a href="system-portal/book.html?routeId=${routeId}" style="color: var(--primary-accent); font-weight: 600; text-decoration: none;">Book Ticket &rarr;</a>
+                <img src="${imgUrl}" alt="Route Image" style="width: 100%; height: 160px; object-fit: cover; display: block;">
+                <div style="padding: 1.5rem;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">${routeName}</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Route ID: ${routeId}</p>
+                    <a href="book.html?routeId=${routeId}" style="color: var(--primary-accent); font-weight: 600; text-decoration: none;">Book Ticket &rarr;</a>
+                </div>
             `;
             
             container.appendChild(card);
