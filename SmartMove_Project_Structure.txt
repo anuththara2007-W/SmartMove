@@ -1,0 +1,61 @@
+SmartMove Project Structure Report
+==================================
+
+This project is a Full-Stack Web Application, divided into a Node.js/Express backend and two distinct frontends (a traditional HTML/JS frontend and a modern React frontend). Below is a breakdown of what each directory and file does:
+
+1. React Frontend (Client)
+Directory: \client\
+This folder contains a modern Single Page Application (SPA) built using React, TypeScript, and Vite.
+- src/: Contains the actual React source code (components, pages, styles).
+- public/: Contains static assets for the React app (like favicons).
+- index.html: The main entry HTML file for the React application.
+- package.json & package-lock.json: Manages frontend dependencies (React, Vite, Tailwind, etc.).
+- tailwind.config.js & postcss.config.js: Configuration for the Tailwind CSS styling framework.
+- vite.config.ts: Configuration for Vite, the build tool and development server.
+- tsconfig.*.json: TypeScript compiler configurations.
+- .oxlintrc.json: Configuration for Oxlint (a fast linter for catching code errors).
+
+2. Backend Server & API
+The root directory houses the Node.js/Express backend that powers the application's API.
+- server.js: The main entry point for the backend server. It starts the Express server, connects to databases, and serves the API and static files.
+- package.json & package-lock.json: Manages backend dependencies (Express, Mongoose, OracleDB, etc.).
+- .env: Stores environment variables (like database passwords, connection strings, secret keys). Keep this secure!
+- .gitignore: Tells Git which files to ignore (e.g., node_modules, .env).
+
+3. Database Configuration
+Directory: \config\
+- mongo.js: Sets up the connection to the MongoDB database (used for unstructured data like reviews, announcements, and documents).
+- oracle.js: Sets up the connection to the Oracle relational database (used for structured, transactional data like bookings, routes, trips, and payments).
+
+4. API Controllers
+Directory: \controllers\
+- mongoController.js: Contains the business logic for MongoDB operations (fetching/saving reviews, images, announcements).
+- oracleController.js: Contains the business logic for Oracle database operations (booking tickets, calculating revenue, CRUD operations for drivers/passengers).
+
+5. Database Models
+Directory: \models\
+Contains Mongoose schemas defining the structure of documents stored in MongoDB.
+- Announcement.js: Schema for system announcements.
+- ResourceImage.js: Schema for storing image metadata.
+- Review.js: Schema for passenger reviews.
+- VehicleDocument.js: Schema for storing vehicle-related documents (PDFs, registrations).
+
+6. API Routes
+Directory: \routes\
+- apiRoutes.js: Maps URL endpoints (like /api/tickets or /api/reviews) to the specific functions in the controllers.
+
+7. Vanilla Web Frontend (Public)
+Directory: \public\
+This folder contains a traditional static frontend, which includes the public-facing site and the system admin portal.
+- index.html, admin.html, reports.html, routes.html, etc.: The HTML pages for the public-facing site.
+- global.css: The main stylesheet for these HTML pages.
+- js/: Contains vanilla JavaScript files that provide interactivity for these HTML pages.
+  - admin-*.js: Specific scripts for managing different parts of the admin portal (drivers, passengers, trips, etc.).
+  - utils.js: A shared utility file containing common helper functions (like the Admin authentication check we simplified earlier).
+  - home.js, reviews.js, routes.js: Scripts for the public-facing pages.
+- system-portal/: Contains the HTML pages specifically for the internal admin dashboard (book.html, drivers.html, manage-images.html, payments.html, etc.).
+
+8. Other Assets
+- images/: Contains mockup images (admin dashboard, passenger booking, architecture diagram) used for your project report or presentations.
+- SmartMove_Project_Report.md: A markdown document containing your official project report or coursework documentation.
+- README.md: A brief introduction to the project.
