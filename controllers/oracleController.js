@@ -338,6 +338,24 @@ const updateTrip = async (req, res) => {
     }, 'Failed to update trip');
 };
 
+const createVehicle = async (req, res) => {
+    await withConnection(req, res, async (conn) => {
+        const { registrationNumber, capacity, model } = req.body;
+        
+        const result = await conn.execute(`
+            INSERT INTO Vehicles (RegistrationNumber, Capacity, Model, Status) 
+            VALUES (:registrationNumber, :capacity, :model, 'Active')
+            RETURNING VehicleID INTO :outVehicleID
+        `, { 
+            registrationNumber, capacity, model,
+            outVehicleID: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+        }, { autoCommit: true });
+        
+        const vehicleId = result.outBinds.outVehicleID[0];
+        res.status(201).json({ message: 'Vehicle created successfully', vehicleId });
+    }, 'Failed to create vehicle');
+};
+
 module.exports = {
     getRoutes, createRoute, updateRoute, deleteRoute,
     bookTicket, getTickets, updateTicketStatus,
@@ -345,5 +363,5 @@ module.exports = {
     getPayments, createPayment, updatePayment, deletePayment,
     getDrivers, createDriver, updateDriver, deleteDriver,
     getPassengers, createPassenger, updatePassenger, deletePassenger,
-    getVehicles, getTrips, createTrip, updateTrip, deleteTrip
+    getVehicles, createVehicle, getTrips, createTrip, updateTrip, deleteTrip
 };

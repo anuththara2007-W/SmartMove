@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('bookingForm');
     form.addEventListener('submit', handleBookingSubmit);
 
+    loadVehiclesForSelection();
+
     // Initial check to enable/disable submit button
     validateForm();
 });
@@ -14,12 +16,75 @@ window.validateForm = function() {
     const startLoc = document.getElementById('startLocation').value.trim();
     const endLoc = document.getElementById('endLocation').value.trim();
     const payment = document.getElementById('paymentMethod').value.trim();
+    const selectedVehicle = document.getElementById('selectedVehicleId').value;
     const btn = document.getElementById('submitBtn');
     
-    if (firstName && lastName && email && phone && startLoc && endLoc && payment) {
+    if (firstName && lastName && email && phone && startLoc && endLoc && payment && selectedVehicle) {
         btn.disabled = false;
     } else {
         btn.disabled = true;
+    }
+}
+
+async function loadVehiclesForSelection() {
+    const grid = document.getElementById('vehicleSelectionGrid');
+    try {
+        const [vehiclesRes, imagesRes] = await Promise.all([
+            fetch('/api/vehicles'),
+            fetch('/api/images?type=vehicle')
+        ]);
+        if (!vehiclesRes.ok) throw new Error('Failed to fetch vehicles');
+        
+        const vehicles = await vehiclesRes.json();
+        let images = [];
+        if (imagesRes.ok) images = await imagesRes.json();
+
+        if (!vehicles || vehicles.length === 0) {
+            grid.innerHTML = '<div style="grid-column: span 2; color: var(--text-secondary);">No vehicles available.</div>';
+            return;
+        }
+
+        grid.innerHTML = '';
+        vehicles.forEach(v => {
+            const id = Array.isArray(v) ? v[0] : (v.VEHICLEID || v.vehicleId);
+            const reg = Array.isArray(v) ? v[1] : (v.REGNUMBER || v.regNumber);
+            const type = Array.isArray(v) ? v[2] : (v.VEHICLETYPE || v.vehicleType);
+            const capacity = Array.isArray(v) ? v[3] : (v.CAPACITY || v.capacity);
+
+            const matchedImg = images.find(img => img.resourceId == id);
+            const imgUrl = matchedImg ? matchedImg.imageUrl : 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&q=80';
+
+            const card = document.createElement('div');
+            card.className = 'glass-panel vehicle-card';
+            card.style.padding = '0';
+            card.style.overflow = 'hidden';
+            card.style.cursor = 'pointer';
+            card.style.border = '2px solid transparent';
+            card.style.transition = 'all 0.2s';
+            
+            card.innerHTML = `
+                <img src="${imgUrl}" alt="Vehicle" style="width: 100%; height: 100px; object-fit: cover; display: block;">
+                <div style="padding: 1rem;">
+                    <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">${type}</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);">${reg}</p>
+                    <p style="font-size: 0.8rem; color: var(--primary-accent); font-weight: 600; margin-top: 0.5rem;">${capacity} Seats</p>
+                </div>
+            `;
+
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.vehicle-card').forEach(c => c.style.border = '2px solid transparent');
+                card.style.border = '2px solid var(--primary-accent)';
+                document.getElementById('selectedVehicleId').value = id;
+                document.getElementById('vehicleErrorMsg').style.display = 'none';
+                window.validateForm();
+            });
+
+            grid.appendChild(card);
+        });
+
+    } catch (error) {
+        console.error(error);
+        grid.innerHTML = '<div style="color: var(--error-color);">Error loading vehicles.</div>';
     }
 }
 
@@ -34,6 +99,12 @@ async function handleBookingSubmit(e) {
     const startLocation = document.getElementById('startLocation').value.trim();
     const endLocation = document.getElementById('endLocation').value.trim();
     const paymentMethod = document.getElementById('paymentMethod').value.trim();
+    const vehicleID = document.getElementById('selectedVehicleId').value;
+    
+    if (!vehicleID) {
+        document.getElementById('vehicleErrorMsg').style.display = 'block';
+        return;
+    }
     
     try {
         btn.disabled = true;
@@ -63,7 +134,7 @@ async function handleBookingSubmit(e) {
         const ticketRes = await fetch('/api/tickets', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ passengerID, routeID, paymentMethod })
+            body: JSON.stringify({ passengerID, routeID, vehicleID, paymentMethod })
         });
         
         if (!ticketRes.ok) throw new Error('Booking failed');
@@ -93,6 +164,8 @@ async function handleBookingSubmit(e) {
         
         // Reset form
         document.getElementById('bookingForm').reset();
+        document.getElementById('selectedVehicleId').value = '';
+        document.querySelectorAll('.vehicle-card').forEach(c => c.style.border = '2px solid transparent');
         validateForm();
         
     } catch (error) {

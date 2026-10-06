@@ -71,9 +71,34 @@
     </header>
 
     <main class="page-main">
-        <div class="gsap-fade-down">
-            <h1 class="section-title">Fleet Multimedia</h1>
-            <p style="margin-bottom: 3rem; color: var(--text-secondary);">Manage vehicle images and documents (MongoDB Integration).</p>
+        <div class="gsap-fade-down" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 2rem;">
+            <div>
+                <h1 class="section-title">Fleet Multimedia</h1>
+                <p style="color: var(--text-secondary);">Manage vehicle details and documents (Oracle + MongoDB Integration).</p>
+            </div>
+        </div>
+
+        <div class="glass-panel gsap-fade-up" style="margin-bottom: 3rem; padding: 2rem;">
+            <h2 style="font-size: 1.2rem; margin-bottom: 1.5rem;">Register New Vehicle</h2>
+            <form id="addVehicleForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
+                <div class="form-group" style="margin: 0;">
+                    <label>Registration Number</label>
+                    <input type="text" id="vehRegNum" class="form-control" placeholder="e.g. WP-1234" required>
+                </div>
+                <div class="form-group" style="margin: 0;">
+                    <label>Model</label>
+                    <input type="text" id="vehModel" class="form-control" placeholder="e.g. Toyota Coaster" required>
+                </div>
+                <div class="form-group" style="margin: 0;">
+                    <label>Capacity</label>
+                    <input type="number" id="vehCapacity" class="form-control" placeholder="e.g. 25" required>
+                </div>
+                <div class="form-group" style="margin: 0;">
+                    <label>Image URL (MongoDB)</label>
+                    <input type="text" id="vehImageUrl" class="form-control" placeholder="https://example.com/image.jpg">
+                </div>
+                <button type="submit" class="btn-primary" style="padding: 0.75rem;">Add Vehicle</button>
+            </form>
         </div>
 
         <div id="fleetGrid" class="grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">

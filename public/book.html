@@ -48,15 +48,40 @@
 
                         <div class="form-group">
                             <label for="paymentMethod">Payment Method</label>
-                            <input type="text" id="paymentMethod" class="form-control" placeholder="e.g. Card, Cash, Bank Transfer" required oninput="validateForm()">
+                            <input type="text" id="paymentMethod" class="form-control" placeholder="e.g. Card, Cash, Bank Transfer" required oninput="validateForm()" style="margin-bottom: 1.5rem;">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Select Vehicle</label>
+                            <div id="vehicleSelectionGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; max-height: 400px; overflow-y: auto; padding-right: 0.5rem;">
+                                <div style="color: var(--text-secondary); font-size: 0.9rem;">Loading available vehicles...</div>
+                            </div>
+                            <input type="hidden" id="selectedVehicleId">
+                            <p id="vehicleErrorMsg" style="color: var(--error-color); font-size: 0.85rem; display: none; margin-bottom: 1rem;">Please select a vehicle to continue.</p>
                         </div>
 
                         <button type="submit" id="submitBtn" class="btn-primary" style="width: 100%; padding: 1rem;" disabled>Confirm Booking</button>
                     </form>
                 </div>
                 
+            </div>
+
+            <!-- Right Column: Info -->
+            <div class="gsap-fade-left">
+                <h2 style="font-size: 1.8rem; margin-bottom: 2rem;">Why book with us?</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 3rem;">
+                    <div class="glass-panel" style="padding: 2rem;">
+                        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">💳 Flexible</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem;">Pay securely online or choose to pay cash.</p>
+                    </div>
+                    <div class="glass-panel" style="padding: 2rem;">
+                        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">🔔 Real-time</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem;">Instant updates powered by MongoDB.</p>
+                    </div>
+                </div>
+
                 <!-- NEW SECTION: User Side Bookings Table -->
-                <div class="glass-panel gsap-fade-up" style="margin-top: 3rem; padding: 2rem;">
+                <div class="glass-panel gsap-fade-up" style="padding: 2rem;">
                     <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Your Recent Bookings</h2>
                     <div style="overflow-x: auto;">
                         <table style="width: 100%; border-collapse: collapse; text-align: left;">
@@ -77,20 +102,6 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-                
-            </div>
-
-            <!-- Right Column: Info -->
-            <div class="gsap-fade-left">
-                <h2 style="font-size: 1.8rem; margin-bottom: 2rem;">Why book with us?</h2>
-                <div class="glass-panel" style="padding: 2rem; margin-bottom: 1.5rem;">
-                    <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">💳 Flexible Payments</h3>
-                    <p style="color: var(--text-secondary); font-size: 0.95rem;">Pay securely online or choose to pay cash when you board the vehicle.</p>
-                </div>
-                <div class="glass-panel" style="padding: 2rem;">
-                    <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">🔔 Real-time Updates</h3>
-                    <p style="color: var(--text-secondary); font-size: 0.95rem;">Get instant notifications on trip delays or route changes powered by MongoDB.</p>
                 </div>
             </div>
         </div>
