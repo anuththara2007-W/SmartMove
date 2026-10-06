@@ -54,6 +54,31 @@
                         <button type="submit" id="submitBtn" class="btn-primary" style="width: 100%; padding: 1rem;" disabled>Confirm Booking</button>
                     </form>
                 </div>
+                
+                <!-- NEW SECTION: User Side Bookings Table -->
+                <div class="glass-panel gsap-fade-up" style="margin-top: 3rem; padding: 2rem;">
+                    <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Your Recent Bookings</h2>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--border-color);">
+                                    <th style="padding: 1rem; font-size: 0.9rem; color: var(--text-secondary);">Ticket ID</th>
+                                    <th style="padding: 1rem; font-size: 0.9rem; color: var(--text-secondary);">Route</th>
+                                    <th style="padding: 1rem; font-size: 0.9rem; color: var(--text-secondary);">Payment</th>
+                                    <th style="padding: 1rem; font-size: 0.9rem; color: var(--text-secondary);">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userBookingsTableBody">
+                                <tr>
+                                    <td colspan="4" style="padding: 1.5rem; text-align: center; color: var(--text-secondary); font-size: 0.9rem;">
+                                        No bookings made yet in this session.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
             </div>
 
             <!-- Right Column: Info -->

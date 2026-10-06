@@ -70,6 +70,27 @@ async function handleBookingSubmit(e) {
         
         SmartMoveUtils.showToast('Your booking was successful!', 'success');
         
+        // Add to Table
+        const tbody = document.getElementById('userBookingsTableBody');
+        // Clear empty message if it exists
+        if (tbody.children.length === 1 && tbody.children[0].textContent.includes('No bookings')) {
+            tbody.innerHTML = '';
+        }
+        
+        // Generate a random ticket ID placeholder if backend doesn't return one immediately
+        const mockTicketId = Math.floor(Math.random() * 90000) + 10000;
+        
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = '1px solid var(--border-color)';
+        tr.innerHTML = `
+            <td style="padding: 1rem;"><strong>#${mockTicketId}</strong></td>
+            <td style="padding: 1rem;">${startLocation} &rarr; ${endLocation}</td>
+            <td style="padding: 1rem;">${paymentMethod}</td>
+            <td style="padding: 1rem;"><span style="background: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Booked</span></td>
+        `;
+        // Insert at top
+        tbody.insertBefore(tr, tbody.firstChild);
+        
         // Reset form
         document.getElementById('bookingForm').reset();
         validateForm();

@@ -84,11 +84,21 @@ const bookTicket = async (req, res) => {
         // Auto-assign trip if missing
         if (!tripID && routeID) {
             const tripRes = await executeQuery(conn, `SELECT TripID, NVL(BaseFare, 15) AS BASEFARE FROM (SELECT TripID, BaseFare FROM Trips WHERE RouteID = :routeID ORDER BY TripID DESC) WHERE ROWNUM = 1`, { routeID });
-            if (tripRes.rows.length > 0) {
-                tripID = tripRes.rows[0].TRIPID;
-                fare = tripRes.rows[0].BASEFARE || fare;
+            if (tripRes.rows && tripRes.rows.length > 0) {
+                tripID = tripRes.rows[0].TRIPID || tripRes.rows[0].tripId;
+                fare = tripRes.rows[0].BASEFARE || tripRes.rows[0].baseFare || fare;
             } else {
-                tripID = routeID;
+                const vdRes = await executeQuery(conn, `SELECT (SELECT MIN(VehicleID) FROM Vehicles) AS VID, (SELECT MIN(DriverID) FROM Drivers) AS DID FROM DUAL`);
+                const vid = vdRes.rows[0].VID || vdRes.rows[0].vid || 1;
+                const did = vdRes.rows[0].DID || vdRes.rows[0].did || 1;
+                
+                const newTripRes = await conn.execute(`
+                    INSERT INTO Trips (RouteID, VehicleID, DriverID, DepartureDateTime, ArrivalDateTime, TripStatus, BaseFare)
+                    VALUES (:routeID, :vid, :did, SYSDATE + 1, SYSDATE + 2, 'Scheduled', 15)
+                    RETURNING TripID INTO :outTripID
+                `, { routeID, vid, did, outTripID: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT } }, { autoCommit: false });
+                
+                tripID = newTripRes.outBinds.outTripID[0];
             }
         } else if (tripID) {
             const fareRes = await executeQuery(conn, `SELECT NVL(BaseFare, 15) AS BASEFARE FROM Trips WHERE TripID = :tripID`, { tripID });
@@ -223,6 +233,15 @@ const deletePassenger = deleteRecord('Passengers', 'PassengerID', 'Failed to del
 const createPassenger = async (req, res) => {
     await withConnection(req, res, async (conn) => {
         const { firstName, lastName, email, phone } = req.body;
+        
+        const check = await executeQuery(conn, `SELECT PassengerID FROM Passengers WHERE Email = :email`, { email: email || '' });
+        if (check.rows && check.rows.length > 0) {
+            return res.status(200).json({ 
+                message: 'Passenger already exists', 
+                passengerId: check.rows[0].PASSENGERID || check.rows[0].passengerId 
+            });
+        }
+        
         const result = await executeQuery(conn, 
             `INSERT INTO Passengers (FirstName, LastName, Email, Phone, RegisteredDate) VALUES (:firstName, :lastName, :email, :phone, SYSDATE) RETURNING PassengerID INTO :outId`, 
             { 
