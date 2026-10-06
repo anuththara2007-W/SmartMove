@@ -2,9 +2,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!SmartMoveUtils.setupAdminAuth()) return;
     
     fetchFrequentRoutes();
+    fetchTopDrivers(); // Fetch MongoDB Aggregation
 
     const calcBtn = document.getElementById('calcRevenueBtn');
     calcBtn.addEventListener('click', handleCalculateRevenue);
+    
+    const searchBtn = document.getElementById('searchBtn');
+    if (searchBtn) searchBtn.addEventListener('click', handleSearchComplaints);
 });
 
 async function handleCalculateRevenue() {
@@ -91,4 +95,65 @@ function renderFrequentRoutesTable(tbody, routes) {
         
         tbody.appendChild(tr);
     });
+}
+
+// --- MongoDB Analytics Functions ---
+
+async function fetchTopDrivers() {
+    const tbody = document.getElementById('topDriversTableBody');
+    try {
+        const res = await fetch('/api/vehicles/top-rated');
+        if (!res.ok) throw new Error();
+        const drivers = await res.json();
+        
+        if (drivers.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align: center;">No reviews found in MongoDB.</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = '';
+        drivers.forEach(d => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>Driver #${d._id || 'Unknown'}</td>
+                <td style="color: #fbbf24; font-weight: bold;">${(d.averageRating || 0).toFixed(1)} ★</td>
+                <td>${d.reviewCount} reviews</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: red;">Failed to fetch MongoDB Top Drivers</td></tr>';
+    }
+}
+
+async function handleSearchComplaints() {
+    const query = document.getElementById('searchInput').value;
+    const tbody = document.getElementById('complaintsTableBody');
+    if (!query) return;
+    
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Searching...</td></tr>';
+    
+    try {
+        const res = await fetch(`/api/reviews/search?q=${encodeURIComponent(query)}`);
+        if (!res.ok) throw new Error();
+        const results = await res.json();
+        
+        if (results.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" style="text-align: center;">No reviews matched "${query}".</td></tr>`;
+            return;
+        }
+        
+        tbody.innerHTML = '';
+        results.forEach(r => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>Route #${r.routeId || 'N/A'}</td>
+                <td>${r.feedbackText || 'N/A'}</td>
+                <td style="color: #fbbf24;">${r.rating} ★</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: red;">MongoDB search failed.</td></tr>';
+    }
 }
