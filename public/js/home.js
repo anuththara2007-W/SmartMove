@@ -75,15 +75,21 @@ async function fetchRoutesPreview() {
             console.error('Failed to fetch MongoDB route images');
         }
         
-        if (!routes || routes.length === 0) {
-            SmartMoveUtils.renderEmptyState(container, 'No routes available', 'We are currently expanding our network.');
+        // Filter routes to only those that have an image in MongoDB
+        const routesWithImages = routes.filter(r => {
+            const id = r.ROUTEID || r.routeId;
+            return routeImages.some(img => img.resourceId == id);
+        });
+        
+        if (!routesWithImages || routesWithImages.length === 0) {
+            SmartMoveUtils.renderEmptyState(container, 'No preview routes available', 'Please add route images from the Admin Panel to feature them here.');
             return;
         }
 
         container.innerHTML = '';
         
-        // Take top 5 for preview
-        routes.slice(0, 5).forEach((route) => {
+        // Take top 5 featured routes
+        routesWithImages.slice(0, 5).forEach((route) => {
             const card = document.createElement('div');
             card.className = 'route-mini-card route-card-anim';
             card.style.padding = '0';
@@ -92,9 +98,8 @@ async function fetchRoutesPreview() {
             const routeName = route.STARTLOCATION ? `${route.STARTLOCATION} to ${route.ENDLOCATION}` : 'Unknown Route';
             const routeId = route.ROUTEID || route.routeId || 'N/A';
             
-            // Find matched image from MongoDB or use fallback
             const matchedImg = routeImages.find(img => img.resourceId == routeId);
-            const imgUrl = matchedImg ? matchedImg.imageUrl : 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&q=80'; // Default bus image
+            const imgUrl = matchedImg.imageUrl;
 
             card.innerHTML = `
                 <img src="${imgUrl}" alt="Route Image" style="width: 100%; height: 160px; object-fit: cover; display: block;">
