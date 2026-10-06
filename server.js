@@ -28,9 +28,9 @@ apiRoutes.stack.forEach(r => {
 });
 // --- Oracle Configuration ---
 const oracleDbConfig = {
-    user: process.env.ORACLE_USER,
+    user: process.env.ORACLE_USER || 'system',
     password: process.env.ORACLE_PASSWORD,
-    connectString: process.env.ORACLE_CONN_STRING
+    connectString: process.env.ORACLE_CONN_STRING || 'localhost:1521/XE'
 };
 
 async function initializeDatabases() {
@@ -45,7 +45,7 @@ async function initializeDatabases() {
         console.log('Successfully connected to Oracle Database (xe)!');
 
         // 2. Connect to MongoDB
-        await mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/smartmove');
+        await mongoose.connect(process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/TransportManagementDB');
         console.log('Successfully connected to MongoDB!');
         
     } catch (err) {
