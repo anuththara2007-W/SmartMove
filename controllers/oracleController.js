@@ -356,6 +356,30 @@ const createVehicle = async (req, res) => {
     }, 'Failed to create vehicle');
 };
 
+const updateVehicle = async (req, res) => {
+    await withConnection(req, res, async (conn) => {
+        const { id } = req.params;
+        const { registrationNumber, capacity, model, status } = req.body;
+        
+        await conn.execute(`
+            UPDATE Vehicles SET RegNumber = :registrationNumber, Capacity = :capacity, VehicleType = :model, Status = :status 
+            WHERE VehicleID = :id
+        `, { registrationNumber, capacity, model, status, id }, { autoCommit: true });
+        
+        res.json({ message: 'Vehicle updated successfully' });
+    }, 'Failed to update vehicle');
+};
+
+const deleteVehicle = async (req, res) => {
+    await withConnection(req, res, async (conn) => {
+        const { id } = req.params;
+        
+        await conn.execute(`DELETE FROM Vehicles WHERE VehicleID = :id`, { id }, { autoCommit: true });
+        
+        res.json({ message: 'Vehicle deleted successfully' });
+    }, 'Failed to delete vehicle');
+};
+
 module.exports = {
     getRoutes, createRoute, updateRoute, deleteRoute,
     bookTicket, getTickets, updateTicketStatus,
@@ -363,5 +387,5 @@ module.exports = {
     getPayments, createPayment, updatePayment, deletePayment,
     getDrivers, createDriver, updateDriver, deleteDriver,
     getPassengers, createPassenger, updatePassenger, deletePassenger,
-    getVehicles, createVehicle, getTrips, createTrip, updateTrip, deleteTrip
+    getVehicles, createVehicle, updateVehicle, deleteVehicle, getTrips, createTrip, updateTrip, deleteTrip
 };

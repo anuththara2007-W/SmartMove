@@ -33,6 +33,8 @@ router.delete('/passengers/:id', oracleController.deletePassenger);
 
 router.get('/vehicles', oracleController.getVehicles);
 router.post('/vehicles', oracleController.createVehicle);
+router.put('/vehicles/:id', oracleController.updateVehicle);
+router.delete('/vehicles/:id', oracleController.deleteVehicle);
 
 router.get('/trips', oracleController.getTrips);
 router.post('/trips', oracleController.createTrip);

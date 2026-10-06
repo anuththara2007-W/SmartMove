@@ -31,7 +31,7 @@ async function loadVehiclesForSelection() {
     try {
         const [vehiclesRes, imagesRes] = await Promise.all([
             fetch('/api/vehicles'),
-            fetch('/api/images?type=vehicle')
+            fetch('/api/vehicles/documents')
         ]);
         if (!vehiclesRes.ok) throw new Error('Failed to fetch vehicles');
         
@@ -51,8 +51,9 @@ async function loadVehiclesForSelection() {
             const type = Array.isArray(v) ? v[2] : (v.VEHICLETYPE || v.vehicleType);
             const capacity = Array.isArray(v) ? v[3] : (v.CAPACITY || v.capacity);
 
-            const matchedImg = images.find(img => img.resourceId == id);
-            const imgHtml = matchedImg ? `<img src="${matchedImg.imageUrl}" alt="Vehicle" style="width: 100%; height: 100px; object-fit: cover; display: block;">` : '';
+            const matchedDoc = images.find(doc => doc.vehicleID == id);
+            const imgUrl = (matchedDoc && matchedDoc.imageUrls && matchedDoc.imageUrls.length > 0) ? matchedDoc.imageUrls[0] : null;
+            const imgHtml = imgUrl ? `<img src="${imgUrl}" alt="Vehicle" style="width: 100%; height: 180px; object-fit: cover; display: block;">` : '';
 
             const card = document.createElement('div');
             card.className = 'glass-panel vehicle-card';
