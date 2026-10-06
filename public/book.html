@@ -112,7 +112,7 @@
             <input type="hidden" id="selectedVehicleId">
             <p id="vehicleErrorMsg" style="color: var(--error-color); font-size: 0.85rem; display: none; margin-bottom: 1rem;">Please select a vehicle to continue.</p>
 
-            <button type="submit" id="submitBtn" class="btn-primary" style="width: 100%; max-width: 400px; padding: 1rem; font-size: 1.1rem; display: block; margin: 0 auto;" disabled onclick="document.getElementById('bookingForm').dispatchEvent(new Event('submit'))">Confirm Booking</button>
+            <button type="submit" form="bookingForm" id="submitBtn" class="btn-primary" style="width: 100%; max-width: 400px; padding: 1rem; font-size: 1.1rem; display: block; margin: 0 auto;" disabled>Confirm Booking</button>
         </div>
     </main>
     
