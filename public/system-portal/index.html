@@ -123,6 +123,56 @@
                 </tbody>
             </table>
         </div>
+        <div class="gsap-fade-down" style="margin-top: 4rem;">
+            <h1 class="section-title">MongoDB Analytics</h1>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">Real-time NoSQL sentiment analysis and driver leaderboards.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <!-- MongoDB: Top Rated Drivers -->
+            <div class="gsap-fade-up">
+                <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Top Rated Drivers</h2>
+                <div style="overflow-x: auto; background: #fff; border-radius: 16px; border: 1px solid var(--border-color);">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Driver ID</th>
+                                <th>Avg Rating</th>
+                                <th>Total Reviews</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topDriversTableBody">
+                            <tr><td colspan="3" style="text-align: center;">Loading MongoDB Aggregation...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MongoDB: Search Complaints -->
+            <div class="gsap-fade-up">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2 style="font-size: 1.5rem;">Complaint Search</h2>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="searchInput" placeholder="Keyword (e.g. late)" class="standard-input" style="padding: 0.5rem; border-radius: 8px;">
+                        <button id="searchBtn" class="btn-primary" style="padding: 0.5rem 1rem;">Search</button>
+                    </div>
+                </div>
+                <div style="overflow-x: auto; background: #fff; border-radius: 16px; border: 1px solid var(--border-color);">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Route ID</th>
+                                <th>Feedback</th>
+                                <th>Rating</th>
+                            </tr>
+                        </thead>
+                        <tbody id="complaintsTableBody">
+                            <tr><td colspan="3" style="text-align: center; color: var(--text-secondary);">Enter a keyword to search reviews via MongoDB $text...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script src="../js/utils.js"></script>
