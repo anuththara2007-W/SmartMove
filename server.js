@@ -28,9 +28,9 @@ apiRoutes.stack.forEach(r => {
 });
 // --- Oracle Configuration ---
 const oracleDbConfig = {
-    user: process.env.ORACLE_USER,
+    user: process.env.ORACLE_USER || 'system',
     password: process.env.ORACLE_PASSWORD,
-    connectString: process.env.ORACLE_CONN_STRING
+    connectString: process.env.ORACLE_CONN_STRING || 'localhost:1521/XE'
 };
 
 async function initializeDatabases() {
