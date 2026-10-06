@@ -343,7 +343,7 @@ const createVehicle = async (req, res) => {
         const { registrationNumber, capacity, model } = req.body;
         
         const result = await conn.execute(`
-            INSERT INTO Vehicles (RegistrationNumber, Capacity, Model, Status) 
+            INSERT INTO Vehicles (RegNumber, Capacity, VehicleType, Status) 
             VALUES (:registrationNumber, :capacity, :model, 'Active')
             RETURNING VehicleID INTO :outVehicleID
         `, { 
