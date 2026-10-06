@@ -1,23 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Security check
-    if (sessionStorage.getItem('smartmove_admin_token') !== 'true') {
-        window.location.href = 'login.html';
-        return;
-    }
-    
-    document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        sessionStorage.removeItem('smartmove_admin_token');
-        window.location.href = 'login.html';
-    });
-
-    // Lenis smooth scroll
-    const lenis = new Lenis({ duration: 1.2, smooth: true });
-    function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
+    if (!SmartMoveUtils.setupAdminAuth()) return;
 
     loadImages();
 
@@ -55,11 +37,6 @@ async function loadImages() {
             `;
             grid.appendChild(card);
         });
-        
-        gsap.fromTo('.image-card', 
-            { y: 30, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power2.out' }
-        );
         
     } catch (error) {
         console.error(error);

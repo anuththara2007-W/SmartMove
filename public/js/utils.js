@@ -199,7 +199,26 @@ window.addEventListener('scroll', () => {
 });
 
 // Global exposure
+
+// 8. Admin Authentication
+function setupAdminAuth() {
+    if (sessionStorage.getItem('smartmove_admin_token') !== 'true') {
+        window.location.href = 'login.html';
+        return false;
+    }
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            sessionStorage.removeItem('smartmove_admin_token');
+            window.location.href = 'login.html';
+        });
+    }
+    return true;
+}
+
 window.SmartMoveUtils = {
+    setupAdminAuth,
     showToast,
     formatCurrency,
     formatDate,

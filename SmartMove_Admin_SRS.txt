@@ -1,0 +1,79 @@
+SmartMove Transport Solutions
+Software Requirements Specification (SRS) - Admin Portal
+======================================================
+Focus: One-sided Admin Application (Going beyond expected coursework requirements)
+
+1. Vehicle Management (Oracle + MongoDB)
+----------------------------------------
+- The Admin shall be able to register new vehicles into the fleet database (Oracle) with details like capacity, model, and registration number.
+- The Admin shall be able to upload, update, and remove vehicle images and registration/insurance PDF documents (MongoDB integration).
+- The Admin shall be able to update vehicle status (Active, In Maintenance, Retired).
+- The Admin shall be able to track real-time vehicle assignments and current trip associations.
+- The Admin shall be able to receive automated alerts when a vehicle's capacity utilization drops below 30% over a week (Beyond Expected).
+
+2. Driver Management (Oracle + MongoDB)
+---------------------------------------
+- The Admin shall be able to onboard new drivers by recording their personal information and license details.
+- The Admin shall be able to update driver statuses (Available, On-Trip, On Leave, Suspended).
+- The Admin shall be able to view a driver's historical trip performance and safety rating aggregated from passenger reviews (Hybrid Integration).
+- The Admin shall be able to automatically flag drivers who receive multiple low-star reviews containing the keyword "unsafe" (Beyond Expected).
+
+3. Route Management (Oracle)
+----------------------------
+- The Admin shall be able to create new transportation routes by defining start locations, end locations, and estimated durations.
+- The Admin shall be able to define distance in Kilometers and dynamic base fare models for each route.
+- The Admin shall be able to edit existing routes and decommission obsolete routes.
+
+4. Passenger Management (Oracle)
+--------------------------------
+- The Admin shall be able to view a master list of all registered passengers.
+- The Admin shall be able to update passenger contact information.
+- The Admin shall be able to generate a detailed passenger travel history report across all trips.
+- The Admin shall be able to suspend passenger accounts in cases of policy violation or unpaid fares.
+
+5. Trip Scheduling Management (Oracle)
+--------------------------------------
+- The Admin shall be able to schedule new trips by linking a Route, a Vehicle, and a Driver with departure and arrival timestamps.
+- The Admin shall be able to identify and resolve scheduling conflicts automatically warned by the system (e.g., double-booked driver).
+- The Admin shall be able to update the status of a trip (Scheduled, In-Progress, Completed, Cancelled).
+- The Admin shall be able to duplicate weekly trip schedules to rapidly generate timetables (Beyond Expected).
+
+6. Ticket Booking Management (Oracle)
+-------------------------------------
+- The Admin shall be able to manually book tickets on behalf of passengers (e.g., for phone reservations or walk-ins).
+- The Admin shall be able to assign specific seat numbers for booked tickets.
+- The Admin shall be able to view all booked tickets for a specific trip to manage seating capacity.
+- The Admin shall be able to cancel tickets and process associated refunds.
+
+7. Payment Processing (Oracle)
+------------------------------
+- The Admin shall be able to record offline payments (Cash, Bank Transfer) against ticket IDs.
+- The Admin shall be able to update payment statuses (Pending, Completed, Refunded).
+- The Admin shall be able to view chronological payment logs to audit daily cash flows.
+
+8. Maintenance Management (Oracle) [Beyond Expected Requirement]
+----------------------------------------------------------------
+- The Admin shall be able to log maintenance records for vehicles, including repair costs, mechanic details, and dates.
+- The Admin shall be able to schedule future preventative maintenance alerts for specific vehicles based on mileage covered.
+- The Admin shall be able to temporarily auto-suspend vehicles from trip scheduling if their maintenance is overdue.
+
+9. Feedback and Review Management (MongoDB)
+-------------------------------------------
+- The Admin shall be able to retrieve and review all passenger feedback for a specific route.
+- The Admin shall be able to identify and list the highest-rated vehicles or drivers based on aggregated customer feedback.
+- The Admin shall be able to perform full-text searches on customer complaints using specific keywords.
+- The Admin shall be able to moderate (hide or delete) abusive or inappropriate reviews.
+
+10. Announcements & Notifications (MongoDB)
+-------------------------------------------
+- The Admin shall be able to publish real-time travel announcements (e.g., delays, route changes) to the public.
+- The Admin shall be able to categorize announcements (Alert, Info, Promo) for targeted delivery.
+- The Admin shall be able to deactivate or schedule expiration times for old announcements.
+
+11. Reports, Business Logic, & Analytics (PL/SQL & Hybrid Analytics)
+--------------------------------------------------------------------
+- The Admin shall be able to generate a report identifying the most frequently used routes based on ticket bookings.
+- The Admin shall be able to calculate and view the total revenue generated from ticket sales within a specified date range.
+- The Admin shall be able to execute PL/SQL procedures to generate individual passenger travel history reports.
+- The Admin shall be able to generate hybrid analytical reports combining Oracle transactional revenue with MongoDB sentiment analysis (e.g., correlating low revenue routes with negative feedback keywords) (Beyond Expected/Hybrid Innovation).
+- The Admin shall be able to view exception logs handled by advanced PL/SQL blocks for troubleshooting database constraints (Beyond Expected).

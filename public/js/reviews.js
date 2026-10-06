@@ -1,15 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Lenis smooth scroll
-    const lenis = new Lenis({ duration: 1.2, smooth: true });
-    function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    // Initial Animations
-    gsap.fromTo('.gsap-fade-right', { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: 'power3.out' });
-    gsap.fromTo('.gsap-fade-left', { x: 30, opacity: 0 }, { x: 0, opacity: 1, duration: 1, delay: 0.2, ease: 'power3.out' });
 
     fetchRecentReviews();
     
@@ -151,11 +140,6 @@ async function fetchRecentReviews() {
             
             feed.appendChild(card);
         });
-
-        gsap.fromTo('.review-card', 
-            { y: 20, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.6, stagger: 0.05, ease: 'power2.out' }
-        );
 
     } catch (error) {
         console.error('Reviews Error:', error);

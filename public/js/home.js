@@ -1,27 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize Lenis
-    const lenis = new Lenis({ duration: 1.2, smooth: true });
-    function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
 
     // Initial Hero GSAP Animations
-    gsap.fromTo('.gsap-fade-down', { y: -50, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out' });
-    gsap.fromTo('.gsap-scale-up', { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.2, delay: 0.3, ease: 'power3.out' });
 
     // ScrollTrigger Animations
     gsap.registerPlugin(ScrollTrigger);
 
     gsap.utils.toArray('.gsap-section').forEach(section => {
-        gsap.fromTo(section, 
-            { y: 50, opacity: 0 },
-            {
-                y: 0, opacity: 1, duration: 1,
-                scrollTrigger: { trigger: section, start: 'top 80%', toggleActions: 'play none none none' }
-            }
-        );
     });
 
     fetchAnnouncements();
@@ -67,11 +51,6 @@ async function fetchAnnouncements() {
             grid.appendChild(card);
         });
 
-        gsap.fromTo('.announcement-card', 
-            { y: 30, opacity: 0 },
-            { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, scrollTrigger: { trigger: '#announcementsGrid', start: 'top 85%' } }
-        );
-
     } catch (error) {
         console.error('Announcements Error:', error);
         SmartMoveUtils.renderErrorState(grid, 'Unable to connect to MongoDB cluster.');
@@ -110,11 +89,6 @@ async function fetchRoutesPreview() {
             
             container.appendChild(card);
         });
-
-        gsap.fromTo('.route-card-anim', 
-            { x: 50, opacity: 0 },
-            { x: 0, opacity: 1, duration: 0.8, stagger: 0.1, scrollTrigger: { trigger: '#routesPreviewContainer', start: 'top 85%' } }
-        );
 
     } catch (error) {
         console.error('Routes Preview Error:', error);

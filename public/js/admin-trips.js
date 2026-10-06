@@ -4,9 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    gsap.fromTo('.gsap-fade-down', { y: -30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out' });
-    gsap.fromTo('.gsap-fade-up', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out', stagger: 0.1 });
-
     document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
         e.preventDefault();
         sessionStorage.removeItem('smartmove_admin_token');

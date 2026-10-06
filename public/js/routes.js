@@ -1,14 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Lenis smooth scroll
-    const lenis = new Lenis({ duration: 1.2, smooth: true });
-    function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    // Initial load animation
-    gsap.fromTo('.gsap-fade-down', { y: -30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out' });
 
     fetchRoutes();
 });
@@ -69,11 +59,4 @@ function renderRoutes(gridElement, routesList) {
         
         gridElement.appendChild(card);
     });
-
-    gsap.fromTo('.route-card', 
-        { y: 30, opacity: 0 },
-        { 
-            y: 0, opacity: 1, duration: 0.8, stagger: 0.1, delay: 0.2, ease: 'power3.out'
-        }
-    );
 }
