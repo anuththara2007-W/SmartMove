@@ -33,30 +33,22 @@
                 <div class="glass-panel" style="padding: 3rem;">
                     <form id="bookingForm" novalidate>
                         <div class="form-group">
-                            <label>Passenger</label>
-                            <div style="display: flex; gap: 1rem;">
-                                <input type="text" id="passengerDisplay" class="form-control" placeholder="Select your profile" readonly style="background: #f8fafc; cursor: not-allowed; flex: 1;">
-                                <input type="hidden" id="bookingPassengerId">
-                                <button type="button" class="btn-primary" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-size: 0.9rem;" onclick="SmartMoveUtils.openModal('passengerModal')">Select</button>
-                            </div>
+                            <label>Passenger Details</label>
+                            <input type="text" id="firstName" class="form-control" placeholder="First Name" required style="margin-bottom: 0.5rem;" oninput="validateForm()">
+                            <input type="text" id="lastName" class="form-control" placeholder="Last Name" required style="margin-bottom: 0.5rem;" oninput="validateForm()">
+                            <input type="email" id="email" class="form-control" placeholder="Email Address" required style="margin-bottom: 0.5rem;" oninput="validateForm()">
+                            <input type="text" id="phone" class="form-control" placeholder="Phone Number" required oninput="validateForm()">
                         </div>
                         
                         <div class="form-group">
-                            <label>Route</label>
-                            <div style="display: flex; gap: 1rem;">
-                                <input type="text" id="routeDisplay" class="form-control" placeholder="Where are you going?" readonly style="background: #f8fafc; cursor: not-allowed; flex: 1;">
-                                <input type="hidden" id="bookingRouteId">
-                                <button type="button" class="btn-primary" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-size: 0.9rem;" onclick="SmartMoveUtils.openModal('routeModal')">Select</button>
-                            </div>
+                            <label>Route Details</label>
+                            <input type="text" id="startLocation" class="form-control" placeholder="Start Location" required style="margin-bottom: 0.5rem;" oninput="validateForm()">
+                            <input type="text" id="endLocation" class="form-control" placeholder="End Location" required oninput="validateForm()">
                         </div>
 
                         <div class="form-group">
                             <label for="paymentMethod">Payment Method</label>
-                            <select id="paymentMethod" class="form-control check-valid">
-                                <option value="Card" selected>Credit / Debit Card</option>
-                                <option value="Bank Transfer">Bank Transfer</option>
-                                <option value="Cash">Cash on Board</option>
-                            </select>
+                            <input type="text" id="paymentMethod" class="form-control" placeholder="e.g. Card, Cash, Bank Transfer" required oninput="validateForm()">
                         </div>
 
                         <button type="submit" id="submitBtn" class="btn-primary" style="width: 100%; padding: 1rem;" disabled>Confirm Booking</button>
@@ -83,30 +75,7 @@
         <p>&copy; 2026 SmartMove Transport Solutions. All rights reserved.</p>
     </footer>
     
-    <!-- Modals -->
-    <div id="passengerModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 style="font-size: 1.5rem; font-weight: 700;">Select Passenger</h3>
-                <button class="modal-close" onclick="SmartMoveUtils.closeModal('passengerModal')">&times;</button>
-            </div>
-            <div id="passengerModalBody">
-                <div class="skeleton-text"></div><div class="skeleton-text"></div><div class="skeleton-text"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="routeModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 style="font-size: 1.5rem; font-weight: 700;">Select Route</h3>
-                <button class="modal-close" onclick="SmartMoveUtils.closeModal('routeModal')">&times;</button>
-            </div>
-            <div id="routeModalBody">
-                <div class="skeleton-text"></div><div class="skeleton-text"></div><div class="skeleton-text"></div>
-            </div>
-        </div>
-    </div>
+    <!-- Modals removed -->
 
     <script src="js/utils.js"></script>
     <script src="js/book.js"></script>

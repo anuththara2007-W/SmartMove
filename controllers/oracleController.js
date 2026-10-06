@@ -49,11 +49,17 @@ const deleteRoute = deleteRecord('Routes', 'RouteID', 'Failed to delete route');
 const createRoute = async (req, res) => {
     await withConnection(req, res, async (conn) => {
         const { startLocation, endLocation, distanceKm, estimatedDuration } = req.body;
-        await executeQuery(conn, 
-            `INSERT INTO Routes (StartLocation, EndLocation, DistanceKm, EstimatedDuration) VALUES (:startLocation, :endLocation, :distanceKm, :estimatedDuration)`,
-            { startLocation, endLocation, distanceKm, estimatedDuration }, true
+        const result = await executeQuery(conn, 
+            `INSERT INTO Routes (StartLocation, EndLocation, DistanceKm, EstimatedDuration) VALUES (:startLocation, :endLocation, :distanceKm, :estimatedDuration) RETURNING RouteID INTO :outId`,
+            { 
+                startLocation, 
+                endLocation, 
+                distanceKm: distanceKm || 10, 
+                estimatedDuration: estimatedDuration || 30,
+                outId: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+            }, true
         );
-        res.status(201).json({ message: 'Route created successfully' });
+        res.status(201).json({ message: 'Route created successfully', routeId: result.outBinds.outId[0] });
     }, 'Failed to create route');
 };
 
@@ -217,8 +223,17 @@ const deletePassenger = deleteRecord('Passengers', 'PassengerID', 'Failed to del
 const createPassenger = async (req, res) => {
     await withConnection(req, res, async (conn) => {
         const { firstName, lastName, email, phone } = req.body;
-        await executeQuery(conn, `INSERT INTO Passengers (FirstName, LastName, Email, Phone, RegisteredDate) VALUES (:firstName, :lastName, :email, :phone, SYSDATE)`, { firstName, lastName, email, phone }, true);
-        res.status(201).json({ message: 'Passenger created successfully' });
+        const result = await executeQuery(conn, 
+            `INSERT INTO Passengers (FirstName, LastName, Email, Phone, RegisteredDate) VALUES (:firstName, :lastName, :email, :phone, SYSDATE) RETURNING PassengerID INTO :outId`, 
+            { 
+                firstName, 
+                lastName, 
+                email: email || '', 
+                phone: phone || '',
+                outId: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+            }, true
+        );
+        res.status(201).json({ message: 'Passenger created successfully', passengerId: result.outBinds.outId[0] });
     }, 'Failed to create passenger');
 };
 
