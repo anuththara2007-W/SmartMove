@@ -662,3 +662,12 @@ footer {
  e c h o           b a c k g r o u n d :   t r a n s p a r e n t ;   > >   p u b l i c \ g l o b a l . c s s  
  e c h o    
  
+.nav-dropdown-content::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: transparent;
+}
