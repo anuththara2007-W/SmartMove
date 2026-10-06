@@ -105,6 +105,29 @@
                 Execute CalculateTotalRevenue()
             </button>
         </div>
+        
+        <!-- NEW SECTION: Manage Recent Passenger Bookings -->
+        <h2 style="font-size: 1.8rem; margin-bottom: 1.5rem;" class="gsap-fade-up">Recent Passenger Bookings</h2>
+        <div style="overflow-x: auto; margin-bottom: 4rem;" class="gsap-fade-up">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Passenger Name</th>
+                        <th>Contact</th>
+                        <th>Route</th>
+                        <th>Fare</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingsTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-secondary);">Loading Recent Bookings...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <h2 style="font-size: 1.8rem; margin-bottom: 1.5rem;" class="gsap-fade-up">Most Frequent Routes</h2>
         <div style="overflow-x: auto;" class="gsap-fade-up" id="routesTableContainer">
