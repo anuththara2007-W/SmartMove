@@ -99,7 +99,8 @@ async function fetchRoutesPreview() {
             const routeId = route.ROUTEID || route.routeId || 'N/A';
             
             const matchedImg = routeImages.find(img => img.resourceId == routeId);
-            const imgUrl = matchedImg.imageUrl;
+            let imgUrl = matchedImg.imageUrl;
+            if (imgUrl && imgUrl.startsWith('data:image')) { imgUrl = imgUrl.replace(/[\r\n\s]+/g, ''); }
 
             card.innerHTML = `
                 <img src="${imgUrl}" alt="Route Image" style="width: 100%; height: 160px; object-fit: cover; display: block;">

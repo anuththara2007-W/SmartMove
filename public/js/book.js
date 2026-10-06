@@ -52,7 +52,8 @@ async function loadVehiclesForSelection() {
             const capacity = Array.isArray(v) ? v[3] : (v.CAPACITY || v.capacity);
 
             const matchedDoc = images.find(doc => doc.vehicleID == id);
-            const imgUrl = (matchedDoc && matchedDoc.imageUrls && matchedDoc.imageUrls.length > 0) ? matchedDoc.imageUrls[0] : null;
+            let imgUrl = (matchedDoc && matchedDoc.imageUrls && matchedDoc.imageUrls.length > 0) ? matchedDoc.imageUrls[0] : null;
+            if (imgUrl && imgUrl.startsWith('data:image')) { imgUrl = imgUrl.replace(/[\r\n\s]+/g, ''); }
             const imgHtml = imgUrl ? `<img src="${imgUrl}" alt="Vehicle" style="width: 100%; height: 180px; object-fit: cover; display: block;">` : '';
 
             const card = document.createElement('div');
