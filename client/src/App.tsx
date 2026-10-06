@@ -1,13 +1,20 @@
+/**
+ * File: App.tsx
+ * Purpose: This file serves as the main entry point for the React application's routing.
+ * It defines the different pages (Passenger View, Admin Dashboard, Reports) and links them to specific URLs.
+ * Why it exists: To enable navigation between different views without reloading the page.
+ * Technologies used: React, React Router DOM.
+ */
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import PassengerView from './pages/PassengerView';
 import AdminDashboard from './pages/AdminDashboard';
 import ReportsView from './pages/ReportsView';
 
-function App() {
+function ApplicationRouter() {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<PassengerView />} />
@@ -15,8 +22,8 @@ function App() {
           <Route path="reports" element={<ReportsView />} />
         </Route>
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 
-export default App;
+export default ApplicationRouter;

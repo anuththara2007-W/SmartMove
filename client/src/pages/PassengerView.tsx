@@ -1,31 +1,42 @@
+/**
+ * File: PassengerView.tsx
+ * Purpose: Provides the interface for passengers to view available routes, book tickets, and leave reviews.
+ * What it has: A list of travel routes with booking options, and a review submission form.
+ * Why it exists: To serve as the primary portal for user (passenger) interactions.
+ * Technologies used: React, Material UI (MUI), Axios for sending requests.
+ */
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, Button, TextField, Box, Rating, Grid, Alert } from '@mui/material';
 import axios from 'axios';
 
-const PassengerView = () => {
-  const [routes, setRoutes] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [feedback, setFeedback] = useState('');
-  const [rating, setRating] = useState<number | null>(3);
-  const [submitStatus, setSubmitStatus] = useState<string | null>(null);
+function PassengerView() {
+  const [availableRoutes, setAvailableRoutes] = useState<any[]>([]);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [passengerFeedback, setPassengerFeedback] = useState('');
+  const [starRating, setStarRating] = useState<number | null>(3);
+  const [submissionMessage, setSubmissionMessage] = useState<string | null>(null);
 
+  // Load routes when the component mounts
   useEffect(() => {
-    fetchRoutes();
+    loadAvailableRoutes();
   }, []);
 
-  const fetchRoutes = async () => {
+  async function loadAvailableRoutes() {
     try {
-      // Mocking fetch as backend might not have Oracle DB running
-      // const response = await axios.get('http://localhost:3000/api/routes');
-      // setRoutes(response.data);
-      setRoutes([{ id: 1, name: 'Campus to City Center' }, { id: 2, name: 'City Center to Tech Park' }]);
-    } catch (err) {
-      console.error(err);
+      // Mocking route data for display purposes
+      const mockRoutes = [
+        { id: 1, name: 'Campus to City Center' },
+        { id: 2, name: 'City Center to Tech Park' }
+      ];
+      setAvailableRoutes(mockRoutes);
+    } catch (error) {
+      console.error('Error fetching routes:', error);
     }
-  };
+  }
 
-  const handleBookTicket = async (routeId: number) => {
+  async function handleBookTicket(routeId: number) {
     try {
+      // Send a request to book a ticket
       await axios.post('http://localhost:3000/api/tickets', {
         passengerID: 101, // Mock user ID
         routeID: routeId,
@@ -33,32 +44,36 @@ const PassengerView = () => {
         paymentMethod: 'Credit Card'
       });
       alert('Ticket Booked Successfully!');
-    } catch (err) {
-      console.error(err);
-      alert('Failed to book ticket');
+    } catch (error) {
+      console.error('Error booking ticket:', error);
+      alert('Failed to book ticket. Please try again.');
     }
-  };
+  }
 
-  const handleSubmitReview = async () => {
-    setLoading(true);
+  async function handleSubmitReview() {
+    setIsSubmittingReview(true);
+    setSubmissionMessage(null);
+    
     try {
+      // Send review data to the server
       await axios.post('http://localhost:3000/api/reviews', {
         passengerID: 101,
         routeID: 1,
         driverID: 201,
-        rating: rating,
-        feedback: feedback
+        rating: starRating,
+        feedback: passengerFeedback
       });
-      setSubmitStatus('Review submitted successfully!');
-      setFeedback('');
-      setRating(3);
-    } catch (err) {
-      console.error(err);
-      setSubmitStatus('Failed to submit review.');
+      
+      setSubmissionMessage('Thank you! Your review was submitted successfully.');
+      setPassengerFeedback(''); // Clear the form
+      setStarRating(3); // Reset rating
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      setSubmissionMessage('We encountered a problem submitting your review.');
     } finally {
-      setLoading(false);
+      setIsSubmittingReview(false);
     }
-  };
+  }
 
   return (
     <Box>
@@ -67,9 +82,10 @@ const PassengerView = () => {
       </Typography>
 
       <Grid container spacing={4}>
+        {/* Routes Section */}
         <Grid item xs={12} md={6}>
           <Typography variant="h5" sx={{ mb: 2 }}>Available Routes</Typography>
-          {routes.map((route) => (
+          {availableRoutes.map((route) => (
             <Card key={route.id} sx={{ mb: 2, boxShadow: 3, borderRadius: 2 }}>
               <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Typography variant="h6">{route.name}</Typography>
@@ -81,38 +97,48 @@ const PassengerView = () => {
           ))}
         </Grid>
 
+        {/* Review Section */}
         <Grid item xs={12} md={6}>
           <Card sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
             <CardContent>
               <Typography variant="h5" sx={{ mb: 2 }}>Leave a Review</Typography>
-              {submitStatus && <Alert severity={submitStatus.includes('success') ? 'success' : 'error'} sx={{ mb: 2 }}>{submitStatus}</Alert>}
+              
+              {/* Show success or error message if it exists */}
+              {submissionMessage && (
+                <Alert severity={submissionMessage.includes('success') ? 'success' : 'error'} sx={{ mb: 2 }}>
+                  {submissionMessage}
+                </Alert>
+              )}
+              
               <Box sx={{ mb: 2 }}>
                 <Typography component="legend">Rating</Typography>
                 <Rating
-                  name="simple-controlled"
-                  value={rating}
-                  onChange={(event, newValue) => {
-                    setRating(newValue);
+                  name="user-rating"
+                  value={starRating}
+                  onChange={(event, newRating) => {
+                    setStarRating(newRating);
                   }}
                 />
               </Box>
+              
               <TextField
                 fullWidth
                 multiline
                 rows={4}
                 label="Your Feedback"
-                value={feedback}
-                onChange={(e) => setFeedback(e.target.value)}
+                value={passengerFeedback}
+                onChange={(event) => setPassengerFeedback(event.target.value)}
                 sx={{ mb: 2 }}
               />
+              
               <Button 
                 variant="contained" 
                 color="secondary" 
                 onClick={handleSubmitReview}
-                disabled={loading || !feedback}
+                disabled={isSubmittingReview || passengerFeedback.trim() === ''}
                 fullWidth
               >
-                {loading ? 'Submitting...' : 'Submit Review'}
+                {isSubmittingReview ? 'Submitting Please Wait...' : 'Submit Review'}
               </Button>
             </CardContent>
           </Card>
@@ -120,6 +146,6 @@ const PassengerView = () => {
       </Grid>
     </Box>
   );
-};
+}
 
 export default PassengerView;
