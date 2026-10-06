@@ -48,6 +48,7 @@ router.get('/reviews/search', mongoController.searchReviews);
 router.get('/announcements', mongoController.getAnnouncements);
 router.post('/announcements', mongoController.postAnnouncement);
 router.get('/vehicles/documents', mongoController.getVehicleDocuments);
+router.post('/vehicles/documents', mongoController.postVehicleDocument);
 router.get('/images', mongoController.getImages);
 router.post('/images', mongoController.addImage);
 router.delete('/images/:id', mongoController.deleteImage);

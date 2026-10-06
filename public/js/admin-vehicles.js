@@ -2,7 +2,60 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!SmartMoveUtils.setupAdminAuth()) return;
 
     fetchFleetData();
+
+    const form = document.getElementById('addVehicleForm');
+    if (form) {
+        form.addEventListener('submit', handleAddVehicle);
+    }
 });
+
+async function handleAddVehicle(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    
+    const registrationNumber = document.getElementById('vehRegNum').value;
+    const model = document.getElementById('vehModel').value;
+    const capacity = document.getElementById('vehCapacity').value;
+    const imageUrl = document.getElementById('vehImageUrl').value;
+    
+    if (!registrationNumber || !model || !capacity) return;
+    
+    try {
+        btn.disabled = true;
+        btn.textContent = 'Adding...';
+        
+        // 1. Create in Oracle
+        const oracleRes = await fetch('/api/vehicles', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ registrationNumber, model, capacity: parseInt(capacity) })
+        });
+        
+        if (!oracleRes.ok) throw new Error('Failed to create vehicle in Oracle');
+        const oracleData = await oracleRes.json();
+        const vehicleId = oracleData.vehicleId;
+        
+        // 2. Add Document to MongoDB (even if no imageUrl, so it appears in the list)
+        const mongoRes = await fetch('/api/vehicles/documents', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ vehicleID: vehicleId, imageUrl })
+        });
+        
+        if (!mongoRes.ok) throw new Error('Failed to add document to MongoDB');
+        
+        SmartMoveUtils.showToast(`Vehicle #${vehicleId} added successfully!`, 'success');
+        e.target.reset();
+        fetchFleetData();
+        
+    } catch (error) {
+        console.error('Add Vehicle Error:', error);
+        SmartMoveUtils.showToast(error.message || 'Failed to add vehicle', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Add Vehicle';
+    }
+}
 
 async function fetchFleetData() {
     const grid = document.getElementById('fleetGrid');
