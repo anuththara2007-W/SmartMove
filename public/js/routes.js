@@ -53,7 +53,7 @@ function renderRoutes(gridElement, routesList) {
             <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Route ID: <strong>${routeId}</strong></p>
             <p style="margin-bottom: 2rem; font-size: 0.9rem; color: var(--text-secondary);">Distance: ${distance}</p>
             <div>
-                <a href="system-portal/book.html?routeId=${routeId}" class="btn-primary" style="text-decoration: none; display: inline-block;">Book This Route</a>
+                <a href="book.html?routeId=${routeId}" class="btn-primary" style="text-decoration: none; display: inline-block;">Book This Route</a>
             </div>
         `;
         
