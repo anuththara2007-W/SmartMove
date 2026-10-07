@@ -45,3 +45,36 @@
         gap: 4rem;
         align-items: start;
     ">
+            <!-- Submit Booking -->
+            <div class="gsap-fade-right">
+
+                <h1 class="section-title">
+                    Book Your Journey
+                </h1>
+
+                <p style="margin-bottom: 2rem; color: var(--text-secondary);">
+                    Select your route and book your ticket instantly.
+                </p>
+
+                <div class="glass-panel" style="padding: 3rem;">
+
+                    <form id="bookingForm" novalidate>
+
+                        <!-- Passenger Details -->
+                        <div class="form-group">
+
+                            <label>Passenger Details</label>
+
+                            <input type="text" id="firstName" class="form-control" placeholder="First Name" required
+                                style="margin-bottom: 0.5rem;" oninput="validateForm()">
+
+                            <input type="text" id="lastName" class="form-control" placeholder="Last Name" required
+                                style="margin-bottom: 0.5rem;" oninput="validateForm()">
+
+                            <input type="email" id="email" class="form-control" placeholder="Email Address" required
+                                style="margin-bottom: 0.5rem;" oninput="validateForm()">
+
+                            <input type="text" id="phone" class="form-control" placeholder="Phone Number" required
+                                oninput="validateForm()">
+
+                        </div>
