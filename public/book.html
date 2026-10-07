@@ -277,3 +277,44 @@
                     </div>
 
                 </div>
+            </div>
+
+        </div>
+        <!-- Full Width Vehicle Selection & Submit -->
+
+        <div class="gsap-fade-up" style="margin-top: 4rem;">
+
+            <h2 style="
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    ">
+                Select Your Vehicle
+            </h2>
+
+            <div id="vehicleSelectionGrid" style="
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        ">
+
+                <div style="
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            grid-column: span 4;
+        ">
+                    Loading available vehicles...
+                </div>
+
+            </div>
+
+            <input type="hidden" id="selectedVehicleId">
+
+            <p id="vehicleErrorMsg" style="
+            color: var(--error-color);
+            font-size: 0.85rem;
+            display: none;
+            margin-bottom: 1rem;
+        ">
+                Please select a vehicle to continue.
+            </p>
