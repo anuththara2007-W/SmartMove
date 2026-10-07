@@ -102,7 +102,7 @@ async function fetchRoutesPreview() {
                 <div style="padding: 1.5rem;">
                     <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">${routeName}</h3>
                     <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Route ID: #${routeId} &bull; ${route.DISTANCEKM ? route.DISTANCEKM + ' km' : ''}</p>
-                    <a href="system-portal/book.html?routeId=${routeId}" style="color: var(--primary-accent); font-weight: 600; text-decoration: none;">Book Ticket &rarr;</a>
+                    <a href="book.html?routeId=${routeId}" style="color: var(--primary-accent); font-weight: 600; text-decoration: none;">Book Ticket &rarr;</a>
                 </div>
             `;
             
