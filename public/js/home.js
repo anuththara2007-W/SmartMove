@@ -75,21 +75,17 @@ async function fetchRoutesPreview() {
             console.error('Failed to fetch MongoDB route images');
         }
         
-        // Filter routes to only those that have an image in MongoDB
-        const routesWithImages = routes.filter(r => {
-            const id = r.ROUTEID || r.routeId;
-            return routeImages.some(img => img.resourceId == id);
-        });
-        
-        if (!routesWithImages || routesWithImages.length === 0) {
-            SmartMoveUtils.renderEmptyState(container, 'No preview routes available', 'Please add route images from the Admin Panel to feature them here.');
+        if (!routes || routes.length === 0) {
+            SmartMoveUtils.renderEmptyState(container, 'No routes available', 'Please add routes from the Admin Panel to display them here.');
             return;
         }
 
         container.innerHTML = '';
         
+        const fallbackImage = 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&q=80';
+
         // Take top 5 featured routes
-        routesWithImages.slice(0, 5).forEach((route) => {
+        routes.slice(0, 5).forEach((route) => {
             const card = document.createElement('div');
             card.className = 'route-mini-card route-card-anim';
             card.style.padding = '0';
@@ -99,14 +95,14 @@ async function fetchRoutesPreview() {
             const routeId = route.ROUTEID || route.routeId || 'N/A';
             
             const matchedImg = routeImages.find(img => img.resourceId == routeId);
-            const imgUrl = matchedImg.imageUrl;
+            const imgUrl = matchedImg ? matchedImg.imageUrl : fallbackImage;
 
             card.innerHTML = `
-                <img src="${imgUrl}" alt="Route Image" style="width: 100%; height: 160px; object-fit: cover; display: block;">
+                <img src="${imgUrl}" alt="${routeName}" style="width: 100%; height: 160px; object-fit: cover; display: block;" onerror="this.src='${fallbackImage}'">
                 <div style="padding: 1.5rem;">
                     <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">${routeName}</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Route ID: ${routeId}</p>
-                    <a href="book.html?routeId=${routeId}" style="color: var(--primary-accent); font-weight: 600; text-decoration: none;">Book Ticket &rarr;</a>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Route ID: #${routeId} &bull; ${route.DISTANCEKM ? route.DISTANCEKM + ' km' : ''}</p>
+                    <a href="system-portal/book.html?routeId=${routeId}" style="color: var(--primary-accent); font-weight: 600; text-decoration: none;">Book Ticket &rarr;</a>
                 </div>
             `;
             
