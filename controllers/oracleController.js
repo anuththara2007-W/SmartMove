@@ -49,11 +49,17 @@ const deleteRoute = deleteRecord('Routes', 'RouteID', 'Failed to delete route');
 const createRoute = async (req, res) => {
     await withConnection(req, res, async (conn) => {
         const { startLocation, endLocation, distanceKm, estimatedDuration } = req.body;
-        await executeQuery(conn, 
-            `INSERT INTO Routes (StartLocation, EndLocation, DistanceKm, EstimatedDuration) VALUES (:startLocation, :endLocation, :distanceKm, :estimatedDuration)`,
-            { startLocation, endLocation, distanceKm, estimatedDuration }, true
+        const result = await executeQuery(conn, 
+            `INSERT INTO Routes (StartLocation, EndLocation, DistanceKm, EstimatedDuration) VALUES (:startLocation, :endLocation, :distanceKm, :estimatedDuration) RETURNING RouteID INTO :outId`,
+            { 
+                startLocation, 
+                endLocation, 
+                distanceKm: distanceKm || 10, 
+                estimatedDuration: estimatedDuration || 30,
+                outId: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+            }, true
         );
-        res.status(201).json({ message: 'Route created successfully' });
+        res.status(201).json({ message: 'Route created successfully', routeId: result.outBinds.outId[0] });
     }, 'Failed to create route');
 };
 
@@ -78,11 +84,21 @@ const bookTicket = async (req, res) => {
         // Auto-assign trip if missing
         if (!tripID && routeID) {
             const tripRes = await executeQuery(conn, `SELECT TripID, NVL(BaseFare, 15) AS BASEFARE FROM (SELECT TripID, BaseFare FROM Trips WHERE RouteID = :routeID ORDER BY TripID DESC) WHERE ROWNUM = 1`, { routeID });
-            if (tripRes.rows.length > 0) {
-                tripID = tripRes.rows[0].TRIPID;
-                fare = tripRes.rows[0].BASEFARE || fare;
+            if (tripRes.rows && tripRes.rows.length > 0) {
+                tripID = tripRes.rows[0].TRIPID || tripRes.rows[0].tripId;
+                fare = tripRes.rows[0].BASEFARE || tripRes.rows[0].baseFare || fare;
             } else {
-                tripID = routeID;
+                const vdRes = await executeQuery(conn, `SELECT (SELECT MIN(VehicleID) FROM Vehicles) AS VID, (SELECT MIN(DriverID) FROM Drivers) AS DID FROM DUAL`);
+                const vid = vdRes.rows[0].VID || vdRes.rows[0].vid || 1;
+                const did = vdRes.rows[0].DID || vdRes.rows[0].did || 1;
+                
+                const newTripRes = await conn.execute(`
+                    INSERT INTO Trips (RouteID, VehicleID, DriverID, DepartureDateTime, ArrivalDateTime, TripStatus, BaseFare)
+                    VALUES (:routeID, :vid, :did, SYSDATE + 1, SYSDATE + 2, 'Scheduled', 15)
+                    RETURNING TripID INTO :outTripID
+                `, { routeID, vid, did, outTripID: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT } }, { autoCommit: false });
+                
+                tripID = newTripRes.outBinds.outTripID[0];
             }
         } else if (tripID) {
             const fareRes = await executeQuery(conn, `SELECT NVL(BaseFare, 15) AS BASEFARE FROM Trips WHERE TripID = :tripID`, { tripID });
@@ -217,8 +233,26 @@ const deletePassenger = deleteRecord('Passengers', 'PassengerID', 'Failed to del
 const createPassenger = async (req, res) => {
     await withConnection(req, res, async (conn) => {
         const { firstName, lastName, email, phone } = req.body;
-        await executeQuery(conn, `INSERT INTO Passengers (FirstName, LastName, Email, Phone, RegisteredDate) VALUES (:firstName, :lastName, :email, :phone, SYSDATE)`, { firstName, lastName, email, phone }, true);
-        res.status(201).json({ message: 'Passenger created successfully' });
+        
+        const check = await executeQuery(conn, `SELECT PassengerID FROM Passengers WHERE Email = :email`, { email: email || '' });
+        if (check.rows && check.rows.length > 0) {
+            return res.status(200).json({ 
+                message: 'Passenger already exists', 
+                passengerId: check.rows[0].PASSENGERID || check.rows[0].passengerId 
+            });
+        }
+        
+        const result = await executeQuery(conn, 
+            `INSERT INTO Passengers (FirstName, LastName, Email, Phone, RegisteredDate) VALUES (:firstName, :lastName, :email, :phone, SYSDATE) RETURNING PassengerID INTO :outId`, 
+            { 
+                firstName, 
+                lastName, 
+                email: email || '', 
+                phone: phone || '',
+                outId: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+            }, true
+        );
+        res.status(201).json({ message: 'Passenger created successfully', passengerId: result.outBinds.outId[0] });
     }, 'Failed to create passenger');
 };
 
@@ -304,6 +338,48 @@ const updateTrip = async (req, res) => {
     }, 'Failed to update trip');
 };
 
+const createVehicle = async (req, res) => {
+    await withConnection(req, res, async (conn) => {
+        const { registrationNumber, capacity, model } = req.body;
+        
+        const result = await conn.execute(`
+            INSERT INTO Vehicles (RegNumber, Capacity, VehicleType, Status) 
+            VALUES (:registrationNumber, :capacity, :model, 'Active')
+            RETURNING VehicleID INTO :outVehicleID
+        `, { 
+            registrationNumber, capacity, model,
+            outVehicleID: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+        }, { autoCommit: true });
+        
+        const vehicleId = result.outBinds.outVehicleID[0];
+        res.status(201).json({ message: 'Vehicle created successfully', vehicleId });
+    }, 'Failed to create vehicle');
+};
+
+const updateVehicle = async (req, res) => {
+    await withConnection(req, res, async (conn) => {
+        const { id } = req.params;
+        const { registrationNumber, capacity, model, status } = req.body;
+        
+        await conn.execute(`
+            UPDATE Vehicles SET RegNumber = :registrationNumber, Capacity = :capacity, VehicleType = :model, Status = :status 
+            WHERE VehicleID = :id
+        `, { registrationNumber, capacity, model, status, id }, { autoCommit: true });
+        
+        res.json({ message: 'Vehicle updated successfully' });
+    }, 'Failed to update vehicle');
+};
+
+const deleteVehicle = async (req, res) => {
+    await withConnection(req, res, async (conn) => {
+        const { id } = req.params;
+        
+        await conn.execute(`DELETE FROM Vehicles WHERE VehicleID = :id`, { id }, { autoCommit: true });
+        
+        res.json({ message: 'Vehicle deleted successfully' });
+    }, 'Failed to delete vehicle');
+};
+
 module.exports = {
     getRoutes, createRoute, updateRoute, deleteRoute,
     bookTicket, getTickets, updateTicketStatus,
@@ -311,5 +387,5 @@ module.exports = {
     getPayments, createPayment, updatePayment, deletePayment,
     getDrivers, createDriver, updateDriver, deleteDriver,
     getPassengers, createPassenger, updatePassenger, deletePassenger,
-    getVehicles, getTrips, createTrip, updateTrip, deleteTrip
+    getVehicles, createVehicle, updateVehicle, deleteVehicle, getTrips, createTrip, updateTrip, deleteTrip
 };

@@ -254,10 +254,7 @@ body {
 }
 
 /* Admin Nav Dropdown Styles */
-.nav-dropdown {
-  position: relative;
-  display: inline-block;
-}
+.nav-dropdown { position: relative; display: inline-block; padding-bottom: 20px; }
 
 .nav-dropdown-btn {
   cursor: pointer;
@@ -285,7 +282,7 @@ body {
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--border-color);
-  margin-top: 10px;
+  
 }
 
 .nav-dropdown-content a {
@@ -594,10 +591,7 @@ footer {
 }
 
 /* Dropdown Styles */
-.nav-dropdown {
-    position: relative;
-    display: inline-block;
-}
+.nav-dropdown { position: relative; display: inline-block; padding-bottom: 20px; }
 .nav-dropdown-btn {
     display: flex;
     align-items: center;
@@ -615,7 +609,7 @@ footer {
     position: absolute;
     top: 100%;
     left: 50%;
-    transform: translateX(-50%) translateY(10px);
+    transform: translateX(-50%) translateY(0px);
     background-color: #ffffff;
     min-width: 160px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -629,7 +623,7 @@ footer {
 .nav-dropdown:hover .nav-dropdown-content {
     display: block;
     opacity: 1;
-    transform: translateX(-50%) translateY(4px);
+    transform: translateX(-50%) translateY(0px);
 }
 .nav-dropdown-content a {
     display: block;
@@ -651,4 +645,33 @@ footer {
 }
 .nav-icon:hover {
     opacity: 0.7;
+}. n a v - d r o p d o w n - c o n t e n t : : b e f o r e 
+ 
+   > >   p u b l i c \ g l o b a l . c s s 
+ 
+ e c h o           c o n t e n t :   ' ' ;   > >   p u b l i c \ g l o b a l . c s s 
+ 
+ e c h o           p o s i t i o n :   a b s o l u t e ;   > >   p u b l i c \ g l o b a l . c s s 
+ 
+ e c h o           t o p :   - 2 0 p x ;   > >   p u b l i c \ g l o b a l . c s s 
+ 
+ e c h o           l e f t :   0 ;   > >   p u b l i c \ g l o b a l . c s s 
+ 
+ e c h o           w i d t h :   1 0 0 % % ;   > >   p u b l i c \ g l o b a l . c s s 
+ 
+ e c h o           h e i g h t :   2 0 p x ;   > >   p u b l i c \ g l o b a l . c s s 
+ 
+ e c h o           b a c k g r o u n d :   t r a n s p a r e n t ;   > >   p u b l i c \ g l o b a l . c s s 
+ 
+ e c h o   
+ 
+ 
+.nav-dropdown-content::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: transparent;
 }

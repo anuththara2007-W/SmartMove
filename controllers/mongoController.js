@@ -98,6 +98,25 @@ const getVehicleDocuments = async (req, res) => {
     }
 };
 
+const postVehicleDocument = async (req, res) => {
+    try {
+        const { vehicleID, imageUrl } = req.body;
+        let doc = await VehicleDocument.findOne({ vehicleID });
+        
+        if (!doc) {
+            doc = new VehicleDocument({ vehicleID, imageUrls: [], pdfDocumentPaths: [] });
+        }
+        if (imageUrl) {
+            doc.imageUrls.push(imageUrl);
+        }
+        await doc.save();
+        res.status(201).json({ message: 'Document added successfully', doc });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to add vehicle document' });
+    }
+};
+
 // POST /api/announcements
 const postAnnouncement = async (req, res) => {
     try {
@@ -163,6 +182,7 @@ module.exports = {
     searchReviews,
     getAnnouncements,
     getVehicleDocuments,
+    postVehicleDocument,
     postAnnouncement,
     getImages,
     addImage,

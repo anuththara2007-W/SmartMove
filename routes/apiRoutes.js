@@ -32,6 +32,9 @@ router.put('/passengers/:id', oracleController.updatePassenger);
 router.delete('/passengers/:id', oracleController.deletePassenger);
 
 router.get('/vehicles', oracleController.getVehicles);
+router.post('/vehicles', oracleController.createVehicle);
+router.put('/vehicles/:id', oracleController.updateVehicle);
+router.delete('/vehicles/:id', oracleController.deleteVehicle);
 
 router.get('/trips', oracleController.getTrips);
 router.post('/trips', oracleController.createTrip);
@@ -47,6 +50,7 @@ router.get('/reviews/search', mongoController.searchReviews);
 router.get('/announcements', mongoController.getAnnouncements);
 router.post('/announcements', mongoController.postAnnouncement);
 router.get('/vehicles/documents', mongoController.getVehicleDocuments);
+router.post('/vehicles/documents', mongoController.postVehicleDocument);
 router.get('/images', mongoController.getImages);
 router.post('/images', mongoController.addImage);
 router.delete('/images/:id', mongoController.deleteImage);

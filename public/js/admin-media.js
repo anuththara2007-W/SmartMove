@@ -4,7 +4,48 @@ document.addEventListener('DOMContentLoaded', () => {
     loadImages();
 
     document.getElementById('imageForm').addEventListener('submit', handleImageSubmit);
+    
+    // Listen for Resource Type changes
+    document.getElementById('resourceType').addEventListener('change', handleResourceTypeChange);
 });
+
+async function handleResourceTypeChange(e) {
+    const type = e.target.value;
+    const idSelect = document.getElementById('resourceId');
+    idSelect.innerHTML = '<option value="">Loading...</option>';
+    idSelect.disabled = true;
+
+    if (!type) {
+        idSelect.innerHTML = '<option value="">Please select Resource Type first...</option>';
+        return;
+    }
+
+    try {
+        let endpoint = type === 'route' ? '/api/routes' : '/api/vehicles';
+        const response = await fetch(endpoint);
+        if (!response.ok) throw new Error('Failed to fetch resources');
+        const data = await response.json();
+        
+        idSelect.innerHTML = '<option value="">Select Resource...</option>';
+        
+        data.forEach(item => {
+            if (type === 'route') {
+                const id = Array.isArray(item) ? item[0] : (item.ROUTEID || item.routeId);
+                const name = Array.isArray(item) ? `${item[1]} to ${item[2]}` : `${item.STARTLOCATION || ''} to ${item.ENDLOCATION || ''}`;
+                idSelect.innerHTML += `<option value="${id}">Route #${id} - ${name}</option>`;
+            } else {
+                const id = Array.isArray(item) ? item[0] : (item.VEHICLEID || item.vehicleId);
+                const reg = Array.isArray(item) ? item[1] : (item.REGNUMBER || item.regNumber);
+                const vtype = Array.isArray(item) ? item[2] : (item.VEHICLETYPE || item.vehicleType);
+                idSelect.innerHTML += `<option value="${id}">Vehicle #${id} - ${reg} (${vtype})</option>`;
+            }
+        });
+        idSelect.disabled = false;
+    } catch(err) {
+        console.error(err);
+        idSelect.innerHTML = '<option value="">Error loading resources</option>';
+    }
+}
 
 async function loadImages() {
     const grid = document.getElementById('imagesGrid');
