@@ -96,6 +96,7 @@ async function fetchRoutesPreview() {
             
             // Simpler logic for finding the image URL to handle fallbacks and data URIs
             let imgUrl = fallbackImage;
+            const matchedImg = routeImages.find(img => img.referenceId === String(routeId) || img.referenceId === Number(routeId));
             if (matchedImg && matchedImg.imageUrl) {
                 imgUrl = matchedImg.imageUrl;
                 if (imgUrl.startsWith('data:image')) {
