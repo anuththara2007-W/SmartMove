@@ -82,7 +82,7 @@
 </head>
 <body>
     <header class="standard-header">
-        <div class="logo">SmartMove <span style="font-size: 0.8rem; background: var(--primary-accent); color: white; padding: 2px 8px; border-radius: 8px; vertical-align: middle; margin-left: 0.5rem; font-weight: 700;">System Portal</span></div>
+        <a href="index.html" class="logo" style="text-decoration: none; color: inherit;">SmartMove <span style="font-size: 0.8rem; background: var(--primary-accent); color: white; padding: 2px 8px; border-radius: 8px; vertical-align: middle; margin-left: 0.5rem; font-weight: 700;">System Portal</span></a>
                 <nav class="standard-nav">
             <a href="index.html" class="nav-icon" title="Dashboard">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -227,6 +227,13 @@
                                 <option value="Completed">Completed</option>
                                 <option value="Cancelled">Cancelled</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div id="bookedPassengersContainer" style="display: none; margin-bottom: 1.5rem;">
+                        <h4 style="margin-bottom: 0.5rem; color: var(--text-main); font-size: 0.95rem;">Booked Passengers</h4>
+                        <div id="bookedPassengersList" style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; max-height: 150px; overflow-y: auto; font-size: 0.9rem;">
+                            <!-- Passenger details injected here -->
                         </div>
                     </div>
 

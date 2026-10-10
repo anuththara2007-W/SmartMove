@@ -254,7 +254,7 @@ body {
 }
 
 /* Admin Nav Dropdown Styles */
-.nav-dropdown { position: relative; display: inline-block; padding-bottom: 20px; }
+.nav-dropdown { position: relative; display: flex; align-items: center; padding: 0; height: 100%; }
 
 .nav-dropdown-btn {
   cursor: pointer;

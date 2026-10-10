@@ -26,16 +26,20 @@ let allDrivers = [];
 let currentSelectorType = null;
 let currentTripIdToDelete = null;
 
+let allTickets = [];
+
 async function fetchForeignData() {
     try {
-        const [routesRes, vehiclesRes, driversRes] = await Promise.all([
+        const [routesRes, vehiclesRes, driversRes, ticketsRes] = await Promise.all([
             fetch('/api/routes').then(r => r.json()),
             fetch('/api/vehicles').then(r => r.json()),
-            fetch('/api/drivers').then(r => r.json())
+            fetch('/api/drivers').then(r => r.json()),
+            fetch('/api/tickets').then(r => r.json())
         ]);
         allRoutes = routesRes || [];
         allVehicles = vehiclesRes || [];
         allDrivers = driversRes || [];
+        allTickets = ticketsRes || [];
     } catch (err) {
         console.error("Failed to load lookup data", err);
     }
@@ -105,6 +109,10 @@ window.openTripForm = function() {
     document.getElementById('tripForm').reset();
     document.getElementById('tripId').value = '';
     
+    // Hide passengers section
+    const pc = document.getElementById('bookedPassengersContainer');
+    if(pc) pc.style.display = 'none';
+    
     // Reset selectors
     document.getElementById('routeId').value = '';
     document.getElementById('display-route').textContent = 'Select a Route...';
@@ -143,6 +151,31 @@ window.editTrip = function(id) {
     document.getElementById('baseFare').value = trip.BASEFARE !== undefined ? trip.BASEFARE : '15.00';
     document.getElementById('tripStatus').value = trip.TRIPSTATUS;
     
+    // Show Booked Passengers
+    const passengersContainer = document.getElementById('bookedPassengersContainer');
+    const passengersList = document.getElementById('bookedPassengersList');
+    
+    const tripTickets = allTickets.filter(tk => {
+        const tTripId = tk.TRIPID || tk.tripId || tk.TripID;
+        return tTripId == id;
+    });
+
+    if (tripTickets.length > 0) {
+        passengersContainer.style.display = 'block';
+        passengersList.innerHTML = tripTickets.map(tk => {
+            const fname = tk.FIRSTNAME || tk.firstName || tk.FirstName || '';
+            const lname = tk.LASTNAME || tk.lastName || tk.LastName || '';
+            const status = tk.TICKETSTATUS || tk.ticketStatus || tk.TicketStatus || '';
+            const seat = tk.SEATNUMBER || tk.seatNumber || tk.SeatNumber || 'N/A';
+            return `<div style="padding: 4px 0; border-bottom: 1px solid #eee;">
+                <strong>${fname} ${lname}</strong> (Seat: ${seat}) - <span style="color:var(--primary-accent);">${status}</span>
+            </div>`;
+        }).join('');
+    } else {
+        passengersContainer.style.display = 'block';
+        passengersList.innerHTML = '<div style="color: var(--text-secondary);">No passengers booked yet.</div>';
+    }
+
     SmartMoveUtils.openModal('tripModal');
 }
 
