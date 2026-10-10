@@ -83,7 +83,7 @@ function PassengerView() {
 
       <Grid container spacing={4}>
         {/* Routes Section */}
-        <Grid xs={12} md={6}>
+        <Grid item xs={12} md={6}>
           <Typography variant="h5" sx={{ mb: 2 }}>Available Routes</Typography>
           {availableRoutes.map((route) => (
             <Card key={route.id} sx={{ mb: 2, boxShadow: 3, borderRadius: 2 }}>
@@ -98,7 +98,7 @@ function PassengerView() {
         </Grid>
 
         {/* Review Section */}
-        <Grid xs={12} md={6}>
+        <Grid item xs={12} md={6}>
           <Card sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
             <CardContent>
               <Typography variant="h5" sx={{ mb: 2 }}>Leave a Review</Typography>

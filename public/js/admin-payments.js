@@ -56,18 +56,23 @@ function renderDashboard(tickets) {
     }
 
     tbody.innerHTML = tickets.map(t => {
-        let statusClass = 'status-booked'; // default
-        if (t.TICKETSTATUS === 'Pending') statusClass = 'status-pending';
-        if (t.TICKETSTATUS === 'Cancelled' || t.TICKETSTATUS === 'Refunded') statusClass = 'status-cancelled';
+        const id = t.TICKETID || t.ticketId || t.TicketID;
+        const fname = t.FIRSTNAME || t.firstName || t.FirstName || '';
+        const lname = t.LASTNAME || t.lastName || t.LastName || '';
+        const startLoc = t.STARTLOCATION || t.startLocation || '';
+        const endLoc = t.ENDLOCATION || t.endLocation || '';
+        const fare = t.FAREAMOUNT || t.fareAmount || t.FareAmount || 0;
+        const status = t.TICKETSTATUS || t.ticketStatus || t.TicketStatus || 'Booked';
+        const date = t.DEPARTUREDATETIME || t.departureDateTime || '';
 
         return `
         <tr>
-            <td><strong>#${t.TICKETID}</strong></td>
-            <td>${SmartMoveUtils.escapeHtml(t.FIRSTNAME)} ${SmartMoveUtils.escapeHtml(t.LASTNAME)}</td>
-            <td><div style="font-size: 0.85rem; font-weight: 600;">${SmartMoveUtils.escapeHtml(t.STARTLOCATION)} &rarr; ${SmartMoveUtils.escapeHtml(t.ENDLOCATION)}</div></td>
-            <td>${SmartMoveUtils.formatDateTime(t.DEPARTUREDATETIME)}</td>
-            <td>${SmartMoveUtils.formatCurrency(t.FAREAMOUNT)}</td>
-            <td><span class="status-pill ${statusClass}">${t.TICKETSTATUS}</span></td>
+            <td><strong>#${id}</strong></td>
+            <td>${fname} ${lname}</td>
+            <td>${startLoc} -> ${endLoc}</td>
+            <td>${date}</td>
+            <td>${fare}</td>
+            <td><span>${status}</span></td>
         </tr>
     `}).join('');
 }

@@ -167,12 +167,21 @@ const getRevenue = async (req, res) => {
         const { startDate, endDate } = req.query;
         const result = await conn.execute(`
             DECLARE
-                v_total NUMBER;
+                CURSOR c_payments IS 
+                    SELECT Amount FROM Payments 
+                    WHERE PaymentStatus = 'Completed' 
+                      AND TRUNC(PaymentDate) BETWEEN TO_DATE(:startDate, 'YYYY-MM-DD') AND TO_DATE(:endDate, 'YYYY-MM-DD');
+                v_amt NUMBER;
+                v_total NUMBER := 0;
             BEGIN
-                SELECT NVL(SUM(Amount), 0) INTO v_total
-                FROM Payments
-                WHERE PaymentStatus = 'Completed'
-                  AND TRUNC(PaymentDate) BETWEEN TO_DATE(:startDate, 'YYYY-MM-DD') AND TO_DATE(:endDate, 'YYYY-MM-DD');
+                OPEN c_payments;
+                LOOP
+                    FETCH c_payments INTO v_amt;
+                    EXIT WHEN c_payments%NOTFOUND;
+                    v_total := v_total + NVL(v_amt, 0);
+                END LOOP;
+                CLOSE c_payments;
+                
                 :ret := v_total;
             EXCEPTION
                 WHEN OTHERS THEN

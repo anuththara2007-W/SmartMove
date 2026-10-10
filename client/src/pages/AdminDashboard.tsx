@@ -50,11 +50,11 @@ function AdminDashboard() {
 
       <Grid container spacing={4}>
         {/* Vehicles Section */}
-        <Grid xs={12} md={8}>
+        <Grid item xs={12} md={8}>
           <Typography variant="h5" sx={{ mb: 2 }}>Vehicle Fleet</Typography>
           <Grid container spacing={2}>
             {vehicleFleet.map((vehicle) => (
-              <Grid xs={12} sm={6} key={vehicle.vehicleID}>
+              <Grid item xs={12} sm={6} key={vehicle.vehicleID}>
                 <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
                   <Box
                     component="img"
@@ -75,7 +75,7 @@ function AdminDashboard() {
         </Grid>
 
         {/* Announcements Section */}
-        <Grid xs={12} md={4}>
+        <Grid item xs={12} md={4}>
           <Typography variant="h5" sx={{ mb: 2 }}>Announcements</Typography>
           <Paper sx={{ p: 0, boxShadow: 3, borderRadius: 2 }}>
             <List sx={{ width: '100%', bgcolor: 'background.paper', borderRadius: 2 }}>

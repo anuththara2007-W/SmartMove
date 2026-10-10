@@ -44,7 +44,7 @@ function ReportsView() {
 
       <Grid container spacing={4}>
         {/* Revenue Card Section */}
-        <Grid xs={12} md={4}>
+        <Grid item xs={12} md={4}>
           <Card sx={{ boxShadow: 3, borderRadius: 2, background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)', color: 'white' }}>
             <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 4 }}>
               <Box>
@@ -57,7 +57,7 @@ function ReportsView() {
         </Grid>
 
         {/* Popular Routes Table Section */}
-        <Grid xs={12} md={8}>
+        <Grid item xs={12} md={8}>
           <Typography variant="h5" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
             <Map style={{ marginRight: '8px' }} /> Frequent Routes
           </Typography>
