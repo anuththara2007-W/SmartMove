@@ -166,8 +166,17 @@ const getRevenue = async (req, res) => {
     await withConnection(req, res, async (conn) => {
         const { startDate, endDate } = req.query;
         const result = await conn.execute(`
+            DECLARE
+                v_total NUMBER;
             BEGIN
-                :ret := CalculateTotalRevenue(TO_DATE(:startDate, 'YYYY-MM-DD'), TO_DATE(:endDate, 'YYYY-MM-DD'));
+                SELECT NVL(SUM(Amount), 0) INTO v_total
+                FROM Payments
+                WHERE PaymentStatus = 'Completed'
+                  AND TRUNC(PaymentDate) BETWEEN TO_DATE(:startDate, 'YYYY-MM-DD') AND TO_DATE(:endDate, 'YYYY-MM-DD');
+                :ret := v_total;
+            EXCEPTION
+                WHEN OTHERS THEN
+                    :ret := 0;
             END;
         `, {
             startDate, endDate,
@@ -177,14 +186,70 @@ const getRevenue = async (req, res) => {
     }, 'Failed to calculate revenue');
 };
 
-const getFrequentRoutes = fetchAll(`
-    SELECT r.RouteID AS ROUTEID, (r.StartLocation || ' to ' || r.EndLocation) AS ROUTENAME, 
-           COUNT(DISTINCT t.TripID) AS TRIPCOUNT, r.DistanceKm AS DISTANCEKM, r.EstimatedDuration AS ESTIMATEDDURATION
-    FROM Routes r
-    LEFT JOIN Trips t ON r.RouteID = t.RouteID
-    GROUP BY r.RouteID, r.StartLocation, r.EndLocation, r.DistanceKm, r.EstimatedDuration
-    ORDER BY TRIPCOUNT DESC, r.RouteID ASC
-`, 'Failed to fetch frequent routes');
+const getFrequentRoutes = async (req, res) => {
+    await withConnection(req, res, async (conn) => {
+        const result = await conn.execute(
+            `BEGIN
+                OPEN :cursor FOR
+                    SELECT r.RouteID AS ROUTEID, (r.StartLocation || ' to ' || r.EndLocation) AS ROUTENAME, 
+                           COUNT(DISTINCT t.TripID) AS TRIPCOUNT, r.DistanceKm AS DISTANCEKM, r.EstimatedDuration AS ESTIMATEDDURATION
+                    FROM Routes r
+                    LEFT JOIN Trips t ON r.RouteID = t.RouteID
+                    GROUP BY r.RouteID, r.StartLocation, r.EndLocation, r.DistanceKm, r.EstimatedDuration
+                    ORDER BY TRIPCOUNT DESC, r.RouteID ASC;
+            EXCEPTION
+                WHEN OTHERS THEN RAISE;
+            END;`,
+            {
+                cursor: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT }
+            }
+        );
+        const resultSet = result.outBinds.cursor;
+        const rows = await resultSet.getRows();
+        await resultSet.close();
+        res.json(rows);
+    }, 'Failed to fetch frequent routes');
+};
+
+const getPassengerHistory = async (req, res) => {
+    await withConnection(req, res, async (conn) => {
+        const { passengerId } = req.params;
+        const result = await conn.execute(
+            `DECLARE
+                v_count NUMBER;
+             BEGIN
+                SELECT COUNT(*) INTO v_count FROM Passengers WHERE PassengerID = :passengerId;
+                IF v_count = 0 THEN
+                    RAISE_APPLICATION_ERROR(-20001, 'Passenger not found.');
+                END IF;
+
+                OPEN :cursor FOR
+                    SELECT t.TicketID, r.StartLocation, r.EndLocation, tr.DepartureDateTime, tr.ArrivalDateTime, t.FareAmount, t.TicketStatus
+                    FROM Tickets t
+                    JOIN Trips tr ON t.TripID = tr.TripID
+                    JOIN Routes r ON tr.RouteID = r.RouteID
+                    WHERE t.PassengerID = :passengerId
+                    ORDER BY tr.DepartureDateTime DESC;
+             EXCEPTION
+                WHEN NO_DATA_FOUND THEN
+                    RAISE_APPLICATION_ERROR(-20002, 'No data found during travel history retrieval.');
+                WHEN OTHERS THEN
+                    RAISE;
+             END;`,
+            {
+                passengerId,
+                cursor: { type: oracledb.CURSOR, dir: oracledb.BIND_OUT }
+            }
+        );
+        
+        const resultSet = result.outBinds.cursor;
+        const rows = await resultSet.getRows();
+        await resultSet.close();
+        
+        // Map cursor rows to objects if they are arrays (depending on outFormat)
+        res.json(rows);
+    }, 'Failed to retrieve passenger travel history');
+};
 
 // --- Payments ---
 const getPayments = fetchAll(`SELECT * FROM Payments ORDER BY PAYMENTID DESC`, 'Failed to fetch payments');
@@ -392,6 +457,6 @@ module.exports = {
     getRevenue, getFrequentRoutes,
     getPayments, createPayment, updatePayment, deletePayment,
     getDrivers, createDriver, updateDriver, deleteDriver,
-    getPassengers, createPassenger, updatePassenger, deletePassenger,
+    getPassengers, createPassenger, updatePassenger, deletePassenger, getPassengerHistory,
     getVehicles, createVehicle, updateVehicle, deleteVehicle, getTrips, createTrip, updateTrip, deleteTrip
 };

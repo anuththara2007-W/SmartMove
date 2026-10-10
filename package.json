@@ -8,16 +8,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anuththara2007-W/SmartMove-009.git"
+    "url": "git+https://github.com/anuththara2007-W/SmartMove.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/anuththara2007-W/SmartMove-009/issues"
+    "url": "https://github.com/anuththara2007-W/SmartMove/issues"
   },
-  "homepage": "https://github.com/anuththara2007-W/SmartMove-009#readme",
+  "homepage": "https://github.com/anuththara2007-W/SmartMove#readme",
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
