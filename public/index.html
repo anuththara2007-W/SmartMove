@@ -11,3 +11,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <style>
+        .routes-scroller {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 2rem;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .routes-scroller::-webkit-scrollbar {
+            display: none;
+        }
+
+        .route-mini-card {
+            min-width: 300px;
+            background: var(--solid-card-bg);
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease;
+        }
+
+        .route-mini-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
