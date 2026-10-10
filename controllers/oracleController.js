@@ -374,9 +374,15 @@ const deleteVehicle = async (req, res) => {
     await withConnection(req, res, async (conn) => {
         const { id } = req.params;
         
-        await conn.execute(`DELETE FROM Vehicles WHERE VehicleID = :id`, { id }, { autoCommit: true });
-        
-        res.json({ message: 'Vehicle deleted successfully' });
+        try {
+            await conn.execute(`DELETE FROM Vehicles WHERE VehicleID = :id`, { id }, { autoCommit: true });
+            res.json({ message: 'Vehicle deleted successfully' });
+        } catch (error) {
+            if (error.message.includes('ORA-02292')) {
+                return res.status(400).json({ error: 'Cannot delete vehicle because it is currently assigned to one or more trips. Please delete the trips first.' });
+            }
+            throw error;
+        }
     }, 'Failed to delete vehicle');
 };
 

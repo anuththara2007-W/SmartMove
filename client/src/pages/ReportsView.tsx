@@ -5,7 +5,7 @@
  * Why it exists: To help management analyze performance and make data-driven decisions.
  * Technologies used: React, Material UI (MUI) components (Table, Card).
  */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { TrendingUp, Map } from 'lucide-react';
 // import axios from 'axios';
@@ -38,18 +38,18 @@ function ReportsView() {
 
   return (
     <Box>
-      <Typography variant="h4" fontWeight="bold" sx={{ mb: 4, color: '#1e3a8a' }}>
+      <Typography variant="h4" sx={{ mb: 4, color: '#1e3a8a', fontWeight: 'bold' }}>
         Reports & Analytics
       </Typography>
 
       <Grid container spacing={4}>
         {/* Revenue Card Section */}
-        <Grid item xs={12} md={4}>
+        <Grid xs={12} md={4}>
           <Card sx={{ boxShadow: 3, borderRadius: 2, background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)', color: 'white' }}>
             <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 4 }}>
               <Box>
                 <Typography variant="h6" sx={{ opacity: 0.9 }}>Total Revenue (Month)</Typography>
-                <Typography variant="h3" fontWeight="bold">${totalRevenue.toLocaleString()}</Typography>
+                <Typography variant="h3" sx={{ fontWeight: 'bold' }}>${totalRevenue.toLocaleString()}</Typography>
               </Box>
               <TrendingUp size={48} opacity={0.8} />
             </CardContent>
@@ -57,7 +57,7 @@ function ReportsView() {
         </Grid>
 
         {/* Popular Routes Table Section */}
-        <Grid item xs={12} md={8}>
+        <Grid xs={12} md={8}>
           <Typography variant="h5" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
             <Map style={{ marginRight: '8px' }} /> Frequent Routes
           </Typography>

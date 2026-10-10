@@ -5,7 +5,6 @@
  * Why it exists: To enable navigation between different views without reloading the page.
  * Technologies used: React, React Router DOM.
  */
-import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import PassengerView from './pages/PassengerView';
