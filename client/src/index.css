@@ -5,9 +5,9 @@
  * Why it exists: To reset default browser styles and apply standard typography across the app.
  * Technologies used: CSS, Tailwind CSS framework.
  */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 body {
   margin: 0;

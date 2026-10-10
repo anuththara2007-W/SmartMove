@@ -5,7 +5,7 @@
  * Why it exists: To serve as the primary portal for user (passenger) interactions.
  * Technologies used: React, Material UI (MUI), Axios for sending requests.
  */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, Button, TextField, Box, Rating, Grid, Alert } from '@mui/material';
 import axios from 'axios';
 
@@ -77,13 +77,13 @@ function PassengerView() {
 
   return (
     <Box>
-      <Typography variant="h4" fontWeight="bold" sx={{ mb: 4, color: '#1e3a8a' }}>
+      <Typography variant="h4" sx={{ mb: 4, color: '#1e3a8a', fontWeight: 'bold' }}>
         Passenger View
       </Typography>
 
       <Grid container spacing={4}>
         {/* Routes Section */}
-        <Grid item xs={12} md={6}>
+        <Grid xs={12} md={6}>
           <Typography variant="h5" sx={{ mb: 2 }}>Available Routes</Typography>
           {availableRoutes.map((route) => (
             <Card key={route.id} sx={{ mb: 2, boxShadow: 3, borderRadius: 2 }}>
@@ -98,7 +98,7 @@ function PassengerView() {
         </Grid>
 
         {/* Review Section */}
-        <Grid item xs={12} md={6}>
+        <Grid xs={12} md={6}>
           <Card sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
             <CardContent>
               <Typography variant="h5" sx={{ mb: 2 }}>Leave a Review</Typography>
@@ -115,7 +115,7 @@ function PassengerView() {
                 <Rating
                   name="user-rating"
                   value={starRating}
-                  onChange={(event, newRating) => {
+                  onChange={(_, newRating) => {
                     setStarRating(newRating);
                   }}
                 />

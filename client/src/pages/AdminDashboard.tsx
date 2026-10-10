@@ -5,7 +5,7 @@
  * Why it exists: To give administrators a high-level overview of system status.
  * Technologies used: React, Material UI (MUI), Axios for data fetching.
  */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, Grid, Box, Chip, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
 import { Info, AlertCircle } from 'lucide-react';
 // import axios from 'axios';
@@ -44,17 +44,17 @@ function AdminDashboard() {
 
   return (
     <Box>
-      <Typography variant="h4" fontWeight="bold" sx={{ mb: 4, color: '#1e3a8a' }}>
+      <Typography variant="h4" sx={{ mb: 4, color: '#1e3a8a', fontWeight: 'bold' }}>
         Admin Dashboard
       </Typography>
 
       <Grid container spacing={4}>
         {/* Vehicles Section */}
-        <Grid item xs={12} md={8}>
+        <Grid xs={12} md={8}>
           <Typography variant="h5" sx={{ mb: 2 }}>Vehicle Fleet</Typography>
           <Grid container spacing={2}>
             {vehicleFleet.map((vehicle) => (
-              <Grid item xs={12} sm={6} key={vehicle.vehicleID}>
+              <Grid xs={12} sm={6} key={vehicle.vehicleID}>
                 <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
                   <Box
                     component="img"
@@ -75,7 +75,7 @@ function AdminDashboard() {
         </Grid>
 
         {/* Announcements Section */}
-        <Grid item xs={12} md={4}>
+        <Grid xs={12} md={4}>
           <Typography variant="h5" sx={{ mb: 2 }}>Announcements</Typography>
           <Paper sx={{ p: 0, boxShadow: 3, borderRadius: 2 }}>
             <List sx={{ width: '100%', bgcolor: 'background.paper', borderRadius: 2 }}>
