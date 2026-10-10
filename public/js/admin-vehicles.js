@@ -117,7 +117,9 @@ function renderFleet(gridElement, vehiclesList, docsList) {
         card.style.position = 'relative';
         
         const matchedDoc = docsList.find(doc => doc.vehicleID == id);
-        const imageUrl = (matchedDoc && matchedDoc.imageUrls && matchedDoc.imageUrls.length > 0) ? matchedDoc.imageUrls[0] : '';
+        let imageUrl = (matchedDoc && matchedDoc.imageUrls && matchedDoc.imageUrls.length > 0) ? matchedDoc.imageUrls[0] : '';
+        if (imageUrl.startsWith('data:image')) { imageUrl = imageUrl.replace(/[\r\n\s]+/g, ''); }
+        
         const imgHtml = imageUrl ? `<img src="${imageUrl}" alt="Vehicle ${id}" class="fleet-img" onerror="this.style.display='none'">` : `<div style="height: 150px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8;">No Image</div>`;
         const docsCount = matchedDoc && matchedDoc.pdfDocumentPaths ? matchedDoc.pdfDocumentPaths.length : 0;
         
@@ -159,7 +161,10 @@ function renderFleet(gridElement, vehiclesList, docsList) {
             if (confirm(`Are you sure you want to delete Vehicle #${id}?`)) {
                 try {
                     const res = await fetch(`/api/vehicles/${id}`, { method: 'DELETE' });
-                    if (!res.ok) throw new Error('Failed to delete');
+                    if (!res.ok) {
+                        const data = await res.json();
+                        throw new Error(data.error || 'Failed to delete');
+                    }
                     SmartMoveUtils.showToast(`Vehicle #${id} deleted!`, 'success');
                     fetchFleetData();
                 } catch(e) {

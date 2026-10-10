@@ -94,8 +94,15 @@ async function fetchRoutesPreview() {
             const routeName = route.STARTLOCATION ? `${route.STARTLOCATION} to ${route.ENDLOCATION}` : 'Unknown Route';
             const routeId = route.ROUTEID || route.routeId || 'N/A';
             
-            const matchedImg = routeImages.find(img => img.resourceId == routeId);
-            const imgUrl = matchedImg ? matchedImg.imageUrl : fallbackImage;
+            // Simpler logic for finding the image URL to handle fallbacks and data URIs
+            let imgUrl = fallbackImage;
+            const matchedImg = routeImages.find(img => img.referenceId === String(routeId) || img.referenceId === Number(routeId));
+            if (matchedImg && matchedImg.imageUrl) {
+                imgUrl = matchedImg.imageUrl;
+                if (imgUrl.startsWith('data:image')) {
+                    imgUrl = imgUrl.replace(/[\r\n\s]+/g, '');
+                }
+            }
 
             card.innerHTML = `
                 <img src="${imgUrl}" alt="${routeName}" style="width: 100%; height: 160px; object-fit: cover; display: block;" onerror="this.src='${fallbackImage}'">
