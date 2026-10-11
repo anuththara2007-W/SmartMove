@@ -800,6 +800,21 @@ footer {
     }
 }
 
+.site-footer-brand-title { font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
+.site-footer-brand-desc { color: rgba(255,255,255,0.6); font-size: 0.9rem; line-height: 1.7; max-width: 300px; }
+.site-footer-socials { display: flex; gap: 1rem; margin-top: 1.5rem; }
+.site-footer-social-btn { width: 36px; height: 36px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s ease; }
+.site-footer-social-btn:hover { background: rgba(255,255,255,0.25); }
+.site-footer-col-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.4); margin-bottom: 1.5rem; font-weight: 700; }
+.site-footer-nav-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.8rem; }
+.site-footer-nav-link { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; transition: color 0.2s ease; }
+.site-footer-nav-link:hover { color: #ffffff; }
+.site-footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.site-footer-bottom-text { color: rgba(255,255,255,0.4); font-size: 0.85rem; }
+.site-footer-author-name { color: #ffffff; font-weight: 600; }
+.nav-active { color: var(--primary-accent) !important; font-weight: 600; }
+.btn-login-nav { color: var(--text-main); }
+
 /* Global Status Badges & Action Dropdowns */
 .booking-status-badge {
     display: inline-flex;
