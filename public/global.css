@@ -820,12 +820,14 @@ footer {
     border-radius: 50%;
     display: inline-block;
 }
-.booking-status-badge.confirmed {
+.booking-status-badge.confirmed,
+.booking-status-badge.completed {
     background: #ecfdf5;
     color: #047857;
     border: 1px solid #a7f3d0;
 }
-.booking-status-badge.confirmed .status-dot {
+.booking-status-badge.confirmed .status-dot,
+.booking-status-badge.completed .status-dot {
     background: #10b981;
     box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
 }
