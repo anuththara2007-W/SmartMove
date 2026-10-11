@@ -1,0 +1,264 @@
+/* ==========================================================================
+   SmartMove - System Portal Manage Routes Stylesheet
+   Location: public/css/portal-routes.css
+   ========================================================================== */
+
+.form-label {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #334155;
+    letter-spacing: -0.01em;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.85rem 1.15rem;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+    background-color: #f8fafc;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    color: var(--text-main);
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    outline: none;
+    background-color: #ffffff;
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+}
+
+.form-input::placeholder {
+    color: #94a3b8;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #cbd5e1;
+    transition: .25s ease;
+    border-radius: 24px;
+}
+
+.toggle-switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .25s ease;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.toggle-switch input:checked + .slider {
+    background-color: var(--primary-accent);
+}
+
+.toggle-switch input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+/* CRUD Table */
+.crud-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+    border: 1px solid var(--border-color);
+}
+
+.crud-table th, .crud-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.crud-table th {
+    background-color: #f8fafc;
+    font-weight: 700;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.action-btn {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
+    transition: opacity 0.2s ease;
+}
+
+.action-btn:hover {
+    opacity: 0.9;
+}
+
+.btn-edit { background: var(--primary-accent); color: white; }
+.btn-delete { background: var(--error-color); color: white; }
+
+/* Modal Form Specifics */
+.route-form-modal-content {
+    max-width: 500px;
+}
+
+.route-form-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.route-form-group {
+    margin-bottom: 1rem;
+}
+
+.route-form-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.route-toggle-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 0.9rem 1.15rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.route-toggle-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #1e293b;
+}
+
+.route-toggle-desc {
+    font-size: 0.78rem;
+    color: #64748b;
+}
+
+.btn-save-route {
+    width: 100%;
+    border-radius: 12px;
+    padding: 0.9rem;
+}
+
+.confirm-modal-content {
+    max-width: 420px;
+    text-align: center;
+}
+
+.confirm-modal-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem auto;
+}
+
+.confirm-modal-title {
+    margin-bottom: 0.75rem;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.confirm-modal-desc {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Dynamic Route Elements in admin-routes.js */
+.route-skeleton-bar {
+    height: 40px;
+    width: 100%;
+}
+
+.route-empty-cell {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 2rem;
+}
+
+.route-badge-popular {
+    background: #e0f2fe;
+    color: #0284c7;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.route-badge-custom {
+    background: #fef3c7;
+    color: #b45309;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.route-img-wrap {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 32px;
+}
+
+.route-table-thumbnail {
+    width: 44px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.1);
+    display: block;
+}
+
+.route-img-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    border: 2px solid white;
+}
+
+.route-img-indicator.custom { background: #10b981; }
+.route-img-indicator.default { background: #64748b; }
