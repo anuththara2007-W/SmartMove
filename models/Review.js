@@ -39,12 +39,15 @@ const reviewSchema = new mongoose.Schema({
 
 // Pre-validate hook to synchronize both naming conventions (Mongoose 8/9 synchronous hook without next callback)
 reviewSchema.pre('validate', function() {
-    const pId = this.passengerID ?? this.passengerId;
-    if (pId !== undefined && pId !== null && !isNaN(pId)) {
-        this.passengerID = Number(pId);
-        this.passengerId = Number(pId);
-    }
+   // Get the passenger ID using either naming format.
+const pId = this.passengerID ?? this.passengerId;
 
+// Check that the ID exists and is a valid number.
+if (pId !== undefined && pId !== null && !isNaN(pId)) {
+    // Convert the ID to a number and update both properties.
+    this.passengerID = Number(pId);
+    this.passengerId = Number(pId);
+}
     const rId = this.routeID ?? this.routeId;
     if (rId !== undefined && rId !== null && !isNaN(rId)) {
         this.routeID = Number(rId);

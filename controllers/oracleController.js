@@ -1,33 +1,52 @@
 const { oracledb } = require('../config/oracle');
 
 // --- Helper Functions ---
+// Reuse a database connection and handle errors, rollback, and cleanup.
 const withConnection = async (req, res, action, errorMessage = 'Database operation failed') => {
     let connection;
+
     try {
         connection = await oracledb.getConnection();
         await action(connection, req, res);
     } catch (err) {
         console.error(err);
+
+        // Roll back uncommitted changes if an error occurs.
         if (connection) {
-             try { await connection.rollback(); } catch (e) { console.error(e); }
+            try {
+                await connection.rollback();
+            } catch (e) {
+                console.error(e);
+            }
         }
+
+        // Avoid sending a second response if headers were already sent.
         if (!res.headersSent) {
-            res.status(err.status || 500).json({ error: err.customMessage || errorMessage });
+            res.status(err.status || 500).json({
+                error: err.customMessage || errorMessage
+            });
         }
     } finally {
+        // Release the database connection after the operation.
         if (connection) {
-            try { await connection.close(); } catch (err) { console.error(err); }
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
         }
     }
 };
 
+// Execute an SQL query and return rows as JavaScript objects.
 const executeQuery = async (connection, query, params = {}, autoCommit = false) => {
-    return await connection.execute(query, params, { 
-        outFormat: oracledb.OUT_FORMAT_OBJECT, 
-        autoCommit 
+    return await connection.execute(query, params, {
+        outFormat: oracledb.OUT_FORMAT_OBJECT,
+        autoCommit
     });
 };
 
+// Create a reusable controller for fetching records.
 const fetchAll = (query, errorMessage) => async (req, res) => {
     await withConnection(req, res, async (connection) => {
         const result = await executeQuery(connection, query);
@@ -35,15 +54,26 @@ const fetchAll = (query, errorMessage) => async (req, res) => {
     }, errorMessage);
 };
 
+// Create a reusable controller for deleting a record by its ID.
 const deleteRecord = (tableName, idCol, errorMsg) => async (req, res) => {
     await withConnection(req, res, async (connection) => {
         try {
-            await executeQuery(connection, `DELETE FROM ${tableName} WHERE ${idCol} = :id`, { id: req.params.id }, true);
+            await executeQuery(
+                connection,
+                `DELETE FROM ${tableName} WHERE ${idCol} = :id`,
+                { id: req.params.id },
+                true
+            );
+
             res.json({ message: 'Record deleted successfully' });
         } catch (err) {
+            // Handle foreign-key errors when other records reference this record.
             if (err.message && err.message.includes('ORA-02292')) {
-                return res.status(400).json({ error: `Cannot delete record because it is referenced by other system records.` });
+                return res.status(400).json({
+                    error: 'Cannot delete record because it is referenced by other system records.'
+                });
             }
+
             throw err;
         }
     }, errorMsg);
@@ -54,14 +84,17 @@ const getRoutes = async (req, res) => {
     await withConnection(req, res, async (connection) => {
         const isPopularOnly = req.query.popular === 'true';
         let query = `SELECT * FROM Routes`;
+        //Creates the initial SQL query to retrieve all columns from the Routes table.
         if (isPopularOnly) {
-            query += ` WHERE NVL(IsPopular, 'N') = 'Y'`;
+            query += ` WHERE NVL(IsPopular, 'N') = 'Y'`; //nvl eplaces a NULL value in IsPopular with 'N'.
         }
         query += ` ORDER BY RouteID ASC`;
         try {
             const result = await executeQuery(connection, query);
             res.json(result.rows);
         } catch (err) {
+    /*Checks whether popular-only filtering was requested and Oracle returned ORA-00904, 
+    which commonly indicates an invalid identifier, such as a missing or incorrectly named column.*/
             if (isPopularOnly && (err.message && err.message.includes('ORA-00904'))) {
                 console.warn('IsPopular column missing in Routes, falling back to all routes');
                 const fallbackResult = await executeQuery(connection, `SELECT * FROM Routes ORDER BY RouteID ASC`);
@@ -74,8 +107,12 @@ const getRoutes = async (req, res) => {
 const deleteRoute = deleteRecord('Routes', 'RouteID', 'Failed to delete route');
 
 const createRoute = async (req, res) => {
+    //Open the database connection
     await withConnection(req, res, async (conn) => {
         const { startLocation, endLocation, distanceKm, estimatedDuration, isPopular } = req.body;
+        /*Uses the ternary operator to determine the value stored in popularFlag.
+- If isPopular is 'N' or false, the value becomes 'N'.
+- Otherwise, it becomes 'Y'.*/
         const popularFlag = (isPopular === 'N' || isPopular === false) ? 'N' : 'Y';
         const result = await executeQuery(conn, 
             `INSERT INTO Routes (StartLocation, EndLocation, DistanceKm, EstimatedDuration, IsPopular) 
@@ -90,7 +127,7 @@ const createRoute = async (req, res) => {
                 outId: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
             }, true
         );
-        res.status(201).json({ message: 'Route created successfully', routeId: result.outBinds.outId[0] });
+        res.status(201).json({ message: 'Route created successfully', routeId: result.outBinds.outId[0] }); //retrieves the generated route ID from the inserted record.
     }, 'Failed to create route');
 };
 
@@ -100,6 +137,7 @@ const updateRoute = async (req, res) => {
         let updateQuery = `UPDATE Routes SET StartLocation = :startLocation, EndLocation = :endLocation, DistanceKm = :distanceKm, EstimatedDuration = :estimatedDuration`;
         const params = { startLocation, endLocation, distanceKm: distanceKm || 10, estimatedDuration: estimatedDuration || 30, id: req.params.id };
         if (isPopular !== undefined) {
+            // += is used to append something to the existing value of a variable.
             updateQuery += `, IsPopular = :isPopular`;
             params.isPopular = isPopular;
         }
@@ -130,11 +168,14 @@ const bookTicket = async (req, res) => {
                 ) WHERE ROWNUM = 1
             `, { routeID });
             
-            if (tripRes.rows && tripRes.rows.length > 0) {
-                tripID = tripRes.rows[0].TRIPID || tripRes.rows[0].tripId;
-                fare = tripRes.rows[0].BASEFARE || tripRes.rows[0].baseFare || fare;
-            } else {
-                // If previous trips are completed or none exist, select an AVAILABLE vehicle
+            // Check whether the trip query returned any records.
+if (tripRes.rows && tripRes.rows.length > 0) {
+    // Get the trip ID, supporting both uppercase and camelCase column names.
+    tripID = tripRes.rows[0].TRIPID || tripRes.rows[0].tripId;
+
+    // Get the base fare or keep the existing fare as a fallback.
+    fare = tripRes.rows[0].BASEFARE || tripRes.rows[0].baseFare || fare;
+} else {  // If previous trips are completed or none exist, select an AVAILABLE vehicle
                 const availVehRes = await executeQuery(conn, `
                     SELECT VehicleID FROM Vehicles v
                     WHERE Status = 'Active'
@@ -146,11 +187,21 @@ const bookTicket = async (req, res) => {
                     ORDER BY VehicleID ASC
                 `);
                 
-                let vid = (availVehRes.rows && availVehRes.rows.length > 0) ? availVehRes.rows[0].VEHICLEID : null;
-                if (!vid) {
-                    const fallbackVeh = await executeQuery(conn, `SELECT MIN(VehicleID) AS VID FROM Vehicles WHERE Status = 'Active'`);
-                    vid = fallbackVeh.rows[0]?.VID || 1;
-                }
+                // Get the vehicle ID if an available vehicle was found; otherwise, use null.
+let vid = (availVehRes.rows && availVehRes.rows.length > 0)
+    ? availVehRes.rows[0].VEHICLEID
+    : null;
+
+// If no vehicle ID was found, search for the smallest ID of an active vehicle.
+if (!vid) {
+    const fallbackVeh = await executeQuery(
+        conn,
+        `SELECT MIN(VehicleID) AS VID FROM Vehicles WHERE Status = 'Active'`
+    );
+
+    // Use the retrieved vehicle ID, or default to 1 if no ID is available.
+    vid = fallbackVeh.rows[0]?.VID || 1;
+}
                 
                 const driverRes = await executeQuery(conn, `
                     SELECT DriverID FROM Drivers d
@@ -247,7 +298,6 @@ const getRevenue = async (req, res) => {
                     SELECT FareAmount FROM Tickets 
                     WHERE TicketStatus IN ('Booked', 'Completed');
                 
-                -- Human readable variables
                 current_ticket_price NUMBER;
                 total_calculated_revenue NUMBER := 0;
             BEGIN
@@ -757,6 +807,7 @@ const deleteVehicle = async (req, res) => {
     }, 'Failed to delete vehicle');
 };
 
+// Export controller functions so they can be imported and used in route files
 module.exports = {
     getRoutes, createRoute, updateRoute, deleteRoute,
     bookTicket, getTickets, updateTicketStatus,
