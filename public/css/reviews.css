@@ -114,3 +114,18 @@
     border-bottom: 1px solid var(--border-color);
     font-size: 0.95rem;
 }
+
+.modal-select-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.modal-table-row {
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.modal-table-row:hover {
+    background: #f1f5f9;
+}
