@@ -37,22 +37,18 @@ const reviewSchema = new mongoose.Schema({
     }
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
-// Pre-validate hook to synchronize both naming conventions
-reviewSchema.pre('validate', function(next) {
+// Pre-validate hook to synchronize both naming conventions (Mongoose 8/9 synchronous hook without next callback)
+reviewSchema.pre('validate', function() {
     const pId = this.passengerID ?? this.passengerId;
     if (pId !== undefined && pId !== null && !isNaN(pId)) {
         this.passengerID = Number(pId);
         this.passengerId = Number(pId);
-    } else {
-        return next(new Error('Path `passengerID` is required.'));
     }
 
     const rId = this.routeID ?? this.routeId;
     if (rId !== undefined && rId !== null && !isNaN(rId)) {
         this.routeID = Number(rId);
         this.routeId = Number(rId);
-    } else {
-        return next(new Error('Path `routeID` is required.'));
     }
 
     const dId = this.driverID ?? this.driverId ?? 999;
@@ -63,11 +59,7 @@ reviewSchema.pre('validate', function(next) {
     if (fb && String(fb).trim().length > 0) {
         this.feedback = String(fb).trim();
         this.feedbackText = String(fb).trim();
-    } else {
-        return next(new Error('Path `feedback` is required.'));
     }
-
-    next();
 });
 
 // Text index for search functionality
