@@ -1,0 +1,114 @@
+/* SmartMove - Routes Page Stylesheet */
+
+.routes-subtitle {
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+}
+
+.route-card {
+    padding: 1.75rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 20px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+.route-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+.route-card-img-wrap {
+    height: 180px;
+    margin: -1.75rem -1.75rem 1.5rem -1.75rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.route-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.route-card:hover .route-card-img {
+    transform: scale(1.05);
+}
+
+.route-card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    color: #ffffff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.route-card-badge.popular {
+    background: #0284c7;
+}
+
+.route-card-badge.standard {
+    background: rgba(15, 23, 42, 0.75);
+}
+
+.route-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 0.75rem;
+}
+
+.route-card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.route-card-id {
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.route-card-id strong {
+    color: #0f172a;
+}
+
+.route-card-meta {
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.route-card-meta-dot {
+    color: #94a3b8;
+}
+
+.route-card-footer {
+    margin-top: auto;
+}
+
+.route-card-book-btn {
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    font-weight: 700;
+}
