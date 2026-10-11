@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     fetchRecentReviews();
-    
+
     const reviewForm = document.getElementById('reviewForm');
     reviewForm.addEventListener('submit', handleReviewSubmit);
-    
+
     const submitBtn = document.getElementById('submitBtn');
 
     // Real-time validation
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const pId = document.getElementById('reviewPassengerId').value;
         const rId = document.getElementById('reviewRouteId').value;
         const text = document.getElementById('reviewText').value.trim();
-        
+
         if (pId && rId && text) {
             submitBtn.disabled = false;
         } else {
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Clear errors on input
     const inputs = reviewForm.querySelectorAll('.check-valid');
     inputs.forEach(input => {
-        input.addEventListener('input', function() {
+        input.addEventListener('input', function () {
             this.classList.remove('invalid');
             const errorElement = document.getElementById(`error-${this.id}`);
             if (errorElement) {
@@ -54,30 +54,30 @@ function showError(inputId) {
 
 async function handleReviewSubmit(event) {
     event.preventDefault();
-    
+
     const passengerId = document.getElementById('reviewPassengerId').value;
     const routeId = document.getElementById('reviewRouteId').value;
     const driverElement = document.getElementById('reviewDriverId');
     const driverId = driverElement ? driverElement.value : null;
     const rating = document.getElementById('reviewRating').value;
     const feedback = document.getElementById('reviewText').value.trim();
-    
+
     let isValid = true;
 
-    if (!passengerId || isNaN(passengerId) || Number(passengerId) <= 0) { 
-        showError('reviewPassengerId'); 
+    if (!passengerId || isNaN(passengerId) || Number(passengerId) <= 0) {
+        showError('reviewPassengerId');
         SmartMoveUtils.showToast('Please select a passenger first.', 'error');
-        isValid = false; 
+        isValid = false;
     }
-    if (!routeId || isNaN(routeId) || Number(routeId) <= 0) { 
-        showError('reviewRouteId'); 
+    if (!routeId || isNaN(routeId) || Number(routeId) <= 0) {
+        showError('reviewRouteId');
         SmartMoveUtils.showToast('Please select a route first.', 'error');
-        isValid = false; 
+        isValid = false;
     }
-    if (!feedback) { 
-        showError('reviewText'); 
+    if (!feedback) {
+        showError('reviewText');
         SmartMoveUtils.showToast('Please enter your feedback text.', 'error');
-        isValid = false; 
+        isValid = false;
     }
 
     if (!isValid) return;
@@ -87,7 +87,7 @@ async function handleReviewSubmit(event) {
     try {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
-        
+
         const response = await fetch('/api/reviews', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -110,7 +110,7 @@ async function handleReviewSubmit(event) {
         }
 
         SmartMoveUtils.showToast('Thank you! Your feedback has been saved to MongoDB.', 'success');
-        
+
         document.getElementById('reviewForm').reset();
         const pDisp = document.getElementById('passengerDisplay');
         if (pDisp) pDisp.value = '';
@@ -119,9 +119,9 @@ async function handleReviewSubmit(event) {
         document.getElementById('reviewPassengerId').value = '';
         document.getElementById('reviewRouteId').value = '';
         submitBtn.disabled = true;
-        
+
         fetchRecentReviews();
-        
+
     } catch (error) {
         console.error('Review Error:', error);
         SmartMoveUtils.showToast(error.message || 'An error occurred. Please try again.', 'error');
@@ -132,30 +132,30 @@ async function handleReviewSubmit(event) {
 
 async function fetchRecentReviews() {
     const feed = document.getElementById('reviewsFeed');
-    
+
     try {
         const response = await fetch('/api/reviews'); // Fetch all reviews
         if (!response.ok) throw new Error('Network response was not ok');
-        
+
         const reviews = await response.json();
-        
+
         if (!reviews || reviews.length === 0) {
             SmartMoveUtils.renderEmptyState(feed, 'No Reviews Found', 'Be the first to share your experience.');
             return;
         }
 
         feed.innerHTML = '';
-        
+
         reviews.forEach((review) => {
             const card = document.createElement('div');
             card.className = 'masonry-item review-card';
-            
+
             const ratingVal = review.rating || 5;
             const stars = '★'.repeat(ratingVal) + '☆'.repeat(Math.max(0, 5 - ratingVal));
             const feedbackText = review.feedbackText || review.feedback || '';
             const pId = review.passengerId || review.passengerID || 'N/A';
             const rId = review.routeId || review.routeID || 'N/A';
-            
+
             card.innerHTML = `
                 <div class="stars">${stars}</div>
                 <p class="review-card-comment">
@@ -166,7 +166,7 @@ async function fetchRecentReviews() {
                     ${SmartMoveUtils.formatDate(review.createdAt)}
                 </small>
             `;
-            
+
             feed.appendChild(card);
         });
 
@@ -183,7 +183,7 @@ async function setupPassengerModal() {
         const response = await fetch('/api/passengers');
         if (!response.ok) throw new Error('API Error');
         const passengers = await response.json();
-        
+
         if (!passengers || passengers.length === 0) {
             SmartMoveUtils.renderEmptyState(body, 'No Passengers', 'No passengers currently available.');
             return;
@@ -201,7 +201,7 @@ async function setupRouteModal() {
         const response = await fetch('/api/routes');
         if (!response.ok) throw new Error('API Error');
         const routes = await response.json();
-        
+
         if (!routes || routes.length === 0) {
             SmartMoveUtils.renderEmptyState(body, 'No Routes', 'No routes currently available.');
             return;
@@ -215,32 +215,32 @@ async function setupRouteModal() {
 function renderModalTable(container, data, headers, keys, clickHandler) {
     const table = document.createElement('table');
     table.className = 'modal-select-table';
-    
+
     const thead = document.createElement('thead');
     thead.innerHTML = `<tr>${headers.map(h => `<th class="modal-table-th">${h}</th>`).join('')}</tr>`;
     table.appendChild(thead);
-    
+
     const tbody = document.createElement('tbody');
     data.forEach(row => {
         const tr = document.createElement('tr');
         tr.className = 'modal-table-row';
         tr.innerHTML = keys.map(k => `<td class="modal-table-td">${row[k] || 'N/A'}</td>`).join('');
-        
+
         tr.setAttribute('data-row', JSON.stringify(row));
-        tr.addEventListener('click', function() {
+        tr.addEventListener('click', function () {
             const rowData = JSON.parse(this.getAttribute('data-row'));
             clickHandler(rowData);
         });
-        
+
         tbody.appendChild(tr);
     });
     table.appendChild(tbody);
-    
+
     container.innerHTML = '';
     container.appendChild(table);
 }
 
-window.selectPassenger = function(passenger) {
+window.selectPassenger = function (passenger) {
     const pid = passenger.PASSENGERID || passenger.id;
     const name = passenger.FIRSTNAME ? `${passenger.FIRSTNAME} ${passenger.LASTNAME}` : passenger.name;
     const email = passenger.EMAIL || passenger.email;
@@ -252,7 +252,7 @@ window.selectPassenger = function(passenger) {
     SmartMoveUtils.showToast(`Selected ${name}`, 'success');
 }
 
-window.selectRoute = function(route) {
+window.selectRoute = function (route) {
     const rid = route.ROUTEID || route.ID;
     const name = route.STARTLOCATION ? `${route.STARTLOCATION} to ${route.ENDLOCATION}` : (route.ROUTENAME || route.NAME || `Route ${rid}`);
     document.getElementById('routeDisplay').value = name;
