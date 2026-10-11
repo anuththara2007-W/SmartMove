@@ -124,10 +124,10 @@ async function fetchRecentBookings() {
                     <div class="status-dropdown-wrapper">
                         <select class="status-select-dropdown" onchange="updateTicketStatus(${id}, this.value)">
                             <option value="" disabled selected>Update Status...</option>
-                            <option value="Confirmed" ${status === 'Confirmed' ? 'disabled' : ''}>✓ Confirm</option>
-                            <option value="Completed" ${status === 'Completed' ? 'disabled' : ''}>★ Complete</option>
-                            <option value="Cancelled" ${status === 'Cancelled' ? 'disabled' : ''}>✕ Cancel</option>
-                            <option value="Booked" ${status === 'Booked' ? 'disabled' : ''}>🎫 Booked</option>
+                            <option value="Confirmed" ${status === 'Confirmed' ? 'disabled' : ''}>Confirm</option>
+                            <option value="Completed" ${status === 'Completed' ? 'disabled' : ''}>Complete</option>
+                            <option value="Cancelled" ${status === 'Cancelled' ? 'disabled' : ''}>Cancel</option>
+                            <option value="Booked" ${status === 'Booked' ? 'disabled' : ''}>Booked</option>
                         </select>
                     </div>
                 </td>
@@ -198,7 +198,7 @@ async function fetchTopDrivers() {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>Driver #${d._id || 'Unknown'}</td>
-                <td style="color: #fbbf24; font-weight: bold;">${(d.averageRating || 0).toFixed(1)} ★</td>
+                <td style="color: #fbbf24; font-weight: bold;">${(d.averageRating || 0).toFixed(1)} <i class="fa-solid fa-star"></i></td>
                 <td>${d.reviewCount} reviews</td>
             `;
             tbody.appendChild(tr);

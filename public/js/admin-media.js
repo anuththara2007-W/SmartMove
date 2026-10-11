@@ -28,7 +28,7 @@ async function handleResourceTypeChange(e) {
         
         idSelect.innerHTML = '<option value="">Select Resource...</option>';
         if (type === 'route') {
-            idSelect.innerHTML += '<option value="0" class="opt-highlight">★ Default Route Image (All Routes)</option>';
+            idSelect.innerHTML += '<option value="0" class="opt-highlight"><i class="fa-solid fa-star"></i> Default Route Image (All Routes)</option>';
         }
         
         data.forEach(item => {
@@ -72,7 +72,7 @@ async function loadImages() {
             
             const isDefaultRoute = img.resourceType === 'route' && Number(img.resourceId) === 0;
             const resourceTitle = isDefaultRoute
-                ? `<span class="badge-default-route">★ Default</span> Route Image (All Routes)`
+                ? `<span class="badge-default-route"><i class="fa-solid fa-star"></i> Default</span> Route Image (All Routes)`
                 : `${img.resourceType} #${img.resourceId}`;
             
             card.innerHTML = `

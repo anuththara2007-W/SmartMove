@@ -49,7 +49,7 @@ function renderRoutes(routes, images = []) {
     tbody.innerHTML = routes.map(r => {
         const isPop = r.ISPOPULAR === 'Y';
         const typeBadge = isPop 
-            ? `<span class="route-badge-popular">★ Popular</span>`
+            ? `<span class="route-badge-popular"><i class="fa-solid fa-star"></i> Popular</span>`
             : `<span class="route-badge-custom">Custom Journey</span>`;
         
         // Find matching image or default
