@@ -302,3 +302,116 @@
     color: #ffffff;
     border-color: #0f172a;
 }
+
+/* FAQ Accordion List */
+.faq-accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.faq-item {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.faq-item:hover {
+    border-color: rgba(0, 113, 227, 0.25);
+}
+
+.faq-item.active {
+    border-color: rgba(0, 113, 227, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+.faq-question-btn {
+    width: 100%;
+    padding: 1.25rem 1.5rem;
+    background: none;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.faq-question-btn:hover {
+    background-color: #f8fafc;
+}
+
+.faq-question-text {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.faq-q-badge {
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #475569;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.faq-toggle-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f8fafc;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, color 0.2s ease;
+}
+
+.faq-item.active .faq-toggle-icon {
+    transform: rotate(180deg);
+    background: #0071e3;
+    color: #ffffff;
+}
+
+.faq-answer-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s ease;
+    padding: 0 1.5rem;
+    color: #475569;
+    font-size: 0.94rem;
+    line-height: 1.65;
+}
+
+.faq-item.active .faq-answer-body {
+    max-height: 400px;
+    padding: 0 1.5rem 1.4rem 1.5rem;
+}
+
+.faq-answer-body a {
+    color: var(--primary-accent, #0071e3);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.faq-answer-body a:hover {
+    color: #005bb5;
+}
