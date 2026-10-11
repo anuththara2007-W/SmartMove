@@ -14,16 +14,14 @@ const connectMongoDB = async () => {
         const mongoURI =
             process.env.MONGO_URI ||
             process.env.MONGODB_URI ||
-            'mongodb://localhost:27017/smartmove';
+            'mongodb://localhost:27017/SmartMove';
 
         // await prevents the function from continuing before the attempt completes.
         await mongoose.connect(mongoURI);
 
-        // Display a success message if the connection succeeds.
         console.log('Successfully connected to MongoDB!');
 
     } catch (error) {
-        // Catch connection errors and display the error message.
         console.error('MongoDB Connection Error:', error.message);
 
         // Stop the Node.js application with exit code 1,
