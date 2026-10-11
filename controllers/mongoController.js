@@ -6,6 +6,7 @@ const ResourceImage = require('../models/ResourceImage');
 // POST /api/reviews
 const submitReview = async (req, res) => {
     try {
+        //?? - the nullish coalescing operator - which is used to provide a default value if the value is null or undefined.
         const rawPid = req.body.passengerID ?? req.body.passengerId;
         const rawRid = req.body.routeID ?? req.body.routeId;
         const rawDid = req.body.driverID ?? req.body.driverId ?? 999;
@@ -15,7 +16,7 @@ const submitReview = async (req, res) => {
         const pId = Number(rawPid);
         const rId = Number(rawRid);
         const dId = Number(rawDid);
-
+//isNaN(pId) - checks whether the converted value is not a valid number.
         if (!rawPid || isNaN(pId) || pId <= 0) {
             return res.status(400).json({ error: 'Please select a valid passenger.' });
         }
@@ -28,7 +29,11 @@ const submitReview = async (req, res) => {
         if (!feedback || String(feedback).trim().length === 0) {
             return res.status(400).json({ error: 'Please enter feedback text.' });
         }
-
+        /* Creating the review object for monngo
+           create a new review using the Mongoose model and populate it with
+           the passenger ID, route ID, driver ID, rating, and feedback. 
+           Then I use await newReview.save() to store it in MongoDB. 
+           Finally, I return HTTP status 201 and the created review as a JSON response.*/
         const newReview = new Review({
             passengerID: pId,
             passengerId: pId,
@@ -51,6 +56,7 @@ const submitReview = async (req, res) => {
 // GET /api/reviews
 const getAllReviews = async (req, res) => {
     try {
+        // Fetch the latest 50 reviews from MongoDB, sorted by creation date (newest first).
         const reviews = await Review.find().sort({ createdAt: -1 }).limit(50);
         res.json(reviews);
     } catch (err) {
@@ -62,6 +68,7 @@ const getAllReviews = async (req, res) => {
 // GET /api/reviews/route/:id
 const getReviewsByRoute = async (req, res) => {
     try {
+        // Get the route ID from the URL parameter and convert it to a number.
         const routeId = Number(req.params.id);
         const reviews = await Review.find({ $or: [{ routeID: routeId }, { routeId: routeId }] }).sort({ createdAt: -1 });
         res.json(reviews);
@@ -74,6 +81,7 @@ const getReviewsByRoute = async (req, res) => {
 // GET /api/vehicles/top-rated
 const getTopRatedVehicles = async (req, res) => {
     try {
+    // Group reviews by driver, calculate average ratings, and return the top 10.
         const topRated = await Review.aggregate([
             {
                 $group: {
@@ -217,14 +225,28 @@ const getImages = async (req, res) => {
 
 // POST /api/images
 const addImage = async (req, res) => {
-    try {
-        const { resourceType, resourceId, imageUrl, caption } = req.body;
-        if (!resourceType || resourceId === undefined || resourceId === null || resourceId === '' || !imageUrl) {
-            return res.status(400).json({ error: 'resourceType, resourceId and imageUrl are required' });
-        }
-        const img = new ResourceImage({ resourceType, resourceId: parseInt(resourceId, 10), imageUrl, caption: caption || '' });
-        await img.save();
-        res.status(201).json(img);
+  try {
+    // Extract image details from the request body.
+    const { resourceType, resourceId, imageUrl, caption } = req.body;
+
+    // Validate the required fields before creating the image.
+    if (!resourceType || resourceId === undefined || resourceId === null || resourceId === '' || !imageUrl) {
+        return res.status(400).json({ error: 'resourceType, resourceId and imageUrl are required' });
+    }
+
+    // Create a new image document, converting the resource ID to a number.
+    const img = new ResourceImage({
+        resourceType,
+        resourceId: parseInt(resourceId, 10),
+        imageUrl,
+        caption: caption || ''
+    });
+
+    // Save the image document to MongoDB.
+    await img.save();
+
+    // Return HTTP 201 to indicate successful creation.
+    res.status(201).json(img);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to add image' });
@@ -242,7 +264,7 @@ const deleteImage = async (req, res) => {
         res.status(500).json({ error: 'Failed to delete image' });
     }
 };
-
+// Export the controller functions so they can be used in route files
 module.exports = {
     submitReview,
     getAllReviews,
