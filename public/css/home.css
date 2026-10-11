@@ -165,16 +165,13 @@
 
 /* Section Common Background & Structure */
 .home-banner-section {
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
+    width: 100%;
     min-height: 100vh;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0;
     padding: 6rem 4rem 7rem 4rem;
     background: url('https://i.postimg.cc/K82ygggB/Untitled-design-(5).png') no-repeat center center;
-    background-size: cover;
+    background-size: 100% 100%;
     position: relative;
-    box-sizing: border-box;
 }
 
 /* Popular Routes Section - Flush with footer */
