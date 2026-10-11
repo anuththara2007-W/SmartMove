@@ -1,9 +1,10 @@
 let allAnnouncements = [];
 let announcementIdToDelete = null;
 window.editingAnnouncementId = null;
+//Runs the code when the HTML document has finished loading.
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (!SmartMoveUtils.setupAdminAuth()) return;
+    if (!SmartMoveUtils.setupAdminAuth()) return;//Checks admin authentication and stops initialization if authentication fails.
 
     loadAnnouncements();
 
@@ -83,24 +84,23 @@ function renderAnnouncements(items) {
         `;
         return;
     }
+items.forEach(ann => { // Loop through each announcement
+    const card = document.createElement('div'); // Create a new HTML div element
+    card.className = 'ann-card-item'; // Assign a CSS class to style the card
+    card.id = `ann-card-${ann._id}`; // Set a unique ID using the announcement ID
 
-    items.forEach(ann => {
-        const card = document.createElement('div');
-        card.className = 'ann-card-item';
-        card.id = `ann-card-${ann._id}`;
+    const type = ann.type || 'info'; // Get the announcement type or default to info
+    const isActive = ann.active !== false; // Check whether the announcement is active
 
-        const type = ann.type || 'info';
-        const isActive = ann.active !== false;
+    let typeIcon = ''; // Initialize the variable for storing the SVG icon
 
-        let typeIcon = '';
-        if (type === 'warning') {
-            typeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
-        } else if (type === 'alert') {
-            typeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
-        } else {
-            typeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
-        }
-
+    if (type === 'warning') { // Check if the announcement type is warning
+        typeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`; // Set the warning triangle icon
+    } else if (type === 'alert') { // Check if the announcement type is alert
+        typeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`; // Set the alert icon
+    } else { // Handle all other announcement types
+        typeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`; // Set the default information icon
+    }
         const dateStr = ann.createdAt ? SmartMoveUtils.formatDate(ann.createdAt) : 'Recently';
 
         card.innerHTML = `
