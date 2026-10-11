@@ -91,3 +91,116 @@
     text-align: center;
     padding: 1.5rem;
 }
+/* Enhanced table styling for portal dashboard */
+.portal-table-scroll-mb table,
+.portal-table-scroll table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.portal-table-scroll-mb th,
+.portal-table-scroll th {
+    background: var(--primary-accent, #1d1d1f);
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    text-align: left;
+}
+
+.portal-table-scroll-mb td,
+.portal-table-scroll td {
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+    padding: 0.75rem 1rem;
+}
+
+.portal-table-scroll-mb tr:hover,
+.portal-table-scroll tr:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/* Ensure action buttons are uniformly styled */
+.portal-action-btn {
+    background: var(--primary-accent, #1d1d1f);
+    color: white;
+    border: none;
+    border-radius: 99px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.portal-action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Add spacing for table containers */
+.portal-table-scroll-mb,
+.portal-table-scroll {
+    margin-bottom: 2rem;
+    overflow-x: auto;
+}
+
+/* Preserve existing styles */
+.portal-td-center-muted {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 1.5rem;
+}
+
+.portal-td-center {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+/* Driver leaderboard table styling */
+.portal-driver-table-card table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.portal-driver-table-card th,
+.portal-driver-table-card td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+}
+
+.portal-driver-table-card th {
+    background: var(--primary-accent, #1d1d1f);
+    color: white;
+    font-weight: 600;
+    text-align: left;
+}
+
+.portal-driver-table-card tr:hover {
+    background: rgba(255,255,255,0.04);
+}
+
+/* End of driver table styles */
+
+
+/* Status dropdown styling */
+.status-select-dropdown {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color, #cbd5e1);
+    border-radius: 99px;
+    background: white;
+    color: #1d1d1f;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="none" stroke="%231d1d1f" stroke-width="2" d="M6 9l6 6 6-6"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 0.75rem;
+}
+.status-select-dropdown:focus {
+    outline: none;
+    border-color: var(--primary-accent, #1d1d1f);
+    box-shadow: 0 0 0 2px rgba(29,29,31,0.2);
+}
