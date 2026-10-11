@@ -50,16 +50,12 @@ function renderRoutes(gridElement, routesList, routeImages = []) {
     routesList.forEach(route => {
         const card = document.createElement('div');
         card.className = 'glass-panel route-card';
-        card.style.padding = '1.75rem';
-        card.style.overflow = 'hidden';
-        card.style.display = 'flex';
-        card.style.flexDirection = 'column';
-        card.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
 
         const routeName = route.STARTLOCATION ? `${route.STARTLOCATION} to ${route.ENDLOCATION}` : 'Unknown Route';
         const routeId = route.ROUTEID || route.routeId || 'N/A';
         const isPopular = route.ISPOPULAR === 'Y';
         const status = isPopular ? '★ Popular' : 'Active';
+        const badgeClass = isPopular ? 'popular' : 'standard';
         const distance = route.DISTANCEKM ? `${route.DISTANCEKM} Km` : 'N/A';
         const duration = route.ESTIMATEDDURATION || '';
 
@@ -78,22 +74,22 @@ function renderRoutes(gridElement, routesList, routeImages = []) {
         }
 
         card.innerHTML = `
-            <div style="height: 180px; margin: -1.75rem -1.75rem 1.5rem -1.75rem; overflow: hidden; position: relative;">
-                <img src="${imgUrl}" alt="${routeName}" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.src='${DEFAULT_ROUTE_IMAGE}'">
-                <span style="position: absolute; top: 12px; right: 12px; background: ${isPopular ? '#0284c7' : 'rgba(15, 23, 42, 0.75)'}; color: #ffffff; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; backdrop-filter: blur(8px); box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+            <div class="route-card-img-wrap">
+                <img src="${imgUrl}" alt="${routeName}" class="route-card-img" onerror="this.src='${DEFAULT_ROUTE_IMAGE}'">
+                <span class="route-card-badge ${badgeClass}">
                     ${status}
                 </span>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
-                <h3 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin: 0;">${routeName}</h3>
+            <div class="route-card-header">
+                <h3 class="route-card-title">${routeName}</h3>
             </div>
-            <p style="margin-bottom: 0.4rem; font-size: 0.85rem; color: #64748b;">Route ID: <strong style="color: #0f172a;">#${routeId}</strong></p>
-            <p style="margin-bottom: 1.5rem; font-size: 0.9rem; color: #475569; display: flex; align-items: center; gap: 0.4rem;">
+            <p class="route-card-id">Route ID: <strong>#${routeId}</strong></p>
+            <p class="route-card-meta">
                 <span>📍 ${distance}</span>
-                ${duration ? `<span style="color: #94a3b8;">&bull;</span> <span>⏱️ ${duration}</span>` : ''}
+                ${duration ? `<span class="route-card-meta-dot">&bull;</span> <span>⏱️ ${duration}</span>` : ''}
             </p>
-            <div style="margin-top: auto;">
-                <a href="book.html?routeId=${routeId}" class="btn-primary" style="text-decoration: none; display: block; text-align: center; width: 100%; padding: 0.75rem 1rem; border-radius: 12px; font-weight: 700;">Book This Route &rarr;</a>
+            <div class="route-card-footer">
+                <a href="book.html?routeId=${routeId}" class="btn-primary route-card-book-btn">Book This Route &rarr;</a>
             </div>
         `;
 
