@@ -151,7 +151,11 @@ async function fetchRecentReviews() {
             card.className = 'masonry-item review-card';
 
             const ratingVal = review.rating || 5;
-            const stars = '★'.repeat(ratingVal) + '☆'.repeat(Math.max(0, 5 - ratingVal));
+            const stars = Array.from({ length: 5 }, (_, i) =>
+                i < ratingVal
+                    ? '<i class="fa-solid fa-star text-warning"></i>'
+                    : '<i class="fa-regular fa-star text-muted"></i>'
+            ).join(' ');
             const feedbackText = review.feedbackText || review.feedback || '';
             const pId = review.passengerId || review.passengerID || 'N/A';
             const rId = review.routeId || review.routeID || 'N/A';

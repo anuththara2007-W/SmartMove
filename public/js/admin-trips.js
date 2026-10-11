@@ -294,7 +294,11 @@ function renderSelectorList(filter = '') {
         ).map(v => {
             const activeCount = v.ACTIVETRIPSCOUNT !== undefined ? v.ACTIVETRIPSCOUNT : (v.activeTripsCount || 0);
             const isAvail = activeCount === 0;
-            const statusLabel = isAvail ? '🟢 Available' : (v.CURRENTTRIPSTATUS === 'In Progress' ? `🟠 On Trip (#${v.CURRENTTRIPID})` : `🔵 Scheduled (#${v.CURRENTTRIPID})`);
+            const statusLabel = isAvail
+                ? '<i class="fa-solid fa-circle text-success"></i> Available'
+                : (v.CURRENTTRIPSTATUS === 'In Progress'
+                    ? `<i class="fa-solid fa-circle text-warning"></i> On Trip (#${v.CURRENTTRIPID})`
+                    : `<i class="fa-solid fa-circle text-primary"></i> Scheduled (#${v.CURRENTTRIPID})`);
             const completedNote = (v.COMPLETEDTRIPSCOUNT > 0) ? ` &bull; ${v.COMPLETEDTRIPSCOUNT} completed trip(s)` : '';
             return {
                 id: v.VEHICLEID,

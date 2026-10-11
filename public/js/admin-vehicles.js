@@ -150,22 +150,24 @@ function renderFleet(gridElement, vehiclesList, docsList) {
         if (status !== 'Active') {
             availabilityBadge = `<span class="badge-inactive">${status}</span>`;
         } else if (activeTripsCount > 0) {
-            const label = currentTripStatus === 'In Progress' ? `🟠 On Trip (#${currentTripId})` : `🔵 Scheduled (#${currentTripId})`;
+            const label = currentTripStatus === 'In Progress'
+                ? `<i class="fa-solid fa-circle text-warning"></i> On Trip (#${currentTripId})`
+                : `<i class="fa-solid fa-circle text-primary"></i> Scheduled (#${currentTripId})`;
             availabilityBadge = `<span class="badge-busy">${label}</span>`;
             availabilityNote = `<div class="note-busy">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <i class="fa-solid fa-circle-exclamation"></i>
                 Assigned to active trip &bull; Available once completed
             </div>`;
         } else {
-            availabilityBadge = `<span class="badge-available">🟢 Available to Book</span>`;
+            availabilityBadge = `<span class="badge-available"><i class="fa-solid fa-circle text-success"></i> Available to Book</span>`;
             if (completedTripsCount > 0) {
                 availabilityNote = `<div class="note-available">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <i class="fa-solid fa-check"></i>
                     ${completedTripsCount} Completed Trip(s) &bull; Ready for new booking
                 </div>`;
             } else {
                 availabilityNote = `<div class="note-available">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <i class="fa-solid fa-check"></i>
                     Ready for trip assignment
                 </div>`;
             }

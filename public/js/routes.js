@@ -54,7 +54,7 @@ function renderRoutes(gridElement, routesList, routeImages = []) {
         const routeName = route.STARTLOCATION ? `${route.STARTLOCATION} to ${route.ENDLOCATION}` : 'Unknown Route';
         const routeId = route.ROUTEID || route.routeId || 'N/A';
         const isPopular = route.ISPOPULAR === 'Y';
-        const status = isPopular ? '★ Popular' : 'Active';
+        const status = isPopular ? '<i class="fa-solid fa-star"></i> Popular' : 'Active';
         const badgeClass = isPopular ? 'popular' : 'standard';
         const distance = route.DISTANCEKM ? `${route.DISTANCEKM} Km` : 'N/A';
         const duration = route.ESTIMATEDDURATION || '';
@@ -85,8 +85,8 @@ function renderRoutes(gridElement, routesList, routeImages = []) {
             </div>
             <p class="route-card-id">Route ID: <strong>#${routeId}</strong></p>
             <p class="route-card-meta">
-                <span>📍 ${distance}</span>
-                ${duration ? `<span class="route-card-meta-dot">&bull;</span> <span>⏱️ ${duration}</span>` : ''}
+                <span><i class="fa-solid fa-location-dot"></i> ${distance}</span>
+                ${duration ? `<span class="route-card-meta-dot">&bull;</span> <span><i class="fa-solid fa-clock"></i> ${duration}</span>` : ''}
             </p>
             <div class="route-card-footer">
                 <a href="book.html?routeId=${routeId}" class="btn-primary route-card-book-btn">Book This Route &rarr;</a>
