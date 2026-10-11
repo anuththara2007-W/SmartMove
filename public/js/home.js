@@ -141,11 +141,11 @@ async function fetchRoutesPreview() {
             }
 
             card.innerHTML = `
-                <img src="${imgUrl}" alt="${routeName}" style="width: 100%; height: 160px; object-fit: cover; display: block;" onerror="this.src='${fallbackImage}'">
-                <div style="padding: 1.5rem;">
-                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">${routeName}</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Route ID: #${routeId} &bull; ${route.DISTANCEKM ? route.DISTANCEKM + ' km' : ''}</p>
-                    <a href="book.html?routeId=${routeId}" style="display: block; text-align: center; text-decoration: none; padding: 0.75rem 1rem; border-radius: 12px; font-weight: 700; font-size: 0.9rem; background: var(--primary-accent); color: white; transition: all 0.2s ease;">Book This Route &rarr;</a>
+                <img src="${imgUrl}" alt="${routeName}" class="route-mini-card-img" onerror="this.src='${fallbackImage}'">
+                <div class="route-mini-card-body">
+                    <h3 class="route-mini-card-title">${routeName}</h3>
+                    <p class="route-mini-card-meta">Route ID: #${routeId} &bull; ${route.DISTANCEKM ? route.DISTANCEKM + ' km' : ''}</p>
+                    <a href="book.html?routeId=${routeId}" class="route-mini-card-btn">Book This Route &rarr;</a>
                 </div>
             `;
             
