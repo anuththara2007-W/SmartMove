@@ -41,8 +41,8 @@ function renderRoutes(gridElement, routesList, routeImages = []) {
     gridElement.innerHTML = '';
 
     // Check if admin panel configured a default route image (resourceId === 0 or caption contains 'default')
-    const adminDefaultRouteImg = routeImages.find(img => 
-        (img.resourceType === 'route' || !img.resourceType) && 
+    const adminDefaultRouteImg = routeImages.find(img =>
+        (img.resourceType === 'route' || !img.resourceType) &&
         (Number(img.resourceId) === 0 || (img.caption && img.caption.toLowerCase().includes('default')))
     );
     const defaultRouteUrl = adminDefaultRouteImg?.imageUrl || DEFAULT_ROUTE_IMAGE;
@@ -65,10 +65,10 @@ function renderRoutes(gridElement, routesList, routeImages = []) {
 
         // Match specific route image
         let imgUrl = defaultRouteUrl;
-        const matchedImg = routeImages.find(img => 
+        const matchedImg = routeImages.find(img =>
             (img.resourceType === 'route' || !img.resourceType) &&
             (Number(img.resourceId) === Number(routeId) || String(img.resourceId) === String(routeId) ||
-             Number(img.referenceId) === Number(routeId) || String(img.referenceId) === String(routeId))
+                Number(img.referenceId) === Number(routeId) || String(img.referenceId) === String(routeId))
         );
         if (matchedImg && matchedImg.imageUrl) {
             imgUrl = matchedImg.imageUrl;
