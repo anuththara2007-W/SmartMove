@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartMove - Help & Support</title>
+    <meta name="description" content="Get help with your SmartMove bookings, routes, and account. Browse FAQs or contact our 24/7 support team.">
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="css/support.css">
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Standard Header -->
+    <header class="standard-header">
+        <a href="index.html" class="logo">SmartMove.</a>
+        <nav class="standard-nav">
+            <a href="announcements.html">Announcements</a>
+            <a href="routes.html">Routes</a>
+            <a href="reviews.html">Reviews</a>
+            <a href="book.html">Book Ticket</a>
+        </nav>
+        <div class="hero-actions">
+            <a href="system-portal/login.html" class="btn-transparent btn-login-nav">Admin Login</a>
+        </div>
+    </header>
+
+    <main class="page-main">
+
+        <!-- Hero Section -->
+        <div class="support-hero gsap-fade-down">
+            <div class="support-badge">
+                <i class="fa-solid fa-headset"></i>
+                24 / 7 Support
+            </div>
+            <h1 class="support-hero-title">How can we help you?</h1>
+            <p class="support-hero-desc">
+                Search our knowledge base, browse frequently asked questions, or reach our team directly.
+                We're committed to making every SmartMove experience seamless.
+            </p>
+
+            <!-- Search Bar -->
+            <div class="support-search-bar">
+                <i class="fa-solid fa-magnifying-glass support-search-icon"></i>
+                <input
+                    type="text"
+                    id="faqSearchInput"
+                    class="support-search-input"
+                    placeholder="Search questions, topics, or keywords..."
+                    autocomplete="off"
+                >
+                <button class="support-search-clear" id="searchClearBtn" title="Clear search">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Contact Channels -->
+        <div class="support-channels-grid gsap-fade-up">
+
+            <!-- Live Chat -->
+            <div class="support-channel-card">
+                <div>
+                    <div class="channel-top-bar">
+                        <div class="channel-icon blue">
+                            <i class="fa-solid fa-comment-dots"></i>
+                        </div>
+                        <span class="channel-tag badge-live">
+                            <span class="pulse-dot"></span>
+                            Live
+                        </span>
+                    </div>
+                    <h3 class="channel-title">Live Chat</h3>
+                    <p class="channel-desc">Connect instantly with a support agent. Average response time under 2 minutes.</p>
+                </div>
+                <a href="#" class="channel-action" id="liveChatBtn">
+                    Stay Tuned <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Email Support -->
+            <div class="support-channel-card">
+                <div>
+                    <div class="channel-top-bar">
+                        <div class="channel-icon green">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <span class="channel-tag badge-fast">
+                            <i class="fa-regular fa-clock"></i>
+                            ~2h reply
+                        </span>
+                    </div>
+                    <h3 class="channel-title">Email Support</h3>
+                    <p class="channel-desc">Send us a detailed message and we'll get back to you with a thorough resolution.</p>
+                </div>
+                <a href="mailto:support@smartmove.lk" class="channel-action">
+                    support@smartmove.lk <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Help Center -->
+            <div class="support-channel-card">
+                <div>
+                    <div class="channel-top-bar">
+                        <div class="channel-icon amber">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <span class="channel-tag badge-hub">
+                            <i class="fa-solid fa-layer-group"></i>
+                            Knowledge Hub
+                        </span>
+                    </div>
+                    <h3 class="channel-title">Help Center</h3>
+                    <p class="channel-desc">Browse step-by-step guides, video tutorials, and in-depth articles on every SmartMove feature.</p>
+                </div>
+                <a href="#faqSection" class="channel-action">
+                    Browse articles <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Community Forum -->
+            <div class="support-channel-card">
+                <div>
+                    <div class="channel-top-bar">
+                        <div class="channel-icon purple">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <span class="channel-tag badge-active">
+                            <i class="fa-solid fa-fire"></i>
+                            Active
+                        </span>
+                    </div>
+                    <h3 class="channel-title">Community Forum</h3>
+                    <p class="channel-desc">Ask questions, share tips, and connect with thousands of SmartMove commuters.</p>
+                </div>
+                <a href="#" class="channel-action">
+                    Stay Tuned <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="support-faq-section" id="faqSection">
+
+            <!-- FAQ Accordion -->
+                <div class="faq-header-row">
+                    <h2 class="faq-title">Frequently Asked Questions</h2>
+                    <p class="faq-subtitle">Find quick answers to the most common SmartMove questions.</p>
+                </div>
+
+                <!-- FAQ Category Filters -->
+                <div class="faq-filter-chips">
+                    <button class="faq-chip active" data-category="all">All</button>
+                    <button class="faq-chip" data-category="booking">Booking</button>
+                    <button class="faq-chip" data-category="routes">Routes</button>
+                    <button class="faq-chip" data-category="account">Account</button>
+                    <button class="faq-chip" data-category="payment">Payment</button>
+                    <button class="faq-chip" data-category="technical">Technical</button>
+                </div>
+
+                <!-- FAQ Items -->
+                <div class="faq-accordion-list" id="faqList">
+
+                    <!-- Booking FAQs -->
+                    <div class="faq-item" data-category="booking">
+                        <button class="faq-question-btn" aria-expanded="false">
+                            <span class="faq-question-text">
+                                <span class="faq-q-badge">Q</span>
+                                How do I book a ticket on SmartMove?
+                            </span>
+                            <span class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                        </button>
+                        <div class="faq-answer-body">
+                            Navigate to <a href="book.html">Book Ticket</a> from the navigation bar. Fill in your
+                            passenger details, choose your route and preferred trip, then confirm your booking. You'll
+                            receive a booking confirmation instantly with your ticket reference number.
+                        </div>
+                    </div>
+
+                    <div class="faq-item" data-category="booking">
+                        <button class="faq-question-btn" aria-expanded="false">
+                            <span class="faq-question-text">
+                                <span class="faq-q-badge">Q</span>
+                                Can I cancel or modify my booking?
+                            </span>
+                            <span class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                        </button>
+                        <div class="faq-answer-body">
+                            Booking modifications and cancellations must be requested at least 2 hours before the
+                            scheduled departure. Contact our support team via Live Chat or email with your ticket
+                            reference number and the changes you require.
+                        </div>
+                    </div>
+
+                    <div class="faq-item" data-category="booking">
+                        <button class="faq-question-btn" aria-expanded="false">
+                            <span class="faq-question-text">
+                                <span class="faq-q-badge">Q</span>
+                                What happens if my booked trip is cancelled?
+                            </span>
+                            <span class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                        </button>
+                        <div class="faq-answer-body">
+                            If SmartMove cancels a trip, you will be notified via the announcements board and, where
+                            possible, reassigned to the next available trip on the same route. Check
+                            <a href="announcements.html">Announcements</a> for real-time operational updates.
+                        </div>
+                    </div>
+
+                    <!-- Routes FAQs -->
+                    <div class="faq-item" data-category="routes">
+                        <button class="faq-question-btn" aria-expanded="false">
+                            <span class="faq-question-text">
+                                <span class="faq-q-badge">Q</span>
+                                How do I find available routes?
+                            </span>
+                            <span class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                        </button>
+                        <div class="faq-answer-body">
+                            Visit the <a href="routes.html">Routes</a> page to browse and search all available routes.
+                            You can filter by origin, destination, and view details like distance and base fare. Popular
+                            routes are also previewed on the homepage.
+                        </div>
+                    </div>
+
+                    <div class="faq-item" data-category="routes">
+                        <button class="faq-question-btn" aria-expanded="false">
+                            <span class="faq-question-text">
+                                <span class="faq-q-badge">Q</span>
+                                Are route timetables updated in real time?
+                            </span>
+                            <span class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                        </button>
+                        <div class="faq-answer-body">
+                            Yes. SmartMove's route and trip data is powered by our Oracle RDBMS backend, updated
+                            in real time by our operations team. Any schedule changes are immediately reflected on the
+                            Routes page and communicated via Announcements.
+                        </div>
+                    </div>
+
+                    <!-- Payment FAQs -->
+                    <div class="faq-item" data-category="payment">
+                        <button class="faq-question-btn" aria-expanded="false">
+                            <span class="faq-question-text">
+                                <span class="faq-q-badge">Q</span>
+                                What payment methods are accepted?
+                            </span>
+                            <span class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                        </button>
+                        <div class="faq-answer-body">
+                            SmartMove accepts cash payments at the point of travel as well as offline payment logging by
+                            administrators. Online card payment integration is on our roadmap. Contact support for
+                            payment-related concerns with your booking reference.
+                        </div>
+                    </div>
+
+                    <div class="faq-item" data-category="payment">
+                        <button class="faq-question-btn" aria-expanded="false">
+                            <span class="faq-question-text">
+                                <span class="faq-q-badge">Q</span>
+                                How is the fare calculated?
+                            </span>
+                            <span class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                        </button>
+                        <div class="faq-answer-body">
+                            Fares are calculated based on the route's base fare as defined in the system. The base fare
+                            per route is visible on the <a href="routes.html">Routes</a> page. Additional charges may
+                            apply based on trip type or special arrangements.
+                        </div>
+                    </div>
+
+                    <!-- Account FAQs -->
+                    <div class="faq-item" data-category="account">
+                        <button class="faq-question-btn" aria-expanded="false">
+                            <span class="faq-question-text">
+                                <span class="faq-q-badge">Q</span>
+                                How can I view my travel history?
+                            </span>
+                            <span class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                        </button>
+                        <div class="faq-answer-body">
+                            Passenger travel history is accessible through the SmartMove Admin Portal under the
+                            Passengers section. For personal history requests, contact our support team with your
+                            registered name and contact number and we'll provide a detailed travel record.
+                        </div>
+                    </div>
+
+                    <div class="faq-item" data-category="account">
+                        <button class="faq-question-btn" aria-expanded="false">
+                            <span class="faq-question-text">
+                                <span class="faq-q-badge">Q</span>
+                                How do I update my passenger details?
+                            </span>
+                            <span class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                        </button>
+                        <div class="faq-answer-body">
+                            To update your name, phone number, or email address on record, please contact our support
+                            team via email or Live Chat. Provide your original registration details and
+                            the corrections you need made.
+                        </div>
+                    </div>
+
+                    <!-- Technical FAQs -->
+                    <div class="faq-item" data-category="technical">
+                        <button class="faq-question-btn" aria-expanded="false">
+                            <span class="faq-question-text">
+                                <span class="faq-q-badge">Q</span>
+                                The page is not loading — what should I do?
+                            </span>
+                            <span class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                        </button>
+                        <div class="faq-answer-body">
+                            Try refreshing the page or clearing your browser cache (Ctrl + Shift + R). If the issue
+                            persists, our server may be temporarily down for maintenance. Check
+                            <a href="announcements.html">Announcements</a> for system notices or contact our technical
+                            support team directly.
+                        </div>
+                    </div>
+
+                    <div class="faq-item" data-category="technical">
+                        <button class="faq-question-btn" aria-expanded="false">
+                            <span class="faq-question-text">
+                                <span class="faq-q-badge">Q</span>
+                                How do I report a bug or technical issue?
+                            </span>
+                            <span class="faq-toggle-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                        </button>
+                        <div class="faq-answer-body">
+                            Email our support team and mark your subject <strong>URGENT</strong> to flag
+                            technical issues. Include a description of the problem, the page where it occurred, and your
+                            browser/device information. Our engineering team will investigate within 24 hours.
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Empty State for FAQ search -->
+                <div class="faq-empty-state" id="faqEmptyState">
+                    <i class="fa-regular fa-face-sad-tear"></i>
+                    <p style="font-weight: 600; color: #475569; margin-bottom: 0.4rem;">No results found</p>
+                    <p style="font-size: 0.88rem;">Try a different keyword or browse all categories.</p>
+                </div>
+
+        </div>
+
+        <!-- Emergency / Disruption Banner -->
+        <div class="support-emergency-banner gsap-fade-up">
+            <div class="emergency-banner-decor"></div>
+            <div class="emergency-banner-content">
+                <div class="emergency-pill-tag">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Emergency Line
+                </div>
+                <h2 class="emergency-banner-title">Experiencing a service disruption?</h2>
+                <p class="emergency-banner-desc">
+                    For urgent safety incidents, missed trips, or severe service outages — call our operations
+                    hotline directly. We operate a 24-hour emergency dispatch line for critical SmartMove situations.
+                </p>
+            </div>
+            <div class="emergency-banner-actions">
+                <a href="https://wa.me/94716005703" target="_blank" class="btn-emergency-call">
+                <i class="fa-brands fa-whatsapp"></i> Call Hotline
+                </a>
+                <a href="announcements.html" class="btn-emergency-announcements">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    Live Announcements
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="site-footer-inner">
+            <div class="site-footer-grid">
+                <!-- Brand -->
+                <div>
+                    <h2 class="site-footer-brand-title">SmartMove.</h2>
+                    <p class="site-footer-brand-desc">
+                        SmartMove is a next-generation university transport management system built with Oracle RDBMS
+                        &amp; MongoDB, delivering seamless commuting experiences.
+                    </p>
+                    <div class="site-footer-socials">
+                        <a href="#" class="site-footer-social-btn" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#" class="site-footer-social-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="site-footer-social-btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="site-footer-social-btn" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h4 class="site-footer-col-title">Company</h4>
+                    <ul class="site-footer-nav-list">
+                        <li><a href="#" class="site-footer-nav-link">About Us</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Our Team</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Careers</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Press Kit</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Blog</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h4 class="site-footer-col-title">Services</h4>
+                    <ul class="site-footer-nav-list">
+                        <li><a href="routes.html" class="site-footer-nav-link">Route Planning</a></li>
+                        <li><a href="book.html" class="site-footer-nav-link">Ticket Booking</a></li>
+                        <li><a href="announcements.html" class="site-footer-nav-link">Announcements</a></li>
+                        <li><a href="reviews.html" class="site-footer-nav-link">Reviews</a></li>
+                        <li><a href="admin.html" class="site-footer-nav-link">Fleet Management</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div>
+                    <h4 class="site-footer-col-title">Support</h4>
+                    <ul class="site-footer-nav-list">
+                        <li><a href="support.html" class="site-footer-nav-link">Help Center</a></li>
+                        <li><a href="support.html" class="site-footer-nav-link">Contact Us</a></li>
+                        <li><a href="support.html#faqSection" class="site-footer-nav-link">FAQs</a></li>
+                        <li><a href="support.html" class="site-footer-nav-link">Report a Bug</a></li>
+                        <li><a href="announcements.html" class="site-footer-nav-link">System Status</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal -->
+                <div>
+                    <h4 class="site-footer-col-title">Legal</h4>
+                    <ul class="site-footer-nav-list">
+                        <li><a href="#" class="site-footer-nav-link">Privacy Policy</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Terms of Service</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Cookie Policy</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Accessibility</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="site-footer-bottom">
+                <p class="site-footer-bottom-text">&copy; 2026 SmartMove Transport Solutions. All rights reserved.</p>
+                <p class="site-footer-bottom-text">Designed &amp; Developed by <span class="site-footer-author-name">Anuththara</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/support.js"></script>
+
+</body>
+
+</html>
