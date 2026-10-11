@@ -1,0 +1,122 @@
+================================================================================
+          SMARTMOVE TRANSPORT SOLUTIONS - COURSEWORK PROJECT DIVISION
+================================================================================
+Module: Database Management II (DM-2 / HDSE 26.1)
+Architecture: Hybrid Enterprise System (Oracle RDBMS 19c/21c + MongoDB + Node.js/Express)
+Total Team Members: 3
+
+--------------------------------------------------------------------------------
+MEMBER 1: ANUTHTHARA (TEAM LEAD & LEAD FULL-STACK ARCHITECT)
+Workload Share: 50% (Major / Core Architecture & Advanced PL/SQL)
+--------------------------------------------------------------------------------
+Key Responsibilities:
+1. System Architecture & Foundation:
+   - Server architecture setup, Express server routing, middleware (`server.js`, `apiRoutes.js`).
+   - Dual-database connection management and connection pools (`config/oracle.js`, `config/mongo.js`).
+   - Global UI Design System, responsive styling, and modern dark-mode accents (`public/global.css`).
+
+2. Homepage & Public Presentation:
+   - Full Homepage Architecture & Interactive Hero Section (`public/index.html`, `public/css/home.css`).
+   - Homepage dynamic animations, CTA consultation banner, GSAP interactions (`public/js/home.js`).
+   - Unified 5-column corporate site footer across all public and portal views.
+
+3. Admin Portal & Executive Dashboard:
+   - Executive System Portal Dashboard (`public/system-portal/index.html`, `public/css/portal-dashboard.css`).
+   - Real-time KPI Metric cards, executive dark mesh cards, and transaction tables (`public/js/admin-dashboard.js`).
+   - Standalone Admin Management view (`public/admin.html`, `public/js/admin.js`, `public/css/admin.css`).
+   - Modern React/TypeScript Admin Dashboard & Layout (`client/src/pages/AdminDashboard.tsx`, `client/src/components/Layout.tsx`).
+
+4. Business Intelligence & Advanced PL/SQL Engine:
+   - PL/SQL Stored Function: `CalculateTotalRevenue(p_StartDate, p_EndDate)` for calculating lifetime and periodic revenues from completed payments.
+   - PL/SQL Stored Procedure: `GetFrequentRoutes` for cursor-based travel frequency analysis.
+   - PL/SQL Stored Procedure: `GetPassengerHistory(p_PassengerID)` for individual passenger travel audits.
+   - Executive Reporting Dashboard & Visualizations (`public/reports.html`, `public/js/reports.js`, `client/src/pages/ReportsView.tsx`).
+
+5. Fleet & Trip Scheduling Management:
+   - Fleet Vehicle Management Portal (`public/system-portal/vehicles.html`, `public/js/admin-vehicles.js`).
+   - Trip Scheduling & Conflict Checking (`public/system-portal/trips.html`, `public/js/admin-trips.js`).
+   - Oracle Schema Design for `Vehicles`, `Trips`, `Maintenance`, `Payments` (`client/docs/schema.sql`).
+   - Core Oracle Controller transaction endpoints (`controllers/oracleController.js`).
+
+Key Files:
+- index.html, home.js, home.css, global.css
+- system-portal/index.html, portal-dashboard.css, admin-dashboard.js
+- reports.html, reports.js, ReportsView.tsx, AdminDashboard.tsx
+- system-portal/vehicles.html, admin-vehicles.js
+- system-portal/trips.html, admin-trips.js
+- schema.sql (Core Tables & PL/SQL Functions/Procedures)
+- server.js, oracleController.js (Core), config/oracle.js
+
+
+--------------------------------------------------------------------------------
+MEMBER 2: PABASARA (FRONTEND & INTEGRATION DEVELOPER)
+Workload Share: 30% (Ticketing, Routes & Public Travel Services)
+--------------------------------------------------------------------------------
+Key Responsibilities:
+1. Ticket Booking System:
+   - Public Passenger Booking Portal (`public/book.html`, `public/js/book.js`, `public/css/book.css`).
+   - Trip and seat selection workflow, passenger information collection, fare computation.
+   - Admin Bookings Management Portal (`public/system-portal/book.html`, `public/js/admin-book.js`).
+
+2. Route Exploration & Timetables:
+   - Public Route Browsing & Search Portal (`public/routes.html`, `public/js/routes.js`).
+   - Route filtering by origin/destination, distance calculator, base fare display.
+   - Admin Route Management Portal (`public/system-portal/routes.html`, `public/js/admin-routes.js`).
+
+3. Live Announcements & Travel Updates:
+   - Public Travel Announcements Portal (`public/announcements.html`, `public/js/announcements.js`).
+   - Real-time delay notices, weather alerts, and category tag filtering (Alert, Info, Promo).
+   - Admin Announcements Management Portal (`public/system-portal/manage-announcements.html`, `public/js/admin-announcements.js`).
+
+4. Database Integration & APIs:
+   - Oracle Tables: `Tickets`, `Routes`, `Passengers` CRUD queries.
+   - Express REST API endpoints for Booking, Route querying, and Announcements retrieval.
+   - Client-side form validations and dynamic table updates for ticket reservations.
+
+Key Files:
+- book.html, book.js, book.css
+- routes.html, routes.js
+- announcements.html, announcements.js
+- system-portal/book.html, admin-book.js
+- system-portal/routes.html, admin-routes.js
+- system-portal/manage-announcements.html, admin-announcements.js
+
+
+--------------------------------------------------------------------------------
+MEMBER 3: PAWAN (SUPPORTING DEVELOPER)
+Workload Share: 20% (Feedback, Media Assets & Secondary Portal Lists)
+--------------------------------------------------------------------------------
+Key Responsibilities:
+1. Passenger Feedback & Driver Reviews (MongoDB):
+   - Public Passenger Review & Rating Form (`public/reviews.html`, `public/js/reviews.js`).
+   - Star rating system, customer comments display, driver feedback cards.
+   - MongoDB Schema & Controller logic for Reviews (`models/Review.js`, `controllers/mongoController.js` review endpoints).
+
+2. Media & Asset Management (MongoDB GridFS / Document Storage):
+   - Vehicle Image and Document Management Portal (`public/system-portal/manage-images.html`, `public/js/admin-media.js`).
+   - Uploading vehicle registration pictures and bus route banners.
+
+3. Secondary Entity Listings & Auditing:
+   - Driver Roster Management view (`public/system-portal/drivers.html`, `public/js/admin-drivers.js`).
+   - Registered Passenger Directory view (`public/system-portal/passengers.html`, `public/js/admin-passengers.js`).
+   - Offline Payment Log view (`public/system-portal/payments.html`, `public/js/admin-payments.js`).
+
+4. Test Data & Documentation:
+   - MongoDB database seeding script (`seed_mongo.js`).
+   - Sample test data population for reviews, feedback, and driver leaderboard records.
+   - User documentation assistance and basic API endpoint testing.
+
+Key Files:
+- reviews.html, reviews.js
+- system-portal/manage-images.html, admin-media.js
+- system-portal/drivers.html, admin-drivers.js
+- system-portal/passengers.html, admin-passengers.js
+- system-portal/payments.html, admin-payments.js
+- seed_mongo.js, models/Review.js
+
+================================================================================
+SUMMARY MATRIX:
+- Anuththara (50%): Lead Architect, Server/DB Engine, Hero & Home UI, Admin Portal, PL/SQL Analytics (CalculateTotalRevenue, GetFrequentRoutes), Reports, Vehicles & Trips.
+- Pabasara (30%): Public Booking (book.html/js), Route Exploration (routes.html/js), Announcements (announcements.html/js), Admin Booking/Route/Announcement management.
+- Pawan (20%): Public Reviews (reviews.html/js), Media Uploads (manage-images.html), Driver/Passenger/Payment tables, MongoDB Review Seeding & Testing.
+================================================================================
