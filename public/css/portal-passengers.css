@@ -1,0 +1,124 @@
+/* ==========================================================================
+   SmartMove - System Portal Passenger Management Stylesheet
+   Location: public/css/portal-passengers.css
+   ========================================================================== */
+
+.form-label {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #334155;
+    letter-spacing: -0.01em;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.85rem 1.15rem;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+    background-color: #f8fafc;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    color: var(--text-main);
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    outline: none;
+    background-color: #ffffff;
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+}
+
+.form-input::placeholder {
+    color: #94a3b8;
+}
+
+.crud-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--border-color);
+}
+
+.crud-table th,
+.crud-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.crud-table th {
+    background-color: #f8fafc;
+    font-weight: 700;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.action-btn {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
+}
+
+.btn-edit {
+    background: var(--primary-accent);
+    color: white;
+}
+
+.btn-delete {
+    background: var(--error-color);
+    color: white;
+}
+
+.skeleton-row-loader {
+    height: 40px;
+    width: 100%;
+    border-radius: 8px;
+}
+
+.empty-table-cell {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 2rem;
+}
+
+.passenger-modal-content {
+    max-width: 500px;
+}
+
+.passenger-modal-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.form-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group-spaced {
+    margin-bottom: 1rem;
+}
+
+.form-group-bottom {
+    margin-bottom: 1.5rem;
+}
+
+.btn-passenger-submit {
+    width: 100%;
+    border-radius: 12px;
+    padding: 0.9rem;
+}

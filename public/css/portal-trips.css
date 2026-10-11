@@ -271,3 +271,45 @@
     white-space: nowrap;
     margin-left: 0.75rem;
 }
+
+.modal-high-z {
+    z-index: 3000;
+}
+
+.modal-confirm-z {
+    z-index: 3001;
+}
+
+.modal-content-sm {
+    max-width: 500px;
+}
+
+.modal-content-confirm {
+    max-width: 420px;
+    text-align: center;
+}
+
+.modal-confirm-title {
+    margin-bottom: 0.75rem;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.modal-confirm-text {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.modal-btn-row {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.modal-title-bold {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
