@@ -777,6 +777,9 @@ footer {
     margin-top: 4rem;
     width: 100%;
 }
+.site-footer.flush {
+    margin-top: 0;
+}
 .site-footer-inner {
     max-width: 1200px;
     margin: 0 auto;
@@ -804,8 +807,9 @@ footer {
 .site-footer-brand-title { font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
 .site-footer-brand-desc { color: rgba(255,255,255,0.6); font-size: 0.9rem; line-height: 1.7; max-width: 300px; }
 .site-footer-socials { display: flex; gap: 1rem; margin-top: 1.5rem; }
-.site-footer-social-btn { width: 36px; height: 36px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s ease; }
-.site-footer-social-btn:hover { background: rgba(255,255,255,0.25); }
+.site-footer-social-btn { width: 36px; height: 36px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s ease, transform 0.2s ease; text-decoration: none; color: #ffffff; }
+.site-footer-social-btn i { font-size: 0.95rem; color: #ffffff; }
+.site-footer-social-btn:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
 .site-footer-col-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.4); margin-bottom: 1.5rem; font-weight: 700; }
 .site-footer-nav-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.8rem; }
 .site-footer-nav-link { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; transition: color 0.2s ease; }
@@ -815,6 +819,40 @@ footer {
 .site-footer-author-name { color: #ffffff; font-weight: 600; }
 .nav-active { color: var(--primary-accent) !important; font-weight: 600; }
 .btn-login-nav { color: var(--text-main); }
+
+/* Color utilities for modern icons */
+.text-success { color: var(--success-color, #10b981) !important; }
+.text-warning { color: #f59e0b !important; }
+.text-danger { color: var(--error-color, #ef4444) !important; }
+.text-primary { color: var(--primary-accent, #0071e3) !important; }
+.text-muted { color: #94a3b8 !important; }
+
+/* Status Badges */
+.status-badge-active {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+.status-badge-draft {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
 
 /* Global Status Badges & Action Dropdowns */
 .booking-status-badge {
