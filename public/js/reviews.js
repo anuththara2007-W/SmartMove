@@ -64,9 +64,21 @@ async function handleReviewSubmit(event) {
     
     let isValid = true;
 
-    if (!passengerId || isNaN(passengerId) || Number(passengerId) <= 0) { showError('reviewPassengerId'); isValid = false; }
-    if (!routeId || isNaN(routeId) || Number(routeId) <= 0) { showError('reviewRouteId'); isValid = false; }
-    if (!feedback) { showError('reviewText'); isValid = false; }
+    if (!passengerId || isNaN(passengerId) || Number(passengerId) <= 0) { 
+        showError('reviewPassengerId'); 
+        SmartMoveUtils.showToast('Please select a passenger first.', 'error');
+        isValid = false; 
+    }
+    if (!routeId || isNaN(routeId) || Number(routeId) <= 0) { 
+        showError('reviewRouteId'); 
+        SmartMoveUtils.showToast('Please select a route first.', 'error');
+        isValid = false; 
+    }
+    if (!feedback) { 
+        showError('reviewText'); 
+        SmartMoveUtils.showToast('Please enter your feedback text.', 'error');
+        isValid = false; 
+    }
 
     if (!isValid) return;
 
@@ -92,11 +104,20 @@ async function handleReviewSubmit(event) {
             })
         });
 
-        if (!response.ok) throw new Error('Failed to submit review.');
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.error || 'Failed to submit review.');
+        }
 
         SmartMoveUtils.showToast('Thank you! Your feedback has been saved to MongoDB.', 'success');
         
         document.getElementById('reviewForm').reset();
+        const pDisp = document.getElementById('passengerDisplay');
+        if (pDisp) pDisp.value = '';
+        const rDisp = document.getElementById('routeDisplay');
+        if (rDisp) rDisp.value = '';
+        document.getElementById('reviewPassengerId').value = '';
+        document.getElementById('reviewRouteId').value = '';
         submitBtn.disabled = true;
         
         fetchRecentReviews();

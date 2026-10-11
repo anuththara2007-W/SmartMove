@@ -6,22 +6,39 @@ const ResourceImage = require('../models/ResourceImage');
 // POST /api/reviews
 const submitReview = async (req, res) => {
     try {
-        const pId = req.body.passengerID ?? req.body.passengerId;
-        const rId = req.body.routeID ?? req.body.routeId;
-        const dId = req.body.driverID ?? req.body.driverId ?? 999;
+        const rawPid = req.body.passengerID ?? req.body.passengerId;
+        const rawRid = req.body.routeID ?? req.body.routeId;
+        const rawDid = req.body.driverID ?? req.body.driverId ?? 999;
         const rating = Number(req.body.rating);
         const feedback = req.body.feedback ?? req.body.feedbackText;
 
-        if (pId === undefined || rId === undefined || !feedback || isNaN(rating)) {
-            return res.status(400).json({ error: 'Missing required review fields: passenger, route, rating, and feedback' });
+        const pId = Number(rawPid);
+        const rId = Number(rawRid);
+        const dId = Number(rawDid);
+
+        if (!rawPid || isNaN(pId) || pId <= 0) {
+            return res.status(400).json({ error: 'Please select a valid passenger.' });
+        }
+        if (!rawRid || isNaN(rId) || rId <= 0) {
+            return res.status(400).json({ error: 'Please select a valid route.' });
+        }
+        if (isNaN(rating) || rating < 1 || rating > 5) {
+            return res.status(400).json({ error: 'Please provide a valid rating between 1 and 5.' });
+        }
+        if (!feedback || String(feedback).trim().length === 0) {
+            return res.status(400).json({ error: 'Please enter feedback text.' });
         }
 
         const newReview = new Review({
-            passengerID: Number(pId),
-            routeID: Number(rId),
-            driverID: Number(dId),
-            rating: Number(rating),
-            feedback: String(feedback).trim()
+            passengerID: pId,
+            passengerId: pId,
+            routeID: rId,
+            routeId: rId,
+            driverID: dId,
+            driverId: dId,
+            rating: rating,
+            feedback: String(feedback).trim(),
+            feedbackText: String(feedback).trim()
         });
         await newReview.save();
         res.status(201).json(newReview);
