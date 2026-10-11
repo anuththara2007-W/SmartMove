@@ -97,24 +97,38 @@ async function fetchRecentBookings() {
             
             // Standard object property access
             const id = t.TICKETID || t.ticketId || t.TicketID;
-            const passengerName = `${t.FIRSTNAME || t.firstName || ''} ${t.LASTNAME || t.lastName || ''}`;
-            const route = `${t.STARTLOCATION || t.startLocation || ''} -> ${t.ENDLOCATION || t.endLocation || ''}`;
+            const passengerName = `${t.FIRSTNAME || t.firstName || ''} ${t.LASTNAME || t.lastName || ''}`.trim() || 'Guest Passenger';
+            const contact = t.PHONE || t.phone || '077-1234567';
+            const route = `${t.STARTLOCATION || t.startLocation || ''} &rarr; ${t.ENDLOCATION || t.endLocation || ''}`;
             const fare = t.FAREAMOUNT || t.fareAmount || t.FareAmount || 0;
             const status = t.TICKETSTATUS || t.ticketStatus || t.TicketStatus || 'Booked';
 
+            const statusLower = status.toLowerCase();
+            let statusBadgeClass = 'booked';
+            if (statusLower.includes('confirm')) statusBadgeClass = 'confirmed';
+            else if (statusLower.includes('cancel')) statusBadgeClass = 'cancelled';
+
             tr.innerHTML = `
-                <td><strong>#${id}</strong></td>
-                <td>${passengerName}</td>
-                <td>${route}</td>
-                <td>${SmartMoveUtils.formatCurrency(fare)}</td>
-                <td><span>${status}</span></td>
+                <td><strong style="color: #0f172a; font-family: monospace; font-size: 0.95rem;">#${id}</strong></td>
+                <td><span style="font-weight: 600; color: #1e293b;">${passengerName}</span></td>
+                <td><span style="color: #64748b; font-size: 0.85rem; font-family: monospace;">${contact}</span></td>
+                <td><span style="font-weight: 500; color: #334155;">${route}</span></td>
+                <td><strong style="color: #0f172a;">${SmartMoveUtils.formatCurrency(fare)}</strong></td>
                 <td>
-                    <select onchange="updateTicketStatus(${id}, this.value)">
-                        <option value="">Update...</option>
-                        <option value="Confirmed">Confirm</option>
-                        <option value="Cancelled">Cancel</option>
-                        <option value="Booked">Booked</option>
-                    </select>
+                    <span class="booking-status-badge ${statusBadgeClass}">
+                        <span class="status-dot"></span>
+                        ${status}
+                    </span>
+                </td>
+                <td>
+                    <div class="status-dropdown-wrapper">
+                        <select class="status-select-dropdown" onchange="updateTicketStatus(${id}, this.value)">
+                            <option value="" disabled selected>Update Status...</option>
+                            <option value="Confirmed" ${status === 'Confirmed' ? 'disabled' : ''}>✓ Confirm</option>
+                            <option value="Cancelled" ${status === 'Cancelled' ? 'disabled' : ''}>✕ Cancel</option>
+                            <option value="Booked" ${status === 'Booked' ? 'disabled' : ''}>🎫 Booked</option>
+                        </select>
+                    </div>
                 </td>
             `;
             tbody.appendChild(tr);

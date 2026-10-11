@@ -45,6 +45,98 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
+        /* Recent Passenger Bookings Status Pills & Dropdown CSS */
+        .booking-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        .booking-status-badge .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .booking-status-badge.confirmed {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+        .booking-status-badge.confirmed .status-dot {
+            background: #10b981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+        }
+        .booking-status-badge.booked {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+        .booking-status-badge.booked .status-dot {
+            background: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+        }
+        .booking-status-badge.cancelled {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+        .booking-status-badge.cancelled .status-dot {
+            background: #ef4444;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
+        }
+
+        /* Modern Status Dropdown Selector */
+        .status-dropdown-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .status-select-dropdown {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: #ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 0.85rem center;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 99px;
+            padding: 0.45rem 2.25rem 0.45rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #1e293b;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+            white-space: nowrap;
+            min-width: 145px;
+        }
+        .status-select-dropdown:hover {
+            border-color: #64748b;
+            background-color: #f8fafc;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .status-select-dropdown:focus {
+            border-color: var(--primary-accent, #0071e3);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+            background-color: #ffffff;
+        }
+        .status-select-dropdown option {
+            font-weight: 500;
+            color: #0f172a;
+            padding: 0.5rem;
+        }
+        .status-select-dropdown option:disabled {
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body>
