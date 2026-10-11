@@ -105,7 +105,7 @@ async function fetchRecentBookings() {
 
             const statusLower = status.toLowerCase();
             let statusBadgeClass = 'booked';
-            if (statusLower.includes('confirm')) statusBadgeClass = 'confirmed';
+            if (statusLower.includes('confirm') || statusLower.includes('complete')) statusBadgeClass = 'confirmed';
             else if (statusLower.includes('cancel')) statusBadgeClass = 'cancelled';
 
             tr.innerHTML = `
@@ -125,6 +125,7 @@ async function fetchRecentBookings() {
                         <select class="status-select-dropdown" onchange="updateTicketStatus(${id}, this.value)">
                             <option value="" disabled selected>Update Status...</option>
                             <option value="Confirmed" ${status === 'Confirmed' ? 'disabled' : ''}>✓ Confirm</option>
+                            <option value="Completed" ${status === 'Completed' ? 'disabled' : ''}>★ Complete</option>
                             <option value="Cancelled" ${status === 'Cancelled' ? 'disabled' : ''}>✕ Cancel</option>
                             <option value="Booked" ${status === 'Booked' ? 'disabled' : ''}>🎫 Booked</option>
                         </select>
