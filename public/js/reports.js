@@ -61,7 +61,7 @@ async function fetchFrequentRoutes() {
         const routes = await response.json();
         
         if (!routes || routes.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color: var(--text-secondary); padding: 1rem;">No frequent routes found.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3" class="reports-td-empty">No frequent routes found.</td></tr>';
             return;
         }
 
@@ -70,7 +70,7 @@ async function fetchFrequentRoutes() {
     } catch (error) {
         console.error('Frequent Routes Error:', error);
         
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color: #ef4444; padding: 1rem;">Error fetching routes.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" class="reports-td-error">Error fetching routes.</td></tr>';
     }
 }
 
@@ -87,7 +87,7 @@ function renderFrequentRoutesTable(tbody, routes) {
         tr.innerHTML = `
             <td><strong>#${id}</strong></td>
             <td>${name}</td>
-            <td style="text-align: right; font-weight: 600;">${count}</td>
+            <td class="reports-td-right">${count}</td>
         `;
         
         tbody.appendChild(tr);

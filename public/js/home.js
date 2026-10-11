@@ -28,26 +28,51 @@ async function fetchAnnouncements() {
 
         grid.innerHTML = '';
 
-        announcements.forEach((ann) => {
+        // Only display top 6 announcements on the homepage
+        const displayAnnouncements = announcements.slice(0, 6);
+        displayAnnouncements.forEach((ann) => {
             const card = document.createElement('div');
-            card.className = 'glass-panel announcement-card';
-            card.style.padding = '2rem';
-            
-            let colorIndicator = '#3b82f6';
-            if (ann.type === 'warning') colorIndicator = '#f59e0b';
-            else if (ann.type === 'alert') colorIndicator = '#ef4444';
+            card.className = 'home-announcement-card';
+
+            let badgeHtml = '';
+            let severityClass = 'info';
+            if (ann.type === 'warning') {
+                severityClass = 'warning';
+                badgeHtml = `<span class="ann-badge warning">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    Caution
+                </span>`;
+            } else if (ann.type === 'alert') {
+                severityClass = 'danger';
+                badgeHtml = `<span class="ann-badge danger">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    Urgent Alert
+                </span>`;
+            } else {
+                severityClass = 'info';
+                badgeHtml = `<span class="ann-badge info">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    Notice
+                </span>`;
+            }
+
+            const dateText = ann.createdAt ? SmartMoveUtils.formatDate(ann.createdAt) : 'Recently';
 
             card.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
-                    <div style="width: 12px; height: 12px; border-radius: 50%; background-color: ${colorIndicator};"></div>
-                    <h3 style="font-size: 1.1rem; font-weight: 600;">${ann.title}</h3>
+                <div class="ann-top-bar ${severityClass}"></div>
+                <div>
+                    <div class="ann-header-meta">
+                        ${badgeHtml}
+                        <span class="ann-date">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            ${dateText}
+                        </span>
+                    </div>
+                    <h3 class="ann-title">${ann.title}</h3>
+                    <p class="ann-message">${ann.message}</p>
                 </div>
-                <p>${ann.message}</p>
-                <small style="color: var(--text-secondary); display: block; margin-top: 1rem;">
-                    ${SmartMoveUtils.formatDate(ann.createdAt)}
-                </small>
             `;
-            
+
             grid.appendChild(card);
         });
 
@@ -116,11 +141,11 @@ async function fetchRoutesPreview() {
             }
 
             card.innerHTML = `
-                <img src="${imgUrl}" alt="${routeName}" style="width: 100%; height: 160px; object-fit: cover; display: block;" onerror="this.src='${fallbackImage}'">
-                <div style="padding: 1.5rem;">
-                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">${routeName}</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Route ID: #${routeId} &bull; ${route.DISTANCEKM ? route.DISTANCEKM + ' km' : ''}</p>
-                    <a href="book.html?routeId=${routeId}" style="display: block; text-align: center; text-decoration: none; padding: 0.75rem 1rem; border-radius: 12px; font-weight: 700; font-size: 0.9rem; background: var(--primary-accent); color: white; transition: all 0.2s ease;">Book This Route &rarr;</a>
+                <img src="${imgUrl}" alt="${routeName}" class="route-mini-card-img" onerror="this.src='${fallbackImage}'">
+                <div class="route-mini-card-body">
+                    <h3 class="route-mini-card-title">${routeName}</h3>
+                    <p class="route-mini-card-meta">Route ID: #${routeId} &bull; ${route.DISTANCEKM ? route.DISTANCEKM + ' km' : ''}</p>
+                    <a href="book.html?routeId=${routeId}" class="route-mini-card-btn">Book This Route &rarr;</a>
                 </div>
             `;
             

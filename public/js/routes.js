@@ -16,9 +16,14 @@ async function fetchRoutes() {
         if (!routesRes.ok) {
             throw new Error(`HTTP error! status: ${routesRes.status}`);
         }
-        
-        const routes = await response.json();
-        
+
+        const routes = await routesRes.json();
+
+        let routeImages = [];
+        if (imagesRes && imagesRes.ok) {
+            routeImages = await imagesRes.json().catch(() => []);
+        }
+
         if (!routes || routes.length === 0) {
             grid.innerHTML = '<p>No routes found in Oracle database.</p>';
             return;
@@ -34,33 +39,57 @@ async function fetchRoutes() {
 
 function renderRoutes(gridElement, routesList, routeImages = []) {
     gridElement.innerHTML = '';
-    
+
+    // Check if admin panel configured a default route image (resourceId === 0 or caption contains 'default')
+    const adminDefaultRouteImg = routeImages.find(img =>
+        (img.resourceType === 'route' || !img.resourceType) &&
+        (Number(img.resourceId) === 0 || (img.caption && img.caption.toLowerCase().includes('default')))
+    );
+    const defaultRouteUrl = adminDefaultRouteImg?.imageUrl || DEFAULT_ROUTE_IMAGE;
+
     routesList.forEach(route => {
         const card = document.createElement('div');
         card.className = 'glass-panel route-card';
-        card.style.padding = '2rem';
-        card.style.overflow = 'hidden';
 
         const routeName = route.STARTLOCATION ? `${route.STARTLOCATION} to ${route.ENDLOCATION}` : 'Unknown Route';
         const routeId = route.ROUTEID || route.routeId || 'N/A';
         const isPopular = route.ISPOPULAR === 'Y';
         const status = isPopular ? '★ Popular' : 'Active';
+        const badgeClass = isPopular ? 'popular' : 'standard';
         const distance = route.DISTANCEKM ? `${route.DISTANCEKM} Km` : 'N/A';
-        
+        const duration = route.ESTIMATEDDURATION || '';
+
+        // Match specific route image
+        let imgUrl = defaultRouteUrl;
+        const matchedImg = routeImages.find(img =>
+            (img.resourceType === 'route' || !img.resourceType) &&
+            (Number(img.resourceId) === Number(routeId) || String(img.resourceId) === String(routeId) ||
+                Number(img.referenceId) === Number(routeId) || String(img.referenceId) === String(routeId))
+        );
+        if (matchedImg && matchedImg.imageUrl) {
+            imgUrl = matchedImg.imageUrl;
+        }
+        if (imgUrl && imgUrl.startsWith('data:image')) {
+            imgUrl = imgUrl.replace(/[\r\n\s]+/g, '');
+        }
+
         card.innerHTML = `
-            <div style="height: 170px; margin: -2rem -2rem 1.5rem -2rem; overflow: hidden; position: relative;">
-                <img src="${imgUrl}" alt="${routeName}" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.src='${DEFAULT_ROUTE_IMAGE}'">
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
-                <h3 style="font-size: 1.25rem;">${routeName}</h3>
-                <span style="background: ${isPopular ? '#e0f2fe' : '#f1f5f9'}; color: ${isPopular ? '#0284c7' : '#475569'}; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.75rem; font-weight: 600;">
+            <div class="route-card-img-wrap">
+                <img src="${imgUrl}" alt="${routeName}" class="route-card-img" onerror="this.src='${DEFAULT_ROUTE_IMAGE}'">
+                <span class="route-card-badge ${badgeClass}">
                     ${status}
                 </span>
             </div>
-            <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Route ID: <strong>#${routeId}</strong></p>
-            <p style="margin-bottom: 1.5rem; font-size: 0.9rem; color: var(--text-secondary);">Distance: ${distance} ${duration ? '&bull; ' + duration : ''}</p>
-            <div>
-                <a href="book.html?routeId=${routeId}" class="btn-primary" style="text-decoration: none; display: inline-block;">Book This Route</a>
+            <div class="route-card-header">
+                <h3 class="route-card-title">${routeName}</h3>
+            </div>
+            <p class="route-card-id">Route ID: <strong>#${routeId}</strong></p>
+            <p class="route-card-meta">
+                <span>📍 ${distance}</span>
+                ${duration ? `<span class="route-card-meta-dot">&bull;</span> <span>⏱️ ${duration}</span>` : ''}
+            </p>
+            <div class="route-card-footer">
+                <a href="book.html?routeId=${routeId}" class="btn-primary route-card-book-btn">Book This Route &rarr;</a>
             </div>
         `;
 

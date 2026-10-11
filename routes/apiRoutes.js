@@ -54,6 +54,8 @@ router.get('/vehicles/top-rated', mongoController.getTopRatedVehicles);
 router.get('/reviews/search', mongoController.searchReviews);
 router.get('/announcements', mongoController.getAnnouncements);
 router.post('/announcements', mongoController.postAnnouncement);
+router.put('/announcements/:id', mongoController.updateAnnouncement);
+router.delete('/announcements/:id', mongoController.deleteAnnouncement);
 router.get('/vehicles/documents', mongoController.getVehicleDocuments);
 router.post('/vehicles/documents', mongoController.postVehicleDocument);
 router.get('/images', mongoController.getImages);

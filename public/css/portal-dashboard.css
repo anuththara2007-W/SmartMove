@@ -1,0 +1,93 @@
+/* ==========================================================================
+   SmartMove - System Portal Dashboard Stylesheet
+   Location: public/css/portal-dashboard.css
+   ========================================================================== */
+
+.metric-card {
+    background: linear-gradient(135deg, #1d1d1f 0%, #434345 100%);
+    color: white;
+    padding: 3rem;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    margin-bottom: 3rem;
+}
+
+.metric-display {
+    font-size: 4.5rem;
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin: 1.5rem 0;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.portal-metric-title {
+    font-weight: 500;
+    opacity: 0.9;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.portal-btn-revenue {
+    background: white;
+    color: black;
+    margin-top: 1rem;
+    padding: 1rem 3rem;
+    font-weight: 700;
+    border-radius: 99px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.portal-btn-revenue:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.portal-section-heading {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.portal-section-subheading {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.portal-table-scroll-mb {
+    overflow-x: auto;
+    margin-bottom: 4rem;
+}
+
+.portal-table-scroll {
+    overflow-x: auto;
+}
+
+.portal-driver-leaderboard-box {
+    margin-top: 4rem;
+}
+
+.portal-driver-table-card {
+    overflow-x: auto;
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+}
+
+.portal-th-right,
+.portal-td-right {
+    text-align: right;
+}
+
+.portal-td-center-muted {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 1.5rem;
+}
+
+.portal-td-center {
+    text-align: center;
+    padding: 1.5rem;
+}

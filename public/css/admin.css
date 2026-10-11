@@ -1,0 +1,85 @@
+/* ==========================================================================
+   SmartMove - Fleet Management (admin.html) Stylesheet
+   Location: public/css/admin.css
+   ========================================================================== */
+
+.fleet-subtitle {
+    margin-bottom: 3rem;
+    color: var(--text-secondary);
+}
+
+.fleet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.fleet-card {
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fleet-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.fleet-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border-color);
+    display: block;
+}
+
+.fleet-info {
+    padding: 1.5rem;
+}
+
+.fleet-vehicle-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.fleet-status-text {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.fleet-status-active {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.fleet-docs-box {
+    background: #f1f5f9;
+    padding: 0.75rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fleet-docs-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.fleet-docs-badge {
+    background: #e2e8f0;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.fleet-error-msg {
+    color: #ef4444;
+    font-size: 0.95rem;
+}

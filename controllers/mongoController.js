@@ -6,22 +6,39 @@ const ResourceImage = require('../models/ResourceImage');
 // POST /api/reviews
 const submitReview = async (req, res) => {
     try {
-        const pId = req.body.passengerID ?? req.body.passengerId;
-        const rId = req.body.routeID ?? req.body.routeId;
-        const dId = req.body.driverID ?? req.body.driverId ?? 999;
+        const rawPid = req.body.passengerID ?? req.body.passengerId;
+        const rawRid = req.body.routeID ?? req.body.routeId;
+        const rawDid = req.body.driverID ?? req.body.driverId ?? 999;
         const rating = Number(req.body.rating);
         const feedback = req.body.feedback ?? req.body.feedbackText;
 
-        if (pId === undefined || rId === undefined || !feedback || isNaN(rating)) {
-            return res.status(400).json({ error: 'Missing required review fields: passenger, route, rating, and feedback' });
+        const pId = Number(rawPid);
+        const rId = Number(rawRid);
+        const dId = Number(rawDid);
+
+        if (!rawPid || isNaN(pId) || pId <= 0) {
+            return res.status(400).json({ error: 'Please select a valid passenger.' });
+        }
+        if (!rawRid || isNaN(rId) || rId <= 0) {
+            return res.status(400).json({ error: 'Please select a valid route.' });
+        }
+        if (isNaN(rating) || rating < 1 || rating > 5) {
+            return res.status(400).json({ error: 'Please provide a valid rating between 1 and 5.' });
+        }
+        if (!feedback || String(feedback).trim().length === 0) {
+            return res.status(400).json({ error: 'Please enter feedback text.' });
         }
 
         const newReview = new Review({
-            passengerID: Number(pId),
-            routeID: Number(rId),
-            driverID: Number(dId),
-            rating: Number(rating),
-            feedback: String(feedback).trim()
+            passengerID: pId,
+            passengerId: pId,
+            routeID: rId,
+            routeId: rId,
+            driverID: dId,
+            driverId: dId,
+            rating: rating,
+            feedback: String(feedback).trim(),
+            feedbackText: String(feedback).trim()
         });
         await newReview.save();
         res.status(201).json(newReview);
@@ -93,7 +110,8 @@ const searchReviews = async (req, res) => {
 // GET /api/announcements (Helper route for frontend dashboard)
 const getAnnouncements = async (req, res) => {
     try {
-        const announcements = await Announcement.find({ active: true }).sort({ createdAt: -1 });
+        const query = req.query.all === 'true' ? {} : { active: true };
+        const announcements = await Announcement.find(query).sort({ createdAt: -1 });
         res.json(announcements);
     } catch (err) {
         console.error(err);
@@ -141,6 +159,43 @@ const postAnnouncement = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to post announcement' });
+    }
+};
+
+// PUT /api/announcements/:id
+const updateAnnouncement = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, type, message, active } = req.body;
+        const updateData = {};
+        if (title !== undefined) updateData.title = title;
+        if (type !== undefined) updateData.type = type;
+        if (message !== undefined) updateData.message = message;
+        if (active !== undefined) updateData.active = Boolean(active);
+
+        const updated = await Announcement.findByIdAndUpdate(id, updateData, { new: true });
+        if (!updated) {
+            return res.status(404).json({ error: 'Announcement not found' });
+        }
+        res.json({ message: 'Announcement updated successfully', announcement: updated });
+    } catch (err) {
+        console.error('Failed to update announcement:', err);
+        res.status(500).json({ error: 'Failed to update announcement' });
+    }
+};
+
+// DELETE /api/announcements/:id
+const deleteAnnouncement = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deleted = await Announcement.findByIdAndDelete(id);
+        if (!deleted) {
+            return res.status(404).json({ error: 'Announcement not found' });
+        }
+        res.json({ message: 'Announcement deleted successfully' });
+    } catch (err) {
+        console.error('Failed to delete announcement:', err);
+        res.status(500).json({ error: 'Failed to delete announcement' });
     }
 };
 
@@ -195,6 +250,8 @@ module.exports = {
     getTopRatedVehicles,
     searchReviews,
     getAnnouncements,
+    updateAnnouncement,
+    deleteAnnouncement,
     getVehicleDocuments,
     postVehicleDocument,
     postAnnouncement,
