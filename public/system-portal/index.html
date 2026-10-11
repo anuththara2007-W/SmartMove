@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartMove - Business Intelligence</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../global.css">
     <link rel="stylesheet" href="../css/portal-dashboard.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -62,15 +63,18 @@
         </div>
 
         <div class="metric-card gsap-fade-up">
-            <h3 class="portal-metric-title">Lifetime Revenue</h3>
+            <h3 class="portal-metric-title"><i class="fa-solid fa-chart-line"></i> Lifetime Revenue</h3>
             <div id="revenueDisplay" class="metric-display">Rs. 0.00</div>
             <button id="calcRevenueBtn" class="btn-primary portal-btn-revenue">
-                Execute CalculateTotalRevenue()
+                <i class="fa-solid fa-bolt"></i> Execute CalculateTotalRevenue()
             </button>
         </div>
         
         <!-- Manage Recent Passenger Bookings -->
-        <h2 class="portal-section-heading gsap-fade-up">Recent Passenger Bookings</h2>
+        <h2 class="portal-section-heading gsap-fade-up">
+            <span class="portal-heading-icon"><i class="fa-solid fa-ticket-simple"></i></span>
+            Recent Passenger Bookings
+        </h2>
         <div class="portal-table-scroll-mb gsap-fade-up">
             <table>
                 <thead>
@@ -92,7 +96,10 @@
             </table>
         </div>
 
-        <h2 class="portal-section-heading gsap-fade-up">Most Frequent Routes</h2>
+        <h2 class="portal-section-heading gsap-fade-up">
+            <span class="portal-heading-icon"><i class="fa-solid fa-route"></i></span>
+            Most Frequent Routes
+        </h2>
         <div class="portal-table-scroll gsap-fade-up" id="routesTableContainer">
             <table>
                 <thead>
@@ -118,7 +125,10 @@
         <div>
             <!-- MongoDB: Top Rated Drivers -->
             <div class="gsap-fade-up">
-                <h2 class="portal-section-subheading">Top Rated Drivers</h2>
+                <h2 class="portal-section-subheading">
+                    <span class="portal-heading-icon"><i class="fa-solid fa-medal"></i></span>
+                    Top Rated Drivers
+                </h2>
                 <div class="portal-driver-table-card">
                     <table>
                         <thead>
