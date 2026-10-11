@@ -520,3 +520,64 @@
     box-shadow: 0 4px 18px rgba(239, 68, 68, 0.35);
     transition: all 0.2s ease;
 }
+
+.btn-emergency-call:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 22px rgba(239, 68, 68, 0.45);
+}
+
+.btn-emergency-announcements {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 0.85rem 1.5rem;
+    border-radius: 980px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s ease;
+}
+
+.btn-emergency-announcements:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .support-emergency-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 2.25rem 2rem;
+    }
+
+    .emergency-banner-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .support-hero-title {
+        font-size: 2.15rem;
+    }
+
+    .support-channels-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .support-emergency-banner {
+        padding: 2rem 1.5rem;
+    }
+
+    .btn-emergency-call,
+    .btn-emergency-announcements {
+        width: 100%;
+        justify-content: center;
+    }
+}
