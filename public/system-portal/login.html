@@ -5,53 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartMove - System Portal Login</title>
     <link rel="stylesheet" href="../global.css">
-    <style>
-        body {
-            background: url('https://i.postimg.cc/PJxNzHkC/cristina-gottardi-CSpj-U6h-Yo-0-unsplash.jpg') center/cover;
-            justify-content: center;
-            align-items: center;
-            padding: 0;
-            margin: 0;
-        }
-        .login-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 3rem;
-            border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.4);
-        }
-    </style>
+    <link rel="stylesheet" href="../css/portal-login.css">
 </head>
-<body>
+<body class="portal-login-body">
     <div class="login-card">
-        <h1 style="font-size: 1.8rem; margin-bottom: 0.5rem; letter-spacing: -0.5px;">System Portal</h1>
-        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Authorized Personnel Only</p>
+        <h1 class="login-title">System Portal</h1>
+        <p class="login-subtitle">Authorized Personnel Only</p>
         
         <form id="loginForm" novalidate>
-            <div id="loginMessage" style="color: var(--error-color); font-size: 0.9rem; margin-bottom: 1rem; display: none;">Invalid credentials.</div>
+            <div id="loginMessage" class="login-error-msg">Invalid credentials.</div>
             
-            <div class="form-group" style="text-align: left;">
+            <div class="form-group login-form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" class="form-control check-valid" placeholder="admin">
                 <div class="error-msg" id="error-username">Username is required.</div>
             </div>
             
-            <div class="form-group" style="text-align: left;">
+            <div class="form-group login-form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" class="form-control check-valid" placeholder="admin123">
                 <div class="error-msg" id="error-password">Password is required.</div>
             </div>
             
-            <button type="submit" id="submitBtn" class="btn-primary" style="width: 100%; margin-top: 1rem; padding: 1rem;" disabled>Sign In</button>
+            <button type="submit" id="submitBtn" class="btn-primary login-btn-submit" disabled>Sign In</button>
         </form>
         
-        <div style="margin-top: 2rem; font-size: 0.85rem;">
-            <a href="../index.html" style="color: var(--primary-accent); text-decoration: none;">&larr; Return to Public Site</a>
+        <div class="login-footer-link">
+            <a href="../index.html" class="login-return-link">&larr; Return to Public Site</a>
         </div>
     </div>
 
