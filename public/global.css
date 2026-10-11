@@ -907,3 +907,94 @@ footer {
 .status-select-dropdown option:disabled {
     color: #94a3b8;
 }
+
+/* ==========================================================================
+   System Portal Common Utility Classes
+   ========================================================================== */
+.portal-header-brand-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.portal-brand-logo {
+    text-decoration: none;
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+}
+
+.portal-badge {
+    font-size: 0.8rem;
+    background: var(--primary-accent);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 8px;
+    vertical-align: middle;
+    margin-left: 0.5rem;
+    font-weight: 700;
+}
+
+.portal-icon-home {
+    color: #10b981;
+}
+
+.portal-icon-logout {
+    color: var(--error-color);
+}
+
+.portal-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+}
+
+.portal-header-row-start {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
+.portal-subtitle {
+    color: var(--text-secondary);
+}
+
+.portal-action-btns {
+    display: flex;
+    gap: 1rem;
+}
+
+.portal-btn-space {
+    margin-right: 1rem;
+}
+
+.portal-modal-danger-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem auto;
+}
+
+.btn-danger-pill {
+    background: #ef4444;
+    border: none;
+    padding: 0.75rem 1.75rem;
+    border-radius: 980px;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-danger-pill:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+}

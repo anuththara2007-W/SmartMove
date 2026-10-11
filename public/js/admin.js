@@ -36,8 +36,8 @@ async function loadVehicleFleetData() {
 
     } catch (error) {
         console.error('Admin Error:', error);
-        fleetGridContainer.innerHTML = '<p style="color:#ef4444;">Error occurred while fetching fleet documents. Please try again later.</p>';
-    } // FIXED: This closing brace was missing in the original code!
+        fleetGridContainer.innerHTML = '<p class="fleet-error-msg">Error occurred while fetching fleet documents. Please try again later.</p>';
+    }
 }
 
 /**
@@ -65,13 +65,13 @@ function displayVehiclesInGrid(gridElement, vehiclesList) {
         vehicleCard.innerHTML = `
             <img src="${displayImageUrl}" alt="Vehicle ${vehicle.vehicleID}" class="fleet-img">
             <div class="fleet-info">
-                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Vehicle #${vehicle.vehicleID}</h3>
-                <p style="margin-bottom: 1rem; font-size: 0.9rem;">
-                    Status: <span style="color: #16a34a; font-weight: 600;">Active</span>
+                <h3 class="fleet-vehicle-title">Vehicle #${vehicle.vehicleID}</h3>
+                <p class="fleet-status-text">
+                    Status: <span class="fleet-status-active">Active</span>
                 </p>
-                <div style="background: #f1f5f9; padding: 0.75rem; border-radius: 8px;">
-                    <strong style="font-size: 0.85rem;">Stored Documents:</strong>
-                    <span style="float: right; background: #e2e8f0; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">
+                <div class="fleet-docs-box">
+                    <strong class="fleet-docs-label">Stored Documents:</strong>
+                    <span class="fleet-docs-badge">
                         ${documentCount} PDFs
                     </span>
                 </div>
