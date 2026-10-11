@@ -42,3 +42,42 @@
                 Search our knowledge base, browse frequently asked questions, or reach our team directly.
                 We're committed to making every SmartMove experience seamless.
             </p>
+
+            <!-- Search Bar -->
+            <div class="support-search-bar">
+                <i class="fa-solid fa-magnifying-glass support-search-icon"></i>
+                <input
+                    type="text"
+                    id="faqSearchInput"
+                    class="support-search-input"
+                    placeholder="Search questions, topics, or keywords..."
+                    autocomplete="off"
+                >
+                <button class="support-search-clear" id="searchClearBtn" title="Clear search">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Contact Channels -->
+        <div class="support-channels-grid gsap-fade-up">
+
+            <!-- Live Chat -->
+            <div class="support-channel-card">
+                <div>
+                    <div class="channel-top-bar">
+                        <div class="channel-icon blue">
+                            <i class="fa-solid fa-comment-dots"></i>
+                        </div>
+                        <span class="channel-tag badge-live">
+                            <span class="pulse-dot"></span>
+                            Live
+                        </span>
+                    </div>
+                    <h3 class="channel-title">Live Chat</h3>
+                    <p class="channel-desc">Connect instantly with a support agent. Average response time under 2 minutes.</p>
+                </div>
+                <a href="#" class="channel-action" id="liveChatBtn">
+                    Stay Tuned <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
