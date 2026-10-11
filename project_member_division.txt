@@ -77,9 +77,10 @@ Key Files:
 - book.html, book.js, book.css
 - routes.html, routes.js
 - announcements.html, announcements.js
-- system-portal/book.html, admin-book.js
 - system-portal/routes.html, admin-routes.js
 - system-portal/manage-announcements.html, admin-announcements.js
+model/Announcement.js
+config/MongoDB.js
 
 
 --------------------------------------------------------------------------------
