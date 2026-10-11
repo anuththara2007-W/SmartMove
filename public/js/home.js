@@ -39,19 +39,19 @@ async function fetchAnnouncements() {
             if (ann.type === 'warning') {
                 severityClass = 'warning';
                 badgeHtml = `<span class="ann-badge warning">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
                     Caution
                 </span>`;
             } else if (ann.type === 'alert') {
                 severityClass = 'danger';
                 badgeHtml = `<span class="ann-badge danger">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <i class="fa-solid fa-circle-exclamation"></i>
                     Urgent Alert
                 </span>`;
             } else {
                 severityClass = 'info';
                 badgeHtml = `<span class="ann-badge info">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <i class="fa-solid fa-circle-info"></i>
                     Notice
                 </span>`;
             }
@@ -64,7 +64,7 @@ async function fetchAnnouncements() {
                     <div class="ann-header-meta">
                         ${badgeHtml}
                         <span class="ann-date">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            <i class="fa-regular fa-clock"></i>
                             ${dateText}
                         </span>
                     </div>
