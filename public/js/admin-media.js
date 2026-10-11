@@ -28,7 +28,7 @@ async function handleResourceTypeChange(e) {
         
         idSelect.innerHTML = '<option value="">Select Resource...</option>';
         if (type === 'route') {
-            idSelect.innerHTML += '<option value="0" style="font-weight: 700; color: #0284c7;">★ Default Route Image (All Routes)</option>';
+            idSelect.innerHTML += '<option value="0" class="opt-highlight"><i class="fa-solid fa-star"></i> Default Route Image (All Routes)</option>';
         }
         
         data.forEach(item => {
@@ -68,19 +68,19 @@ async function loadImages() {
             const card = document.createElement('div');
             card.className = 'image-card';
             
-            const cap = img.caption ? `<p style="font-size: 0.9rem; font-style: italic; color: #555; margin-bottom: 0.5rem;">${img.caption}</p>` : '';
+            const cap = img.caption ? `<p class="image-caption">${img.caption}</p>` : '';
             
             const isDefaultRoute = img.resourceType === 'route' && Number(img.resourceId) === 0;
             const resourceTitle = isDefaultRoute
-                ? `<span style="background: #e0f2fe; color: #0284c7; padding: 2px 8px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; vertical-align: middle; margin-right: 0.4rem;">★ Default</span> Route Image (All Routes)`
+                ? `<span class="badge-default-route"><i class="fa-solid fa-star"></i> Default</span> Route Image (All Routes)`
                 : `${img.resourceType} #${img.resourceId}`;
             
             card.innerHTML = `
                 <img src="${img.imageUrl}" alt="${img.resourceType} ${img.resourceId}" onerror="this.src='https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&q=80'">
                 <div class="image-info">
-                    <h4 style="font-size: 1rem; margin-bottom: 0.2rem; text-transform: capitalize;">${resourceTitle}</h4>
+                    <h4 class="image-title">${resourceTitle}</h4>
                     ${cap}
-                    <p style="font-size: 0.8rem; color: #888; margin-bottom: 0.8rem; word-break: break-all;">${img.imageUrl}</p>
+                    <p class="image-url-text">${img.imageUrl}</p>
                     <button class="delete-btn" onclick="deleteImage('${img._id}')">Delete</button>
                 </div>
             `;

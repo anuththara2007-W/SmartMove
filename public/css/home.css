@@ -98,15 +98,27 @@
     z-index: 10;
 }
 
+.social-sidebar-custom a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.social-sidebar-custom i,
 .social-sidebar-custom svg {
     width: 20px;
     height: 20px;
+    font-size: 1.25rem;
+    color: white;
     fill: white;
     opacity: 0.8;
     cursor: pointer;
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
+.social-sidebar-custom i:hover,
 .social-sidebar-custom svg:hover {
     opacity: 1;
     transform: scale(1.15);
@@ -156,15 +168,31 @@
     width: 100%;
     min-height: 100vh;
     margin: 0;
-    padding: 6rem 4rem 8rem 4rem;
-    background: url('https://i.postimg.cc/9C3F34D4/Untitled-design-(5).png') no-repeat center center;
+    padding: 6rem 4rem 7rem 4rem;
+    background: url('https://i.postimg.cc/K82ygggB/Untitled-design-(5).png') no-repeat center center;
     background-size: 100% 100%;
     position: relative;
 }
 
+/* Popular Routes Section - Flush with footer */
+.home-banner-section.home-routes-section {
+    background-image: url('https://i.postimg.cc/TY9Xg3qG/Untitled-design-(5).png');
+    min-height: auto;
+    padding-bottom: 4rem;
+    margin-bottom: 0;
+}
+
+/* Eliminate any space between Popular routes section and the footer */
+.site-footer {
+    margin-top: 0 !important;
+}
+
 @media (max-width: 768px) {
     .home-banner-section {
-        padding: 4rem 1.5rem 6rem 1.5rem;
+        padding: 4rem 1.5rem 5rem 1.5rem;
+    }
+    .home-banner-section.home-routes-section {
+        padding-bottom: 3rem;
     }
 }
 

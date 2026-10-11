@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
 
 :root {
   --bg-color: #ffffff;
@@ -430,7 +431,7 @@ button.btn-transparent:hover,
 
 .page-main {
   margin-top: 90px;
-  padding: 4rem;
+  padding: 3rem 4rem 1.5rem 4rem;
   max-width: 1400px;
   margin-left: auto;
   margin-right: auto;
@@ -614,7 +615,7 @@ button.btn-transparent:hover,
   background: var(--bg-color);
 }
 
-footer {
+footer:not(.site-footer) {
   text-align: center;
   padding: 2rem;
   color: var(--text-secondary);
@@ -770,50 +771,209 @@ footer {
 
 /* Site Global Footer */
 .site-footer {
-    background: #000;
-    color: white;
-    padding: 5rem 4rem 2rem 4rem;
-    margin-top: 4rem;
+    background: #090d16;
+    color: #ffffff;
+    padding: 4.5rem 3rem 2.5rem 3rem;
+    margin-top: 2.5rem;
     width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    position: relative;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.site-footer.flush {
+    margin-top: 0;
 }
 .site-footer-inner {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
+    width: 100%;
+    text-align: left;
 }
 .site-footer-grid {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
     gap: 3rem;
-    margin-bottom: 4rem;
+    margin-bottom: 3.5rem;
+    text-align: left;
+    align-items: start;
 }
-@media (max-width: 992px) {
+.site-footer-grid > div {
+    text-align: left;
+}
+@media (max-width: 1024px) {
     .site-footer-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
     }
 }
-@media (max-width: 576px) {
+@media (max-width: 640px) {
     .site-footer {
-        padding: 4rem 1.5rem 2rem 1.5rem;
+        padding: 3.5rem 1.5rem 2rem 1.5rem;
     }
     .site-footer-grid {
         grid-template-columns: 1fr;
+        gap: 2rem;
     }
 }
 
-.site-footer-brand-title { font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
-.site-footer-brand-desc { color: rgba(255,255,255,0.6); font-size: 0.9rem; line-height: 1.7; max-width: 300px; }
-.site-footer-socials { display: flex; gap: 1rem; margin-top: 1.5rem; }
-.site-footer-social-btn { width: 36px; height: 36px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s ease; }
-.site-footer-social-btn:hover { background: rgba(255,255,255,0.25); }
-.site-footer-col-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.4); margin-bottom: 1.5rem; font-weight: 700; }
-.site-footer-nav-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.8rem; }
-.site-footer-nav-link { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; transition: color 0.2s ease; }
-.site-footer-nav-link:hover { color: #ffffff; }
-.site-footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-.site-footer-bottom-text { color: rgba(255,255,255,0.4); font-size: 0.85rem; }
-.site-footer-author-name { color: #ffffff; font-weight: 600; }
+.site-footer-brand-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.85rem;
+    color: #ffffff;
+    text-align: left;
+}
+.site-footer-brand-desc {
+    color: #94a3b8;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    max-width: 330px;
+    text-align: left;
+}
+.site-footer-socials {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    justify-content: flex-start;
+    align-items: center;
+}
+.site-footer-social-btn {
+    width: 38px;
+    height: 38px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: #ffffff;
+}
+.site-footer-social-btn i {
+    font-size: 0.95rem;
+    color: #ffffff;
+}
+.site-footer-social-btn:hover {
+    background: var(--primary-accent, #0071e3);
+    border-color: var(--primary-accent, #0071e3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 113, 227, 0.4);
+}
+.site-footer-col-title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #cbd5e1;
+    margin-bottom: 1.25rem;
+    font-weight: 700;
+    text-align: left;
+}
+.site-footer-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: left;
+}
+.site-footer-nav-list li {
+    text-align: left;
+}
+.site-footer-nav-link {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-align: left;
+    display: inline-block;
+}
+.site-footer-nav-link:hover {
+    color: #ffffff;
+    transform: translateX(3px);
+}
+.site-footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    text-align: left;
+}
+.site-footer-bottom-text {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+.site-footer-author-name {
+    color: #f1f5f9;
+    font-weight: 600;
+}
+
+/* Two-column top layout compatibility */
+.site-footer-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 3rem;
+    margin-bottom: 3.5rem;
+    flex-wrap: wrap;
+    text-align: left;
+}
+.site-footer-links-grid {
+    display: flex;
+    gap: 4rem;
+    flex-wrap: wrap;
+    text-align: left;
+}
+.site-footer-copy {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+.site-footer-author {
+    color: #f1f5f9;
+    font-weight: 600;
+}
 .nav-active { color: var(--primary-accent) !important; font-weight: 600; }
 .btn-login-nav { color: var(--text-main); }
+
+/* Color utilities for modern icons */
+.text-success { color: var(--success-color, #10b981) !important; }
+.text-warning { color: #f59e0b !important; }
+.text-danger { color: var(--error-color, #ef4444) !important; }
+.text-primary { color: var(--primary-accent, #0071e3) !important; }
+.text-muted { color: #94a3b8 !important; }
+
+/* Status Badges */
+.status-badge-active {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+.status-badge-draft {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
 
 /* Global Status Badges & Action Dropdowns */
 .booking-status-badge {

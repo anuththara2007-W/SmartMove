@@ -47,7 +47,7 @@ async function fetchForeignData() {
 
 async function fetchTrips() {
     ['Scheduled', 'InProgress', 'Completed', 'Cancelled'].forEach(id => {
-        document.getElementById(`list-${id}`).innerHTML = `<div class="skeleton" style="height: 100px; border-radius: 12px; margin-bottom: 1rem;"></div>`;
+        document.getElementById(`list-${id}`).innerHTML = `<div class="skeleton trip-skeleton-card"></div>`;
     });
     
     try {
@@ -82,7 +82,7 @@ function renderKanban() {
         count.textContent = `(${cols[status].length})`;
         
         if (cols[status].length === 0) {
-            list.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 2rem 0; font-size: 0.9rem;">No trips here</div>`;
+            list.innerHTML = `<div class="trip-empty-col">No trips here</div>`;
             return;
         }
 
@@ -167,13 +167,13 @@ window.editTrip = function(id) {
             const lname = tk.LASTNAME || tk.lastName || tk.LastName || '';
             const status = tk.TICKETSTATUS || tk.ticketStatus || tk.TicketStatus || '';
             const seat = tk.SEATNUMBER || tk.seatNumber || tk.SeatNumber || 'N/A';
-            return `<div style="padding: 4px 0; border-bottom: 1px solid #eee;">
-                <strong>${fname} ${lname}</strong> (Seat: ${seat}) - <span style="color:var(--primary-accent);">${status}</span>
+            return `<div class="passenger-entry">
+                <strong>${fname} ${lname}</strong> (Seat: ${seat}) - <span class="passenger-status-accent">${status}</span>
             </div>`;
         }).join('');
     } else {
         passengersContainer.style.display = 'block';
-        passengersList.innerHTML = '<div style="color: var(--text-secondary);">No passengers booked yet.</div>';
+        passengersList.innerHTML = '<div class="passenger-empty-msg">No passengers booked yet.</div>';
     }
 
     SmartMoveUtils.openModal('tripModal');
@@ -294,7 +294,11 @@ function renderSelectorList(filter = '') {
         ).map(v => {
             const activeCount = v.ACTIVETRIPSCOUNT !== undefined ? v.ACTIVETRIPSCOUNT : (v.activeTripsCount || 0);
             const isAvail = activeCount === 0;
-            const statusLabel = isAvail ? '🟢 Available' : (v.CURRENTTRIPSTATUS === 'In Progress' ? `🟠 On Trip (#${v.CURRENTTRIPID})` : `🔵 Scheduled (#${v.CURRENTTRIPID})`);
+            const statusLabel = isAvail
+                ? '<i class="fa-solid fa-circle text-success"></i> Available'
+                : (v.CURRENTTRIPSTATUS === 'In Progress'
+                    ? `<i class="fa-solid fa-circle text-warning"></i> On Trip (#${v.CURRENTTRIPID})`
+                    : `<i class="fa-solid fa-circle text-primary"></i> Scheduled (#${v.CURRENTTRIPID})`);
             const completedNote = (v.COMPLETEDTRIPSCOUNT > 0) ? ` &bull; ${v.COMPLETEDTRIPSCOUNT} completed trip(s)` : '';
             return {
                 id: v.VEHICLEID,
@@ -315,17 +319,17 @@ function renderSelectorList(filter = '') {
     }
 
     if (items.length === 0) {
-        list.innerHTML = `<div style="padding: 1rem; text-align: center; color: var(--text-secondary);">No active matches found.</div>`;
+        list.innerHTML = `<div class="selector-empty-msg">No active matches found.</div>`;
         return;
     }
 
     list.innerHTML = items.map(item => `
-        <div class="selector-item" onclick="selectItem('${item.id}', '${item.display.replace(/'/g, "\\'")}')" style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 1rem;">
+        <div class="selector-item selector-item-flex" onclick="selectItem('${item.id}', '${item.display.replace(/'/g, "\\'")}')">
             <div>
-                <div style="font-weight: 600; color: #0f172a;">${SmartMoveUtils.escapeHtml(item.display)}</div>
-                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">${item.sub}</div>
+                <div class="selector-item-title">${SmartMoveUtils.escapeHtml(item.display)}</div>
+                <div class="selector-item-sub">${item.sub}</div>
             </div>
-            ${item.badge ? `<div style="font-size: 0.8rem; font-weight: 700; white-space: nowrap; margin-left: 0.75rem;">${item.badge}</div>` : ''}
+            ${item.badge ? `<div class="selector-item-badge">${item.badge}</div>` : ''}
         </div>
     `).join('');
 }

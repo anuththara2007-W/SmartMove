@@ -1,93 +1,510 @@
 /* ==========================================================================
    SmartMove - System Portal Dashboard Stylesheet
    Location: public/css/portal-dashboard.css
+   Modern, enterprise-grade Apple / Stripe aesthetic for Business Intelligence
    ========================================================================== */
 
-.metric-card {
-    background: linear-gradient(135deg, #1d1d1f 0%, #434345 100%);
-    color: white;
-    padding: 3rem;
-    border-radius: 24px;
-    text-align: center;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    margin-bottom: 3rem;
+/* --- Brand & Nav Extensions --- */
+.portal-header-brand-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
-.metric-display {
-    font-size: 4.5rem;
+.portal-brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
     font-weight: 800;
-    letter-spacing: -2px;
-    margin: 1.5rem 0;
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.02em;
+    color: #0f172a;
+    text-decoration: none;
+}
+
+.portal-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: rgba(0, 113, 227, 0.08);
+    color: var(--primary-accent, #0071e3);
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(0, 113, 227, 0.18);
+}
+
+/* --- Section Typography & Layout --- */
+.portal-subtitle {
+    font-size: 1.05rem;
+    color: #64748b;
+    font-weight: 400;
+    margin-top: 0.35rem;
+    line-height: 1.5;
+}
+
+.portal-subtitle-spaced {
+    margin-bottom: 2.5rem;
+}
+
+.portal-section-heading {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.portal-heading-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(0, 113, 227, 0.08);
+    color: var(--primary-accent, #0071e3);
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.portal-section-subheading {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.015em;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.portal-driver-leaderboard-box {
+    margin-top: 4.5rem;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 3.5rem;
+}
+
+/* --- Metric Card (Lifetime Revenue) --- */
+.metric-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #090d16 0%, #111827 50%, #1e293b 100%);
+    border-radius: 24px;
+    padding: 3.25rem 2.5rem;
+    text-align: center;
+    color: #ffffff;
+    box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    margin-bottom: 3.5rem;
+}
+
+.metric-card::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    left: -20%;
+    width: 140%;
+    height: 180%;
+    background: radial-gradient(circle at 50% 20%, rgba(0, 113, 227, 0.28), transparent 65%);
+    pointer-events: none;
 }
 
 .portal-metric-title {
-    font-weight: 500;
-    opacity: 0.9;
-    font-size: 1.2rem;
+    position: relative;
+    z-index: 1;
+    font-size: 0.8rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.12em;
+    color: #94a3b8;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 1rem;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 0.5rem;
+}
+
+.metric-display {
+    position: relative;
+    z-index: 1;
+    font-size: 4.25rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin: 1.25rem 0 1.75rem;
+    color: #ffffff;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    line-height: 1;
 }
 
 .portal-btn-revenue {
-    background: white;
-    color: black;
-    margin-top: 1rem;
-    padding: 1rem 3rem;
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #ffffff;
+    color: #0f172a;
+    padding: 0.9rem 2.5rem;
+    font-size: 0.95rem;
     font-weight: 700;
-    border-radius: 99px;
+    border-radius: 9999px;
     border: none;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .portal-btn-revenue:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
+    background: #f8fafc;
 }
 
-.portal-section-heading {
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
+.portal-btn-revenue:active {
+    transform: translateY(0);
 }
 
-.portal-section-subheading {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+.portal-btn-revenue:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
-.portal-table-scroll-mb {
-    overflow-x: auto;
-    margin-bottom: 4rem;
-}
-
+/* --- Modern Table Cards --- */
+.portal-table-scroll-mb,
 .portal-table-scroll {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.04), 0 2px 8px -2px rgba(15, 23, 42, 0.02);
     overflow-x: auto;
-}
-
-.portal-driver-leaderboard-box {
-    margin-top: 4rem;
+    margin-bottom: 2.75rem;
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .portal-driver-table-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.04), 0 2px 8px -2px rgba(15, 23, 42, 0.02);
     overflow-x: auto;
-    background: #fff;
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
+.portal-table-scroll-mb:hover,
+.portal-table-scroll:hover,
+.portal-driver-table-card:hover {
+    box-shadow: 0 16px 36px -6px rgba(15, 23, 42, 0.06);
+    border-color: rgba(203, 213, 225, 0.9);
+}
+
+/* Table Baseline */
+.portal-table-scroll-mb table,
+.portal-table-scroll table,
+.portal-driver-table-card table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 680px;
+    text-align: left;
+    margin: 0;
+}
+
+/* Table Header */
+.portal-table-scroll-mb thead,
+.portal-table-scroll thead,
+.portal-driver-table-card thead {
+    background: #f8fafc;
+}
+
+.portal-table-scroll-mb th,
+.portal-table-scroll th,
+.portal-driver-table-card th {
+    background: #f8fafc;
+    color: #475569;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 1.1rem 1.4rem;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+}
+
+.portal-table-scroll-mb th:first-child,
+.portal-table-scroll th:first-child,
+.portal-driver-table-card th:first-child {
+    padding-left: 1.75rem;
+    border-top-left-radius: 20px;
+}
+
+.portal-table-scroll-mb th:last-child,
+.portal-table-scroll th:last-child,
+.portal-driver-table-card th:last-child {
+    padding-right: 1.75rem;
+    border-top-right-radius: 20px;
+}
+
+/* Table Cells */
+.portal-table-scroll-mb td,
+.portal-table-scroll td,
+.portal-driver-table-card td {
+    padding: 1.15rem 1.4rem;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.92rem;
+    color: #1e293b;
+    vertical-align: middle;
+    transition: background-color 0.15s ease;
+}
+
+.portal-table-scroll-mb td:first-child,
+.portal-table-scroll td:first-child,
+.portal-driver-table-card td:first-child {
+    padding-left: 1.75rem;
+}
+
+.portal-table-scroll-mb td:last-child,
+.portal-table-scroll td:last-child,
+.portal-driver-table-card td:last-child {
+    padding-right: 1.75rem;
+}
+
+/* Row Hover & Last Row Corners */
+.portal-table-scroll-mb tbody tr:hover td,
+.portal-table-scroll tbody tr:hover td,
+.portal-driver-table-card tbody tr:hover td {
+    background-color: #f8fafc;
+}
+
+.portal-table-scroll-mb tbody tr:last-child td,
+.portal-table-scroll tbody tr:last-child td,
+.portal-driver-table-card tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.portal-table-scroll-mb tbody tr:last-child td:first-child,
+.portal-table-scroll tbody tr:last-child td:first-child,
+.portal-driver-table-card tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 20px;
+}
+
+.portal-table-scroll-mb tbody tr:last-child td:last-child,
+.portal-table-scroll tbody tr:last-child td:last-child,
+.portal-driver-table-card tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 20px;
+}
+
+/* Utility Cell Alignments */
 .portal-th-right,
 .portal-td-right {
-    text-align: right;
+    text-align: right !important;
 }
 
 .portal-td-center-muted {
     text-align: center;
-    color: var(--text-secondary);
-    padding: 1.5rem;
+    color: #94a3b8;
+    padding: 3rem 1.5rem !important;
+    font-size: 0.95rem;
 }
 
 .portal-td-center {
     text-align: center;
-    padding: 1.5rem;
+    padding: 3rem 1.5rem !important;
+    color: #64748b;
 }
+
+/* --- Status Badges --- */
+.booking-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.booking-status-badge .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.booking-status-badge.booked {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+.booking-status-badge.booked .status-dot {
+    background: #3b82f6;
+    box-shadow: 0 0 6px rgba(59, 130, 246, 0.6);
+}
+
+.booking-status-badge.confirmed,
+.booking-status-badge.completed {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+}
+.booking-status-badge.confirmed .status-dot,
+.booking-status-badge.completed .status-dot {
+    background: #10b981;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+}
+
+.booking-status-badge.cancelled {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+.booking-status-badge.cancelled .status-dot {
+    background: #ef4444;
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+}
+
+/* --- Modern Action Dropdown --- */
+.status-dropdown-wrapper {
+    display: inline-block;
+    position: relative;
+}
+
+.status-select-dropdown {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 0.45rem 2.25rem 0.45rem 0.95rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #334155;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 11px;
+}
+
+.status-select-dropdown:hover {
+    background-color: #ffffff;
+    border-color: #94a3b8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.status-select-dropdown:focus {
+    outline: none;
+    border-color: var(--primary-accent, #0071e3);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+}
+
+/* --- Badges for Routes & Drivers --- */
+.route-id-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.65rem;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #334155;
+    font-family: monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.trip-count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    background: rgba(0, 113, 227, 0.08);
+    color: var(--primary-accent, #0071e3);
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.driver-id-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.driver-id-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    background: #f1f5f9;
+    font-family: monospace;
+    font-size: 0.82rem;
+    color: #475569;
+}
+
+.driver-rating-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 9999px;
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    color: #b45309;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.driver-rating-pill i {
+    color: #f59e0b;
+    font-size: 0.85rem;
+}
+
+.driver-reviews-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.75rem;
+    border-radius: 9999px;
+    background: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.82rem;
+}
+
+/* Action button */
+.portal-action-btn {
+    background: var(--primary-accent, #0071e3);
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    padding: 0.5rem 1.15rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 113, 227, 0.25);
+}
+
+.portal-action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0, 113, 227, 0.35);
+}
+

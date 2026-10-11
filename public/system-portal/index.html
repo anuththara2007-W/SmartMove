@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartMove - Business Intelligence</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../global.css">
     <link rel="stylesheet" href="../css/portal-dashboard.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -62,15 +63,18 @@
         </div>
 
         <div class="metric-card gsap-fade-up">
-            <h3 class="portal-metric-title">Lifetime Revenue</h3>
+            <h3 class="portal-metric-title"><i class="fa-solid fa-chart-line"></i> Lifetime Revenue</h3>
             <div id="revenueDisplay" class="metric-display">Rs. 0.00</div>
             <button id="calcRevenueBtn" class="btn-primary portal-btn-revenue">
-                Execute CalculateTotalRevenue()
+                <i class="fa-solid fa-bolt"></i> Execute CalculateTotalRevenue()
             </button>
         </div>
         
         <!-- Manage Recent Passenger Bookings -->
-        <h2 class="portal-section-heading gsap-fade-up">Recent Passenger Bookings</h2>
+        <h2 class="portal-section-heading gsap-fade-up">
+            <span class="portal-heading-icon"><i class="fa-solid fa-ticket-simple"></i></span>
+            Recent Passenger Bookings
+        </h2>
         <div class="portal-table-scroll-mb gsap-fade-up">
             <table>
                 <thead>
@@ -92,7 +96,10 @@
             </table>
         </div>
 
-        <h2 class="portal-section-heading gsap-fade-up">Most Frequent Routes</h2>
+        <h2 class="portal-section-heading gsap-fade-up">
+            <span class="portal-heading-icon"><i class="fa-solid fa-route"></i></span>
+            Most Frequent Routes
+        </h2>
         <div class="portal-table-scroll gsap-fade-up" id="routesTableContainer">
             <table>
                 <thead>
@@ -118,7 +125,10 @@
         <div>
             <!-- MongoDB: Top Rated Drivers -->
             <div class="gsap-fade-up">
-                <h2 class="portal-section-subheading">Top Rated Drivers</h2>
+                <h2 class="portal-section-subheading">
+                    <span class="portal-heading-icon"><i class="fa-solid fa-medal"></i></span>
+                    Top Rated Drivers
+                </h2>
                 <div class="portal-driver-table-card">
                     <table>
                         <thead>
@@ -151,15 +161,10 @@
                         Enterprise-grade intercity and commuter transport management across Sri Lanka. Powered by Oracle RDBMS &amp; MongoDB.
                     </p>
                     <div class="site-footer-socials">
-                        <a href="#" class="site-footer-social-btn" aria-label="Twitter">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.163-2.723-.951.555-2.005.959-3.127 1.184-.896-.959-2.173-1.559-3.591-1.559-2.717 0-4.92 2.203-4.92 4.917 0 .39.045.765.127 1.124C7.691 8.094 4.066 6.13 1.64 3.161c-.427.722-.666 1.561-.666 2.475 0 1.71.87 3.213 2.188 4.096-.807-.026-1.566-.248-2.228-.616v.061c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.314 0-.615-.03-.916-.086.631 1.953 2.445 3.377 4.604 3.417-1.68 1.319-3.809 2.105-6.102 2.105-.39 0-.779-.023-1.17-.067 2.18 1.394 4.768 2.209 7.557 2.209 9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63.961-.689 1.8-1.56 2.46-2.548l-.047-.02z"/></svg>
-                        </a>
-                        <a href="#" class="site-footer-social-btn" aria-label="Facebook">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
-                        </a>
-                        <a href="#" class="site-footer-social-btn" aria-label="LinkedIn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                        </a>
+                        <a href="#" class="site-footer-social-btn" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#" class="site-footer-social-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="site-footer-social-btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="site-footer-social-btn" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
                     </div>
                 </div>
 

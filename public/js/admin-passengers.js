@@ -19,7 +19,7 @@ let currentPassengerIdToDelete = null;
 
 async function fetchPassengers() {
     const tbody = document.getElementById('passengersBody');
-    tbody.innerHTML = `<tr><td colspan="6"><div class="skeleton" style="height: 40px; width: 100%;"></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6"><div class="skeleton skeleton-row-loader"></div></td></tr>`;
     
     try {
         const data = await SmartMoveUtils.apiRequest('/api/passengers');
@@ -32,7 +32,7 @@ async function fetchPassengers() {
 function renderPassengers(passengers) {
     const tbody = document.getElementById('passengersBody');
     if (!passengers || passengers.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-secondary); padding: 2rem;">No passengers found.<br><br><button class="btn-primary" onclick="openFormModal()">Add Passenger</button></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="empty-table-cell">No passengers found.<br><br><button class="btn-primary" onclick="openFormModal()">Add Passenger</button></td></tr>`;
         return;
     }
 

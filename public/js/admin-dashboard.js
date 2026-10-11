@@ -109,11 +109,11 @@ async function fetchRecentBookings() {
             else if (statusLower.includes('cancel')) statusBadgeClass = 'cancelled';
 
             tr.innerHTML = `
-                <td><strong style="color: #0f172a; font-family: monospace; font-size: 0.95rem;">#${id}</strong></td>
-                <td><span style="font-weight: 600; color: #1e293b;">${passengerName}</span></td>
+                <td><span class="route-id-tag">#${id}</span></td>
+                <td><span style="font-weight: 600; color: #0f172a;">${passengerName}</span></td>
                 <td><span style="color: #64748b; font-size: 0.85rem; font-family: monospace;">${contact}</span></td>
                 <td><span style="font-weight: 500; color: #334155;">${route}</span></td>
-                <td><strong style="color: #0f172a;">${SmartMoveUtils.formatCurrency(fare)}</strong></td>
+                <td><strong style="color: #0f172a; font-weight: 700;">${SmartMoveUtils.formatCurrency(fare)}</strong></td>
                 <td>
                     <span class="booking-status-badge ${statusBadgeClass}">
                         <span class="status-dot"></span>
@@ -124,10 +124,10 @@ async function fetchRecentBookings() {
                     <div class="status-dropdown-wrapper">
                         <select class="status-select-dropdown" onchange="updateTicketStatus(${id}, this.value)">
                             <option value="" disabled selected>Update Status...</option>
-                            <option value="Confirmed" ${status === 'Confirmed' ? 'disabled' : ''}>✓ Confirm</option>
-                            <option value="Completed" ${status === 'Completed' ? 'disabled' : ''}>★ Complete</option>
-                            <option value="Cancelled" ${status === 'Cancelled' ? 'disabled' : ''}>✕ Cancel</option>
-                            <option value="Booked" ${status === 'Booked' ? 'disabled' : ''}>🎫 Booked</option>
+                            <option value="Confirmed" ${status === 'Confirmed' ? 'disabled' : ''}>Confirm</option>
+                            <option value="Completed" ${status === 'Completed' ? 'disabled' : ''}>Complete</option>
+                            <option value="Cancelled" ${status === 'Cancelled' ? 'disabled' : ''}>Cancel</option>
+                            <option value="Booked" ${status === 'Booked' ? 'disabled' : ''}>Booked</option>
                         </select>
                     </div>
                 </td>
@@ -170,9 +170,9 @@ function renderFrequentRoutesTable(tbody, routes) {
         const count = Array.isArray(route) ? (route[2] ?? 0) : (route.TRIPCOUNT ?? route.tripCount ?? route.TripCount ?? 0);
 
         tr.innerHTML = `
-            <td><strong>#${id}</strong></td>
-            <td>${name}</td>
-            <td style="text-align: right; font-weight: 600;">${count}</td>
+            <td><span class="route-id-tag">#${id}</span></td>
+            <td><span style="font-weight: 600; color: #0f172a;">${name}</span></td>
+            <td style="text-align: right;"><span class="trip-count-badge">${count}</span></td>
         `;
         
         tbody.appendChild(tr);
@@ -197,9 +197,9 @@ async function fetchTopDrivers() {
         drivers.forEach(d => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>Driver #${d._id || 'Unknown'}</td>
-                <td style="color: #fbbf24; font-weight: bold;">${(d.averageRating || 0).toFixed(1)} ★</td>
-                <td>${d.reviewCount} reviews</td>
+                <td><div class="driver-id-tag"><i class="fa-solid fa-id-badge" style="color: #64748b; font-size: 0.95rem;"></i> <span class="driver-id-badge">Driver #${d._id || 'Unknown'}</span></div></td>
+                <td><span class="driver-rating-pill">${(d.averageRating || 0).toFixed(1)} <i class="fa-solid fa-star"></i></span></td>
+                <td><span class="driver-reviews-pill">${d.reviewCount} reviews</span></td>
             `;
             tbody.appendChild(tr);
         });

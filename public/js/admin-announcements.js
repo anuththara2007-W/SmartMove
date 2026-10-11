@@ -75,10 +75,10 @@ function renderAnnouncements(items) {
 
     if (!items || items.length === 0) {
         listContainer.innerHTML = `
-            <div class="glass-panel" style="padding: 3rem; text-align: center; color: #64748b;">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 1rem; color: #94a3b8;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                <h4 style="font-size: 1.1rem; color: #1e293b; margin-bottom: 0.35rem;">No Announcements Found</h4>
-                <p style="font-size: 0.9rem; margin: 0;">Create a new announcement using the form to publish live updates.</p>
+            <div class="glass-panel ann-empty-card">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="ann-empty-icon"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <h4 class="ann-empty-title">No Announcements Found</h4>
+                <p class="ann-empty-text">Create a new announcement using the form to publish live updates.</p>
             </div>
         `;
         return;
@@ -104,31 +104,31 @@ function renderAnnouncements(items) {
         const dateStr = ann.createdAt ? SmartMoveUtils.formatDate(ann.createdAt) : 'Recently';
 
         card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
-                <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <div class="ann-item-header">
+                <div class="ann-item-badges-wrap">
                     <span class="ann-badge ${type}">
                         ${typeIcon}
                         ${type}
                     </span>
                     <span class="ann-status-pill ${isActive ? 'active' : 'inactive'}">
-                        ${isActive ? '🟢 Active' : '⚪ Hidden Draft'}
+                        ${isActive ? '<i class="fa-solid fa-circle text-success"></i> Active' : '<i class="fa-regular fa-circle"></i> Hidden Draft'}
                     </span>
                 </div>
-                <small style="color: #94a3b8; font-size: 0.78rem; font-weight: 500;">
+                <small class="ann-item-date">
                     ${dateStr}
                 </small>
             </div>
 
-            <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem; line-height: 1.35;">${ann.title}</h3>
-            <p style="font-size: 0.9rem; color: #475569; line-height: 1.55; margin: 0;">${ann.message}</p>
+            <h3 class="ann-item-title">${ann.title}</h3>
+            <p class="ann-item-message">${ann.message}</p>
 
             <div class="ann-actions-bar">
-                <button type="button" class="btn-edit-ann" data-id="${ann._id}" style="padding: 0.45rem 1rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600; background: #f8fafc; border: 1px solid #cbd5e1; color: #1e293b; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                <button type="button" class="btn-edit-ann" data-id="${ann._id}">
+                    <i class="fa-solid fa-pen-to-square"></i>
                     Edit
                 </button>
-                <button type="button" class="btn-delete-ann" data-id="${ann._id}" data-title="${encodeURIComponent(ann.title)}" style="padding: 0.45rem 1rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600; background: #fff1f2; border: 1px solid #fecdd3; color: #e11d48; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                <button type="button" class="btn-delete-ann" data-id="${ann._id}" data-title="${encodeURIComponent(ann.title)}">
+                    <i class="fa-solid fa-trash"></i>
                     Delete
                 </button>
             </div>

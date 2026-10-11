@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartMove - Book a Ticket</title>
+    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="css/book.css">
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+
+<body>
+
+    <header class="standard-header">
+        <a href="index.html" class="logo">SmartMove.</a>
+        <nav class="standard-nav">
+            <a href="announcements.html">Announcements</a>
+            <a href="routes.html">Routes</a>
+            <a href="reviews.html">Reviews</a>
+            <a href="book.html" class="nav-active">Book Ticket</a>
+        </nav>
+        <div class="hero-actions">
+            <a href="system-portal/login.html" class="btn-transparent btn-login-nav">Admin Login</a>
+        </div>
+    </header>
+
+    <main class="page-main">
+
+        <div class="book-split-grid">
+
+            <!-- Submit Booking -->
+            <div class="gsap-fade-right">
+                <h1 class="section-title">Book Your Journey</h1>
+                <p class="book-subtitle">Select your route and book your ticket instantly.</p>
+
+                <div class="glass-panel book-form-panel">
+                    <form id="bookingForm" novalidate>
+
+                        <!-- Passenger Details -->
+                        <div class="form-group">
+                            <label>Passenger Details</label>
+                            <input type="text" id="firstName" class="form-control book-input-sm"
+                                placeholder="First Name" required oninput="validateForm()">
+                            <input type="text" id="lastName" class="form-control book-input-sm" placeholder="Last Name"
+                                required oninput="validateForm()">
+                            <input type="email" id="email" class="form-control book-input-sm"
+                                placeholder="Email Address" required oninput="validateForm()">
+                            <input type="text" id="phone" class="form-control" placeholder="Phone Number" required
+                                oninput="validateForm()">
+                        </div>
+
+                        <!-- Route Details -->
+                        <div class="form-group">
+                            <label>Route Details</label>
+                            <input type="text" id="startLocation" class="form-control book-input-sm"
+                                placeholder="Start Location" required oninput="validateForm()">
+                            <input type="text" id="endLocation" class="form-control" placeholder="End Location" required
+                                oninput="validateForm()">
+                        </div>
+
+                        <!-- Payment Method -->
+                        <div class="form-group">
+                            <label for="paymentMethod">Payment Method</label>
+                            <input type="text" id="paymentMethod" class="form-control book-input-lg"
+                                placeholder="e.g. Card, Cash, Bank Transfer" required oninput="validateForm()">
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Column: Info & Bookings Table -->
+            <div class="gsap-fade-left">
+
+                <h2 class="book-section-heading">Why book with us?</h2>
+
+                <div class="why-book-grid">
+                    <!-- Flexible Payment -->
+                    <div class="glass-panel why-book-card">
+                        <div class="why-book-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                <line x1="1" y1="10" x2="23" y2="10"></line>
+                            </svg>
+                        </div>
+                        <h3 class="why-book-title">Flexible</h3>
+                        <p class="why-book-desc">Pay securely online or choose to pay cash.</p>
+                    </div>
+
+                    <!-- Real-Time Updates -->
+                    <div class="glass-panel why-book-card">
+                        <div class="why-book-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                            </svg>
+                        </div>
+                        <h3 class="why-book-title">Real-time</h3>
+                        <p class="why-book-desc">Instant updates powered by MongoDB.</p>
+                    </div>
+                </div>
+
+                <!-- User Side Bookings Table -->
+                <div class="glass-panel gsap-fade-up bookings-table-panel">
+                    <h2 class="bookings-table-heading">Your Recent Bookings</h2>
+
+                    <div class="table-scroll-wrapper">
+                        <table class="user-bookings-table">
+                            <thead>
+                                <tr class="bookings-table-header-row">
+                                    <th class="bookings-table-th">Ticket ID</th>
+                                    <th class="bookings-table-th">Route</th>
+                                    <th class="bookings-table-th">Payment</th>
+                                    <th class="bookings-table-th">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userBookingsTableBody">
+                                <tr>
+                                    <td colspan="4" class="bookings-table-empty">
+                                        No bookings made yet in this session.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Full Width Vehicle Selection & Submit -->
+        <div class="gsap-fade-up vehicle-select-section">
+            <h2 class="vehicle-select-heading">Select Your Vehicle</h2>
+
+            <div id="vehicleSelectionGrid" class="vehicle-selection-grid">
+                <div class="vehicle-select-loading">Loading available vehicles...</div>
+            </div>
+
+            <input type="hidden" id="selectedVehicleId">
+
+            <p id="vehicleErrorMsg" class="vehicle-error-msg">Please select a vehicle to continue.</p>
+
+            <button type="submit" form="bookingForm" id="submitBtn" class="btn-primary btn-book-submit" disabled>
+                Confirm Booking
+            </button>
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="site-footer-inner">
+            <!-- Top Section -->
+            <div class="site-footer-grid">
+                <!-- Brand -->
+                <div>
+                    <h2 class="site-footer-brand-title">SmartMove.</h2>
+                    <p class="site-footer-brand-desc">
+                        SmartMove is a next-generation university transport management system built with Oracle RDBMS
+                        &amp; MongoDB, delivering seamless commuting experiences.
+                    </p>
+                    <div class="site-footer-socials">
+                        <a href="#" class="site-footer-social-btn" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#" class="site-footer-social-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="site-footer-social-btn" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="site-footer-social-btn" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h4 class="site-footer-col-title">Company</h4>
+                    <ul class="site-footer-nav-list">
+                        <li><a href="#" class="site-footer-nav-link">About Us</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Our Team</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Careers</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Press Kit</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Blog</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h4 class="site-footer-col-title">Services</h4>
+                    <ul class="site-footer-nav-list">
+                        <li><a href="routes.html" class="site-footer-nav-link">Route Planning</a></li>
+                        <li><a href="book.html" class="site-footer-nav-link">Ticket Booking</a></li>
+                        <li><a href="announcements.html" class="site-footer-nav-link">Announcements</a></li>
+                        <li><a href="reviews.html" class="site-footer-nav-link">Reviews</a></li>
+                        <li><a href="admin.html" class="site-footer-nav-link">Fleet Management</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div>
+                    <h4 class="site-footer-col-title">Support</h4>
+                    <ul class="site-footer-nav-list">
+                        <li><a href="#" class="site-footer-nav-link">Help Center</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Contact Us</a></li>
+                        <li><a href="#" class="site-footer-nav-link">FAQs</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Report a Bug</a></li>
+                        <li><a href="#" class="site-footer-nav-link">System Status</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal -->
+                <div>
+                    <h4 class="site-footer-col-title">Legal</h4>
+                    <ul class="site-footer-nav-list">
+                        <li><a href="#" class="site-footer-nav-link">Privacy Policy</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Terms of Service</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Cookie Policy</a></li>
+                        <li><a href="#" class="site-footer-nav-link">Accessibility</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="site-footer-bottom">
+                <p class="site-footer-bottom-text">&copy; 2026 SmartMove Transport Solutions. All rights reserved.</p>
+                <p class="site-footer-bottom-text">Designed &amp; Developed by <span
+                        class="site-footer-author-name">Anuththara</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/utils.js"></script>
+    <script src="js/book.js"></script>
+
+</body>
+
+</html>

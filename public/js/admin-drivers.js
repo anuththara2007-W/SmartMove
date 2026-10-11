@@ -19,7 +19,7 @@ let currentDriverIdToDelete = null;
 
 async function fetchDrivers() {
     const tbody = document.getElementById('driversBody');
-    tbody.innerHTML = `<tr><td colspan="7"><div class="skeleton" style="height: 40px; width: 100%;"></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7"><div class="skeleton skeleton-row-loader"></div></td></tr>`;
     
     try {
         const data = await SmartMoveUtils.apiRequest('/api/drivers');
@@ -32,7 +32,7 @@ async function fetchDrivers() {
 function renderDrivers(drivers) {
     const tbody = document.getElementById('driversBody');
     if (!drivers || drivers.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-secondary); padding: 2rem;">No drivers registered yet.<br><br><button class="btn-primary" onclick="openFormModal()">Add Driver</button></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="empty-table-cell">No drivers registered yet.<br><br><button class="btn-primary" onclick="openFormModal()">Add Driver</button></td></tr>`;
         return;
     }
 

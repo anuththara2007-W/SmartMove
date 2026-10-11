@@ -19,7 +19,7 @@ let currentRouteIdToDelete = null;
 
 async function fetchRoutes() {
     const tbody = document.getElementById('routesBody');
-    tbody.innerHTML = `<tr><td colspan="8"><div class="skeleton" style="height: 40px; width: 100%;"></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8"><div class="skeleton route-skeleton-bar"></div></td></tr>`;
     
     try {
         const [routes, images] = await Promise.all([
@@ -35,7 +35,7 @@ async function fetchRoutes() {
 function renderRoutes(routes, images = []) {
     const tbody = document.getElementById('routesBody');
     if (!routes || routes.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color: var(--text-secondary); padding: 2rem;">No routes found.<br><br><button class="btn-primary" onclick="openFormModal()">Add Route</button></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="route-empty-cell">No routes found.<br><br><button class="btn-primary" onclick="openFormModal()">Add Route</button></td></tr>`;
         return;
     }
 
@@ -49,8 +49,8 @@ function renderRoutes(routes, images = []) {
     tbody.innerHTML = routes.map(r => {
         const isPop = r.ISPOPULAR === 'Y';
         const typeBadge = isPop 
-            ? `<span style="background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 700;">★ Popular</span>`
-            : `<span style="background: #fef3c7; color: #b45309; padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 600;">Custom Journey</span>`;
+            ? `<span class="route-badge-popular"><i class="fa-solid fa-star"></i> Popular</span>`
+            : `<span class="route-badge-custom">Custom Journey</span>`;
         
         // Find matching image or default
         const matched = images.find(img => 
@@ -61,15 +61,15 @@ function renderRoutes(routes, images = []) {
         const isCustomImg = !!matched?.imageUrl;
 
         const imgBadge = isCustomImg
-            ? `<span title="Custom image configured in Media Management" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; position: absolute; top: -3px; right: -3px; border: 2px solid white;"></span>`
-            : `<span title="Using default route image" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #64748b; position: absolute; top: -3px; right: -3px; border: 2px solid white;"></span>`;
+            ? `<span title="Custom image configured in Media Management" class="route-img-indicator custom"></span>`
+            : `<span title="Using default route image" class="route-img-indicator default"></span>`;
 
         return `
         <tr>
             <td><strong>#${r.ROUTEID}</strong></td>
             <td>
-                <div style="position: relative; display: inline-block; width: 44px; height: 32px;">
-                    <img src="${imgUrl}" alt="Route #${r.ROUTEID}" style="width: 44px; height: 32px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); display: block;" onerror="this.src='${fallbackDefault}'">
+                <div class="route-img-wrap">
+                    <img src="${imgUrl}" alt="Route #${r.ROUTEID}" class="route-table-thumbnail" onerror="this.src='${fallbackDefault}'">
                     ${imgBadge}
                 </div>
             </td>

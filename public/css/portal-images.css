@@ -1,0 +1,102 @@
+/* ==========================================================================
+   SmartMove - System Portal Media Management Stylesheet
+   Location: public/css/portal-images.css
+   ========================================================================== */
+
+.image-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+    border: 1px solid var(--border-color);
+}
+
+.image-card:hover {
+    transform: translateY(-5px);
+}
+
+.image-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.image-info {
+    padding: 1rem;
+}
+
+.image-title {
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
+    text-transform: capitalize;
+}
+
+.image-caption {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.image-url-text {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 0.8rem;
+    word-break: break-all;
+}
+
+.badge-default-route {
+    background: #e0f2fe;
+    color: #0284c7;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    vertical-align: middle;
+    margin-right: 0.4rem;
+}
+
+.opt-highlight {
+    font-weight: 700;
+    color: #0284c7;
+}
+
+.delete-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    width: 100%;
+    transition: background 0.2s ease;
+}
+
+.delete-btn:hover {
+    background: #dc2626;
+}
+
+.portal-header-row-spaced {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+}
+
+.portal-header-title-spaced {
+    margin-bottom: 0.5rem;
+}
+
+.image-modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.btn-save-image {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 1rem;
+}

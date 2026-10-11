@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function fetchData() {
     const tbody = document.getElementById('ticketsBody');
-    tbody.innerHTML = `<tr><td colspan="6"><div class="skeleton" style="height: 40px; width: 100%;"></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6"><div class="skeleton skeleton-row-loader"></div></td></tr>`;
     
     try {
         const tickets = await SmartMoveUtils.apiRequest('/api/tickets');
@@ -51,7 +51,7 @@ function renderDashboard(tickets) {
     // 2. Render Table
     const tbody = document.getElementById('ticketsBody');
     if (!tickets || tickets.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-secondary); padding: 2rem;">No tickets generated yet.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="empty-table-cell">No tickets generated yet.</td></tr>`;
         return;
     }
 
@@ -64,6 +64,7 @@ function renderDashboard(tickets) {
         const fare = t.FAREAMOUNT || t.fareAmount || t.FareAmount || 0;
         const status = t.TICKETSTATUS || t.ticketStatus || t.TicketStatus || 'Booked';
         const date = t.DEPARTUREDATETIME || t.departureDateTime || '';
+        const statusClass = (status === 'Booked' || status === 'Completed') ? 'status-booked' : (status === 'Pending' ? 'status-pending' : 'status-cancelled');
 
         return `
         <tr>
@@ -72,7 +73,7 @@ function renderDashboard(tickets) {
             <td>${startLoc} -> ${endLoc}</td>
             <td>${date}</td>
             <td>${fare}</td>
-            <td><span>${status}</span></td>
+            <td><span class="status-pill ${statusClass}">${status}</span></td>
         </tr>
     `}).join('');
 }

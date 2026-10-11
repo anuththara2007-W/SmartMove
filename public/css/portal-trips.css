@@ -1,0 +1,315 @@
+/* ==========================================================================
+   SmartMove - System Portal Trips Board Stylesheet
+   Location: public/css/portal-trips.css
+   ========================================================================== */
+
+.kanban-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 1200px) {
+    .kanban-board {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 680px) {
+    .kanban-board {
+        grid-template-columns: 1fr;
+    }
+}
+
+.kanban-column {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 16px;
+    padding: 1rem;
+    min-height: 400px;
+    border: 1px solid var(--border-color);
+}
+
+.column-header {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.column-header-count {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.trip-card {
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--primary-accent);
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.trip-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+.card-route {
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-detail {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.card-time {
+    font-size: 0.75rem;
+    color: var(--primary-accent);
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.trip-status-in-progress { border-left-color: #f59e0b; }
+.trip-status-completed { border-left-color: #10b981; }
+.trip-status-cancelled { border-left-color: #ef4444; }
+
+/* Selector Box */
+.selector-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: #f8fafc;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.selector-box:hover {
+    border-color: var(--primary-accent);
+}
+
+.selector-box span {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.selector-box small {
+    color: var(--text-secondary);
+    font-weight: normal;
+}
+
+.selector-box-change {
+    color: var(--primary-accent);
+    font-weight: 600;
+}
+
+.selector-item {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.selector-item:hover {
+    background: #f1f5f9;
+}
+
+.selector-list-wrapper {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+/* Modal Layouts */
+.trip-modal-content {
+    max-width: 600px;
+}
+
+.trip-form-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.trip-form-grid-2col-spaced {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.booked-passengers-container {
+    display: none;
+    margin-bottom: 1.5rem;
+}
+
+.booked-passengers-title {
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+    font-size: 0.95rem;
+}
+
+.booked-passengers-list {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    max-height: 150px;
+    overflow-y: auto;
+    font-size: 0.9rem;
+}
+
+.trip-btn-row {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.btn-delete-trip {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 0.85rem 1.75rem;
+    border-radius: 980px;
+    font-weight: 600;
+    cursor: pointer;
+    display: none;
+    transition: all 0.2s;
+}
+
+.btn-delete-trip:hover {
+    background: #fee2e2;
+}
+
+.btn-submit-trip {
+    flex: 1;
+}
+
+.btn-refresh-trip {
+    background: white;
+    color: var(--primary-accent);
+    border: 1px solid var(--primary-accent);
+}
+
+.btn-refresh-trip:hover {
+    background: rgba(0, 113, 227, 0.05);
+}
+
+/* Dynamic trip element styles */
+.trip-skeleton-card {
+    height: 100px;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+}
+
+.trip-empty-col {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 2rem 0;
+    font-size: 0.9rem;
+}
+
+.passenger-entry {
+    padding: 4px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.passenger-status-accent {
+    color: var(--primary-accent);
+    font-weight: 600;
+}
+
+.passenger-empty-msg {
+    color: var(--text-secondary);
+}
+
+.selector-empty-msg {
+    padding: 1rem;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.selector-item-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85rem 1rem;
+}
+
+.selector-item-title {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.selector-item-sub {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.selector-item-badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+    margin-left: 0.75rem;
+}
+
+.modal-high-z {
+    z-index: 3000;
+}
+
+.modal-confirm-z {
+    z-index: 3001;
+}
+
+.modal-content-sm {
+    max-width: 500px;
+}
+
+.modal-content-confirm {
+    max-width: 420px;
+    text-align: center;
+}
+
+.modal-confirm-title {
+    margin-bottom: 0.75rem;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.modal-confirm-text {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.modal-btn-row {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.modal-title-bold {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+

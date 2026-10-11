@@ -148,24 +148,26 @@ function renderFleet(gridElement, vehiclesList, docsList) {
         let availabilityNote = '';
 
         if (status !== 'Active') {
-            availabilityBadge = `<span style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 3px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700;">${status}</span>`;
+            availabilityBadge = `<span class="badge-inactive">${status}</span>`;
         } else if (activeTripsCount > 0) {
-            const label = currentTripStatus === 'In Progress' ? `🟠 On Trip (#${currentTripId})` : `🔵 Scheduled (#${currentTripId})`;
-            availabilityBadge = `<span style="background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; padding: 3px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700;">${label}</span>`;
-            availabilityNote = `<div style="margin-top: 0.4rem; font-size: 0.8rem; color: #d97706; display: flex; align-items: center; gap: 4px;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            const label = currentTripStatus === 'In Progress'
+                ? `<i class="fa-solid fa-circle text-warning"></i> On Trip (#${currentTripId})`
+                : `<i class="fa-solid fa-circle text-primary"></i> Scheduled (#${currentTripId})`;
+            availabilityBadge = `<span class="badge-busy">${label}</span>`;
+            availabilityNote = `<div class="note-busy">
+                <i class="fa-solid fa-circle-exclamation"></i>
                 Assigned to active trip &bull; Available once completed
             </div>`;
         } else {
-            availabilityBadge = `<span style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 3px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700;">🟢 Available to Book</span>`;
+            availabilityBadge = `<span class="badge-available"><i class="fa-solid fa-circle text-success"></i> Available to Book</span>`;
             if (completedTripsCount > 0) {
-                availabilityNote = `<div style="margin-top: 0.4rem; font-size: 0.8rem; color: #059669; display: flex; align-items: center; gap: 4px;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                availabilityNote = `<div class="note-available">
+                    <i class="fa-solid fa-check"></i>
                     ${completedTripsCount} Completed Trip(s) &bull; Ready for new booking
                 </div>`;
             } else {
-                availabilityNote = `<div style="margin-top: 0.4rem; font-size: 0.8rem; color: #059669; display: flex; align-items: center; gap: 4px;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                availabilityNote = `<div class="note-available">
+                    <i class="fa-solid fa-check"></i>
                     Ready for trip assignment
                 </div>`;
             }
@@ -173,33 +175,32 @@ function renderFleet(gridElement, vehiclesList, docsList) {
 
         const card = document.createElement('div');
         card.className = 'fleet-card';
-        card.style.position = 'relative';
         
         const matchedDoc = docsList.find(doc => doc.vehicleID == id);
         let imageUrl = (matchedDoc && matchedDoc.imageUrls && matchedDoc.imageUrls.length > 0) ? matchedDoc.imageUrls[0] : '';
         if (imageUrl.startsWith('data:image')) { imageUrl = imageUrl.replace(/[\r\n\s]+/g, ''); }
         
-        const imgHtml = imageUrl ? `<img src="${imageUrl}" alt="Vehicle ${id}" class="fleet-img" onerror="this.style.display='none'">` : `<div style="height: 150px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8;">No Image</div>`;
+        const imgHtml = imageUrl ? `<img src="${imageUrl}" alt="Vehicle ${id}" class="fleet-img" onerror="this.classList.add('is-hidden')">` : `<div class="fleet-no-img">No Image</div>`;
         
         card.innerHTML = `
             ${imgHtml}
             <div class="fleet-info">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-                    <h3 style="font-size: 1.25rem; font-weight: 700; color: #0f172a;">Vehicle #${id}</h3>
-                    <div style="display: flex; gap: 0.4rem; align-items: center;">
+                <div class="fleet-header">
+                    <h3 class="fleet-title">Vehicle #${id}</h3>
+                    <div class="fleet-badges-wrap">
                         ${availabilityBadge}
                     </div>
                 </div>
-                <p style="margin-bottom: 0.35rem; font-size: 0.9rem; color: #334155;">
+                <p class="fleet-reg-type">
                     <strong>Reg:</strong> ${reg} &nbsp;&bull;&nbsp; <strong>Type:</strong> ${type}
                 </p>
-                <p style="margin-bottom: 0.35rem; font-size: 0.9rem; color: #64748b;">
+                <p class="fleet-capacity">
                     <strong>Capacity:</strong> ${capacity || 'N/A'} Seats
                 </p>
-                <div style="margin-bottom: 1.25rem;">
+                <div class="fleet-note-wrap">
                     ${availabilityNote}
                 </div>
-                <div style="display: flex; gap: 0.75rem;">
+                <div class="fleet-btn-row">
                     <button class="action-btn-edit edit-btn">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                         Edit
