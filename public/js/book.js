@@ -63,7 +63,7 @@ async function loadVehiclesForSelection() {
         if (imagesRes.ok) images = await imagesRes.json();
 
         if (!vehicles || vehicles.length === 0) {
-            grid.innerHTML = '<div style="grid-column: span 2; color: var(--text-secondary);">No vehicles available.</div>';
+            grid.innerHTML = '<div class="vehicle-select-loading">No vehicles available.</div>';
             return;
         }
 
@@ -77,28 +77,23 @@ async function loadVehiclesForSelection() {
             const matchedDoc = images.find(doc => doc.vehicleID == id);
             let imgUrl = (matchedDoc && matchedDoc.imageUrls && matchedDoc.imageUrls.length > 0) ? matchedDoc.imageUrls[0] : null;
             if (imgUrl && imgUrl.startsWith('data:image')) { imgUrl = imgUrl.replace(/[\r\n\s]+/g, ''); }
-            const imgHtml = imgUrl ? `<img src="${imgUrl}" alt="Vehicle" style="width: 100%; height: 180px; object-fit: cover; display: block;">` : '';
+            const imgHtml = imgUrl ? `<img src="${imgUrl}" alt="Vehicle" class="vehicle-card-img">` : '';
 
             const card = document.createElement('div');
-            card.className = 'glass-panel vehicle-card';
-            card.style.padding = '0';
-            card.style.overflow = 'hidden';
-            card.style.cursor = 'pointer';
-            card.style.border = '2px solid transparent';
-            card.style.transition = 'all 0.2s';
+            card.className = 'glass-panel vehicle-card vehicle-choice-card';
 
             card.innerHTML = `
                 ${imgHtml}
-                <div style="padding: 1rem;">
-                    <h4 style="font-size: 1rem; margin-bottom: 0.2rem;">${type}</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-secondary);">${reg}</p>
-                    <p style="font-size: 0.8rem; color: var(--primary-accent); font-weight: 600; margin-top: 0.5rem;">${capacity} Seats</p>
+                <div class="vehicle-card-body">
+                    <h4 class="vehicle-card-title">${type}</h4>
+                    <p class="vehicle-card-reg">${reg}</p>
+                    <p class="vehicle-card-capacity">${capacity} Seats</p>
                 </div>
             `;
 
             card.addEventListener('click', () => {
-                document.querySelectorAll('.vehicle-card').forEach(c => c.style.border = '2px solid transparent');
-                card.style.border = '2px solid var(--primary-accent)';
+                document.querySelectorAll('.vehicle-choice-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
                 document.getElementById('selectedVehicleId').value = id;
                 document.getElementById('vehicleErrorMsg').style.display = 'none';
                 window.validateForm();
@@ -109,7 +104,7 @@ async function loadVehiclesForSelection() {
 
     } catch (error) {
         console.error(error);
-        grid.innerHTML = '<div style="color: var(--error-color);">Error loading vehicles.</div>';
+        grid.innerHTML = '<div class="vehicle-error-msg" style="display: block;">Error loading vehicles.</div>';
     }
 }
 
@@ -206,12 +201,11 @@ async function handleBookingSubmit(e) {
         const mockTicketId = Math.floor(Math.random() * 90000) + 10000;
 
         const tr = document.createElement('tr');
-        tr.style.borderBottom = '1px solid var(--border-color)';
         tr.innerHTML = `
-            <td style="padding: 1rem;"><strong>#${mockTicketId}</strong></td>
-            <td style="padding: 1rem;">${startLocation} &rarr; ${endLocation}</td>
-            <td style="padding: 1rem;">${paymentMethod}</td>
-            <td style="padding: 1rem;"><span style="background: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">Booked</span></td>
+            <td class="user-booking-td"><strong>#${mockTicketId}</strong></td>
+            <td class="user-booking-td">${startLocation} &rarr; ${endLocation}</td>
+            <td class="user-booking-td">${paymentMethod}</td>
+            <td class="user-booking-td"><span class="user-booking-status-badge">Booked</span></td>
         `;
         // Insert at top
         tbody.insertBefore(tr, tbody.firstChild);
@@ -219,7 +213,7 @@ async function handleBookingSubmit(e) {
         // Reset form
         document.getElementById('bookingForm').reset();
         document.getElementById('selectedVehicleId').value = '';
-        document.querySelectorAll('.vehicle-card').forEach(c => c.style.border = '2px solid transparent');
+        document.querySelectorAll('.vehicle-choice-card').forEach(c => c.classList.remove('selected'));
         validateForm();
 
     } catch (error) {
