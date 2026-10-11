@@ -206,7 +206,7 @@ const bookTicket = async (req, res) => {
 
 const getTickets = fetchAll(`
     SELECT tk.TicketID, tk.TripID, tk.PassengerID, tk.SeatNumber, tk.FareAmount, tk.TicketStatus,
-           p.FirstName, p.LastName, t.DepartureDateTime, r.StartLocation, r.EndLocation
+           p.FirstName, p.LastName, p.Phone, t.DepartureDateTime, r.StartLocation, r.EndLocation
     FROM Tickets tk
     JOIN Passengers p ON tk.PassengerID = p.PassengerID
     JOIN Trips t ON tk.TripID = t.TripID
