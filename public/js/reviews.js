@@ -158,10 +158,10 @@ async function fetchRecentReviews() {
             
             card.innerHTML = `
                 <div class="stars">${stars}</div>
-                <p style="font-weight: 500; margin-bottom: 0.5rem; color: var(--text-main); font-size: 0.95rem;">
+                <p class="review-card-comment">
                     " ${feedbackText} "
                 </p>
-                <small style="color: var(--text-secondary); font-size: 0.8rem;">
+                <small class="review-card-meta">
                     Passenger #${pId} • Route #${rId} <br>
                     ${SmartMoveUtils.formatDate(review.createdAt)}
                 </small>
@@ -214,23 +214,17 @@ async function setupRouteModal() {
 
 function renderModalTable(container, data, headers, keys, clickHandler) {
     const table = document.createElement('table');
-    table.style.width = '100%';
-    table.style.borderCollapse = 'collapse';
-    table.style.marginTop = '1rem';
+    table.className = 'modal-select-table';
     
     const thead = document.createElement('thead');
-    thead.innerHTML = `<tr>${headers.map(h => `<th style="text-align: left; padding: 0.75rem; border-bottom: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.85rem; font-weight: 600;">${h}</th>`).join('')}</tr>`;
+    thead.innerHTML = `<tr>${headers.map(h => `<th class="modal-table-th">${h}</th>`).join('')}</tr>`;
     table.appendChild(thead);
     
     const tbody = document.createElement('tbody');
     data.forEach(row => {
         const tr = document.createElement('tr');
-        tr.style.cursor = 'pointer';
-        tr.style.transition = 'background 0.2s ease';
-        tr.onmouseenter = () => tr.style.background = '#f1f5f9';
-        tr.onmouseleave = () => tr.style.background = 'transparent';
-        
-        tr.innerHTML = keys.map(k => `<td style="padding: 1rem 0.75rem; border-bottom: 1px solid var(--border-color); font-size: 0.95rem;">${row[k] || 'N/A'}</td>`).join('');
+        tr.className = 'modal-table-row';
+        tr.innerHTML = keys.map(k => `<td class="modal-table-td">${row[k] || 'N/A'}</td>`).join('');
         
         tr.setAttribute('data-row', JSON.stringify(row));
         tr.addEventListener('click', function() {
