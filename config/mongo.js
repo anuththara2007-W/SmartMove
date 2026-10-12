@@ -1,34 +1,17 @@
-
-// Import Mongoose, a library used to connect Node.js with MongoDB
-//Mongoose is a library that helps Node.js communicate with MongoDB easily.
+//Import mongoose (connect Node.js with MongoDB)
 const mongoose = require('mongoose');
-
-// load env 
+//Load env varibles from.env file
 require('dotenv').config();
 
-// Define an asynchronous function to connect to MongoDB.
-//Mongoose is a library that helps Node.js communicate with MongoDB easily.
 const connectMongoDB = async () => {
     try {
-                // If neither exists, use the local MongoDB database URL.
-        const mongoURI =
-            process.env.MONGO_URI ||
-            process.env.MONGODB_URI ||
-            'mongodb://localhost:27017/SmartMove';
-
-        // await prevents the function from continuing before the attempt completes.
+        const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/smartmove'; //default mongoDB port
         await mongoose.connect(mongoURI);
-
         console.log('Successfully connected to MongoDB!');
-
     } catch (error) {
         console.error('MongoDB Connection Error:', error.message);
-
-        // Stop the Node.js application with exit code 1,
-        // indicating that the application encountered a failure.
         process.exit(1);
     }
 };
 
-// Export the connection function so another file can import and call it.
 module.exports = connectMongoDB;
