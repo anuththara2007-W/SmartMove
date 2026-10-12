@@ -93,8 +93,8 @@ const getRoutes = async (req, res) => {
             const result = await executeQuery(connection, query);
             res.json(result.rows);
         } catch (err) {
-    /*Checks whether popular-only filtering was requested and Oracle returned ORA-00904, 
-    which commonly indicates an invalid identifier, such as a missing or incorrectly named column.*/
+            /*Checks whether popular-only filtering was requested and Oracle returned ORA-00904, 
+            which commonly indicates an invalid identifier, such as a missing or incorrectly named column.*/
             if (isPopularOnly && (err.message && err.message.includes('ORA-00904'))) {
                 console.warn('IsPopular column missing in Routes, falling back to all routes');
                 const fallbackResult = await executeQuery(connection, `SELECT * FROM Routes ORDER BY RouteID ASC`);
@@ -114,14 +114,14 @@ const createRoute = async (req, res) => {
 - If isPopular is 'N' or false, the value becomes 'N'.
 - Otherwise, it becomes 'Y'.*/
         const popularFlag = (isPopular === 'N' || isPopular === false) ? 'N' : 'Y';
-        const result = await executeQuery(conn, 
+        const result = await executeQuery(conn,
             `INSERT INTO Routes (StartLocation, EndLocation, DistanceKm, EstimatedDuration, IsPopular) 
              VALUES (:startLocation, :endLocation, :distanceKm, :estimatedDuration, :popularFlag) 
              RETURNING RouteID INTO :outId`,
-            { 
-                startLocation, 
-                endLocation, 
-                distanceKm: distanceKm || 10, 
+            {
+                startLocation,
+                endLocation,
+                distanceKm: distanceKm || 10,
                 estimatedDuration: estimatedDuration || 30,
                 popularFlag,
                 outId: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
@@ -167,15 +167,15 @@ const bookTicket = async (req, res) => {
                     ORDER BY DepartureDateTime ASC
                 ) WHERE ROWNUM = 1
             `, { routeID });
-            
-            // Check whether the trip query returned any records.
-if (tripRes.rows && tripRes.rows.length > 0) {
-    // Get the trip ID, supporting both uppercase and camelCase column names.
-    tripID = tripRes.rows[0].TRIPID || tripRes.rows[0].tripId;
 
-    // Get the base fare or keep the existing fare as a fallback.
-    fare = tripRes.rows[0].BASEFARE || tripRes.rows[0].baseFare || fare;
-} else {  // If previous trips are completed or none exist, select an AVAILABLE vehicle
+            // Check whether the trip query returned any records.
+            if (tripRes.rows && tripRes.rows.length > 0) {
+                // Get the trip ID, supporting both uppercase and camelCase column names.
+                tripID = tripRes.rows[0].TRIPID || tripRes.rows[0].tripId;
+
+                // Get the base fare or keep the existing fare as a fallback.
+                fare = tripRes.rows[0].BASEFARE || tripRes.rows[0].baseFare || fare;
+            } else {  // If previous trips are completed or none exist, select an AVAILABLE vehicle
                 const availVehRes = await executeQuery(conn, `
                     SELECT VehicleID FROM Vehicles v
                     WHERE Status = 'Active'
@@ -186,23 +186,23 @@ if (tripRes.rows && tripRes.rows.length > 0) {
                     )
                     ORDER BY VehicleID ASC
                 `);
-                
+
                 // Get the vehicle ID if an available vehicle was found; otherwise, use null.
-let vid = (availVehRes.rows && availVehRes.rows.length > 0)
-    ? availVehRes.rows[0].VEHICLEID
-    : null;
+                let vid = (availVehRes.rows && availVehRes.rows.length > 0)
+                    ? availVehRes.rows[0].VEHICLEID
+                    : null;
 
-// If no vehicle ID was found, search for the smallest ID of an active vehicle.
-if (!vid) {
-    const fallbackVeh = await executeQuery(
-        conn,
-        `SELECT MIN(VehicleID) AS VID FROM Vehicles WHERE Status = 'Active'`
-    );
+                // If no vehicle ID was found, search for the smallest ID of an active vehicle.
+                if (!vid) {
+                    const fallbackVeh = await executeQuery(
+                        conn,
+                        `SELECT MIN(VehicleID) AS VID FROM Vehicles WHERE Status = 'Active'`
+                    );
 
-    // Use the retrieved vehicle ID, or default to 1 if no ID is available.
-    vid = fallbackVeh.rows[0]?.VID || 1;
-}
-                
+                    // Use the retrieved vehicle ID, or default to 1 if no ID is available.
+                    vid = fallbackVeh.rows[0]?.VID || 1;
+                }
+
                 const driverRes = await executeQuery(conn, `
                     SELECT DriverID FROM Drivers d
                     WHERE Status = 'Active'
@@ -214,13 +214,13 @@ if (!vid) {
                     ORDER BY DriverID ASC
                 `);
                 let did = (driverRes.rows && driverRes.rows.length > 0) ? driverRes.rows[0].DRIVERID : 1;
-                
+
                 const newTripRes = await conn.execute(`
                     INSERT INTO Trips (RouteID, VehicleID, DriverID, DepartureDateTime, ArrivalDateTime, TripStatus, BaseFare)
                     VALUES (:routeID, :vid, :did, SYSTIMESTAMP + INTERVAL '1' DAY, SYSTIMESTAMP + INTERVAL '2' DAY, 'Scheduled', 15)
                     RETURNING TripID INTO :outTripID
                 `, { routeID, vid, did, outTripID: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT } }, { autoCommit: false });
-                
+
                 tripID = newTripRes.outBinds.outTripID[0];
             }
         } else if (tripID) {
@@ -239,7 +239,7 @@ if (!vid) {
             INSERT INTO Tickets (TripID, PassengerID, SeatNumber, BookingDate, FareAmount, TicketStatus) 
             VALUES (:tripID, :passengerID, :assignedSeat, SYSDATE, :fare, 'Booked')
             RETURNING TicketID INTO :outTicketID
-        `, { 
+        `, {
             tripID, passengerID, assignedSeat, fare,
             outTicketID: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
         }, { autoCommit: false });
@@ -268,8 +268,24 @@ const getTickets = fetchAll(`
 const updateTicketStatus = async (req, res) => {
     await withConnection(req, res, async (conn) => {
         const { ticketID } = req.params;
-        const { newStatus } = req.body;
-        
+        let { newStatus } = req.body;
+
+        if (!newStatus) {
+            return res.status(400).json({ error: 'Status is required' });
+        }
+
+        // Normalize / map 'Confirmed' to 'Booked' if sent from UI
+        if (newStatus === 'Confirmed') {
+            newStatus = 'Booked';
+        }
+
+        const allowedStatuses = ['Booked', 'Cancelled', 'Completed'];
+        if (!allowedStatuses.includes(newStatus)) {
+            return res.status(400).json({
+                error: `Invalid status: ${newStatus}. Allowed: ${allowedStatuses.join(', ')}`
+            });
+        }
+
         // PL/SQL Block executing business logic to update status
         await conn.execute(`
             BEGIN
@@ -281,8 +297,8 @@ const updateTicketStatus = async (req, res) => {
                 -- Save the changes permanently to the database
                 COMMIT;
             END;
-        `, { newStatus, ticketID }, { autoCommit: false });
-        
+        `, { newStatus, ticketID: Number(ticketID) || ticketID }, { autoCommit: false });
+
         res.json({ message: 'Ticket status updated via PL/SQL block' });
     }, 'Failed to update ticket status');
 };
@@ -361,7 +377,7 @@ const getFrequentRoutes = async (req, res) => {
         const resultSet = result.outBinds.cursor;
         const rows = await resultSet.getRows();
         await resultSet.close();
-        
+
         const formattedRows = (rows || []).map(r => {
             if (Array.isArray(r)) {
                 return {
@@ -427,11 +443,11 @@ const getPassengerHistory = async (req, res) => {
                 outFormat: oracledb.OUT_FORMAT_OBJECT
             }
         );
-        
+
         const resultSet = result.outBinds.cursor;
         const rows = await resultSet.getRows();
         await resultSet.close();
-        
+
         const formattedHistory = (rows || []).map(r => {
             if (Array.isArray(r)) {
                 return {
@@ -504,21 +520,21 @@ const deletePassenger = deleteRecord('Passengers', 'PassengerID', 'Failed to del
 const createPassenger = async (req, res) => {
     await withConnection(req, res, async (conn) => {
         const { firstName, lastName, email, phone } = req.body;
-        
+
         const check = await executeQuery(conn, `SELECT PassengerID FROM Passengers WHERE Email = :email`, { email: email || '' });
         if (check.rows && check.rows.length > 0) {
-            return res.status(200).json({ 
-                message: 'Passenger already exists', 
-                passengerId: check.rows[0].PASSENGERID || check.rows[0].passengerId 
+            return res.status(200).json({
+                message: 'Passenger already exists',
+                passengerId: check.rows[0].PASSENGERID || check.rows[0].passengerId
             });
         }
-        
-        const result = await executeQuery(conn, 
-            `INSERT INTO Passengers (FirstName, LastName, Email, Phone, RegisteredDate) VALUES (:firstName, :lastName, :email, :phone, SYSDATE) RETURNING PassengerID INTO :outId`, 
-            { 
-                firstName, 
-                lastName, 
-                email: email || '', 
+
+        const result = await executeQuery(conn,
+            `INSERT INTO Passengers (FirstName, LastName, Email, Phone, RegisteredDate) VALUES (:firstName, :lastName, :email, :phone, SYSDATE) RETURNING PassengerID INTO :outId`,
+            {
+                firstName,
+                lastName,
+                email: email || '',
                 phone: phone || '',
                 outId: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
             }, true
@@ -588,14 +604,14 @@ const getVehicles = async (req, res) => {
             const activeCount = veh.ACTIVETRIPSCOUNT !== undefined ? veh.ACTIVETRIPSCOUNT : (veh.activeTripsCount || 0);
             const currentStatus = veh.CURRENTTRIPSTATUS || veh.currentTripStatus;
             const baseStatus = veh.STATUS || veh.status;
-            
+
             let operationalStatus = 'Available';
             if (baseStatus !== 'Active') {
                 operationalStatus = baseStatus;
             } else if (activeCount > 0) {
                 operationalStatus = currentStatus === 'In Progress' ? 'In Progress' : 'Scheduled';
             }
-            
+
             return {
                 ...veh,
                 isAvailable: operationalStatus === 'Available',
@@ -625,17 +641,17 @@ const deleteTrip = async (req, res) => {
         await executeQuery(conn, `
             DELETE FROM Payments WHERE TicketID IN (SELECT TicketID FROM Tickets WHERE TripID = :id)
         `, { id });
-        
+
         // 2. Delete tickets on this trip
         await executeQuery(conn, `
             DELETE FROM Tickets WHERE TripID = :id
         `, { id });
-        
+
         // 3. Delete the trip itself
         await executeQuery(conn, `
             DELETE FROM Trips WHERE TripID = :id
         `, { id }, true);
-        
+
         res.json({ message: 'Trip deleted successfully' });
     }, 'Failed to delete trip');
 };
@@ -653,15 +669,15 @@ const checkTripConflict = async (conn, driverID, vehicleID, start, end, excludeI
     `;
     const params = { driverID, vehicleID, startDt: start, endDt: end };
     if (excludeId) params.excludeId = excludeId;
-    
+
     const conflicts = await executeQuery(conn, q, params);
     if (conflicts.rows.length > 0) {
         const c = conflicts.rows[0];
         const isVeh = c.VEHICLEID == vehicleID;
         const err = new Error();
         err.status = 409;
-        err.customMessage = isVeh 
-            ? `Scheduling conflict: Vehicle #${vehicleID} is currently busy on active Trip #${c.TRIPID} (${c.TRIPSTATUS || 'Active'}). Once that trip is completed, it will be available to book.` 
+        err.customMessage = isVeh
+            ? `Scheduling conflict: Vehicle #${vehicleID} is currently busy on active Trip #${c.TRIPID} (${c.TRIPSTATUS || 'Active'}). Once that trip is completed, it will be available to book.`
             : `Scheduling conflict: Driver #${driverID} is currently assigned to Trip #${c.TRIPID} during this time.`;
         throw err;
     }
@@ -671,14 +687,14 @@ const createTrip = async (req, res) => {
     await withConnection(req, res, async (conn) => {
         const { routeID, vehicleID, driverID, departureDateTime, arrivalDateTime, tripStatus, baseFare } = req.body;
         const fare = baseFare || 15.00;
-        
+
         await checkTripConflict(conn, driverID, vehicleID, departureDateTime, arrivalDateTime);
 
         await executeQuery(conn, `
             INSERT INTO Trips (RouteID, VehicleID, DriverID, DepartureDateTime, ArrivalDateTime, TripStatus, BaseFare) 
             VALUES (:routeID, :vehicleID, :driverID, TO_TIMESTAMP(:departureDateTime, 'YYYY-MM-DD"T"HH24:MI'), TO_TIMESTAMP(:arrivalDateTime, 'YYYY-MM-DD"T"HH24:MI'), :tripStatus, :fare)
         `, { routeID, vehicleID, driverID, departureDateTime, arrivalDateTime, tripStatus, fare }, true);
-        
+
         res.status(201).json({ message: 'Trip created successfully' });
     }, 'Failed to create trip');
 };
@@ -701,7 +717,7 @@ const updateTrip = async (req, res) => {
             ArrivalDateTime = TO_TIMESTAMP(:arrivalDateTime, 'YYYY-MM-DD"T"HH24:MI'), 
             TripStatus = :tripStatus, BaseFare = :fare WHERE TripID = :id
         `, { routeID, vehicleID, driverID, departureDateTime, arrivalDateTime, tripStatus, fare, id }, true);
-        
+
         res.json({ message: 'Trip updated successfully' });
     }, 'Failed to update trip');
 };
@@ -709,16 +725,16 @@ const updateTrip = async (req, res) => {
 const createVehicle = async (req, res) => {
     await withConnection(req, res, async (conn) => {
         const { registrationNumber, capacity, model } = req.body;
-        
+
         const result = await conn.execute(`
             INSERT INTO Vehicles (RegNumber, Capacity, VehicleType, Status) 
             VALUES (:registrationNumber, :capacity, :model, 'Active')
             RETURNING VehicleID INTO :outVehicleID
-        `, { 
+        `, {
             registrationNumber, capacity, model,
             outVehicleID: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
         }, { autoCommit: true });
-        
+
         const vehicleId = result.outBinds.outVehicleID[0];
         res.status(201).json({ message: 'Vehicle created successfully', vehicleId });
     }, 'Failed to create vehicle');
@@ -728,12 +744,12 @@ const updateVehicle = async (req, res) => {
     await withConnection(req, res, async (conn) => {
         const { id } = req.params;
         const { registrationNumber, capacity, model, status } = req.body;
-        
+
         await conn.execute(`
             UPDATE Vehicles SET RegNumber = :registrationNumber, Capacity = :capacity, VehicleType = :model, Status = :status 
             WHERE VehicleID = :id
         `, { registrationNumber, capacity, model, status, id }, { autoCommit: true });
-        
+
         res.json({ message: 'Vehicle updated successfully' });
     }, 'Failed to update vehicle');
 };
@@ -741,7 +757,7 @@ const updateVehicle = async (req, res) => {
 const deleteVehicle = async (req, res) => {
     await withConnection(req, res, async (conn) => {
         const { id } = req.params;
-        
+
         try {
             // Check if vehicle exists
             const checkVeh = await executeQuery(conn, `SELECT VehicleID FROM Vehicles WHERE VehicleID = :id`, { id });
@@ -754,11 +770,11 @@ const deleteVehicle = async (req, res) => {
                 SELECT COUNT(*) AS ACTIVECNT FROM Trips 
                 WHERE VehicleID = :id AND LOWER(TRIM(TripStatus)) NOT IN ('completed', 'cancelled')
             `, { id });
-            
+
             const activeCount = (activeTripsResult.rows && activeTripsResult.rows[0]) ? (activeTripsResult.rows[0].ACTIVECNT || 0) : 0;
             if (activeCount > 0) {
-                return res.status(400).json({ 
-                    error: `Cannot delete vehicle #${id}: It is currently assigned to ${activeCount} active trip(s) (Scheduled or In Progress). Please cancel or complete them first.` 
+                return res.status(400).json({
+                    error: `Cannot delete vehicle #${id}: It is currently assigned to ${activeCount} active trip(s) (Scheduled or In Progress). Please cancel or complete them first.`
                 });
             }
 
