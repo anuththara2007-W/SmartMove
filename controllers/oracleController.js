@@ -268,7 +268,23 @@ const getTickets = fetchAll(`
 const updateTicketStatus = async (req, res) => {
     await withConnection(req, res, async (conn) => {
         const { ticketID } = req.params;
-        const { newStatus } = req.body;
+        let { newStatus } = req.body;
+
+        if (!newStatus) {
+            return res.status(400).json({ error: 'Status is required' });
+        }
+
+        // Normalize / map 'Confirmed' to 'Booked' if sent from UI
+        if (newStatus === 'Confirmed') {
+            newStatus = 'Booked';
+        }
+
+        const allowedStatuses = ['Booked', 'Cancelled', 'Completed'];
+        if (!allowedStatuses.includes(newStatus)) {
+            return res.status(400).json({
+                error: `Invalid status: ${newStatus}. Allowed: ${allowedStatuses.join(', ')}`
+            });
+        }
 
         // PL/SQL Block executing business logic to update status
         await conn.execute(`
@@ -281,7 +297,7 @@ const updateTicketStatus = async (req, res) => {
                 -- Save the changes permanently to the database
                 COMMIT;
             END;
-        `, { newStatus, ticketID }, { autoCommit: false });
+        `, { newStatus, ticketID: Number(ticketID) || ticketID }, { autoCommit: false });
 
         res.json({ message: 'Ticket status updated via PL/SQL block' });
     }, 'Failed to update ticket status');

@@ -149,10 +149,9 @@ async function fetchRecentBookings() {
                     <div class="status-dropdown-wrapper">
                         <select class="status-select-dropdown" onchange="updateTicketStatus(${id}, this.value)">
                             <option value="" disabled selected>Update Status...</option>
-                            <option value="Confirmed" ${status === "Confirmed" ? "disabled" : ""}>Confirm</option>
+                            <option value="Booked" ${status === "Booked" ? "disabled" : ""}>Booked</option>
                             <option value="Completed" ${status === "Completed" ? "disabled" : ""}>Complete</option>
                             <option value="Cancelled" ${status === "Cancelled" ? "disabled" : ""}>Cancel</option>
-                            <option value="Booked" ${status === "Booked" ? "disabled" : ""}>Booked</option>
                         </select>
                     </div>
                 </td>
