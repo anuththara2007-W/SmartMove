@@ -286,20 +286,59 @@ const updateTicketStatus = async (req, res) => {
             });
         }
 
-        // PL/SQL Block executing business logic to update status
+        // PL/SQL Block executing business logic to update ticket and sync associated Trip
         await conn.execute(`
+            DECLARE
+                v_trip_id NUMBER;
+                v_active_tickets NUMBER;
             BEGIN
-                -- Update the status of the specific ticket in the Tickets table
+                -- 1. Fetch TripID for this ticket
+                BEGIN
+                    SELECT TripID INTO v_trip_id 
+                    FROM Tickets 
+                    WHERE TicketID = :ticketID;
+                EXCEPTION
+                    WHEN NO_DATA_FOUND THEN
+                        v_trip_id := NULL;
+                END;
+
+                -- 2. Update the status of the specific ticket in the Tickets table
                 UPDATE Tickets 
                 SET TicketStatus = :newStatus 
                 WHERE TicketID = :ticketID;
                 
+                -- 3. Synchronize Trip status in Trips Operational Board
+                IF v_trip_id IS NOT NULL THEN
+                    IF :newStatus = 'Completed' THEN
+                        -- When ticket is marked Completed, update the trip to Completed
+                        UPDATE Trips 
+                        SET TripStatus = 'Completed' 
+                        WHERE TripID = v_trip_id;
+                    ELSIF :newStatus = 'Booked' THEN
+                        -- If reverted to Booked, restore trip to Scheduled if it was Completed or Cancelled
+                        UPDATE Trips 
+                        SET TripStatus = 'Scheduled' 
+                        WHERE TripID = v_trip_id AND TripStatus IN ('Completed', 'Cancelled');
+                    ELSIF :newStatus = 'Cancelled' THEN
+                        -- Check if there are any remaining active (non-cancelled) tickets on this trip
+                        SELECT COUNT(*) INTO v_active_tickets
+                        FROM Tickets
+                        WHERE TripID = v_trip_id AND TicketStatus != 'Cancelled';
+
+                        IF v_active_tickets = 0 THEN
+                            UPDATE Trips 
+                            SET TripStatus = 'Cancelled' 
+                            WHERE TripID = v_trip_id;
+                        END IF;
+                    END IF;
+                END IF;
+
                 -- Save the changes permanently to the database
                 COMMIT;
             END;
         `, { newStatus, ticketID: Number(ticketID) || ticketID }, { autoCommit: false });
 
-        res.json({ message: 'Ticket status updated via PL/SQL block' });
+        res.json({ message: 'Ticket status and corresponding trip updated successfully' });
     }, 'Failed to update ticket status');
 };
 
@@ -718,7 +757,20 @@ const updateTrip = async (req, res) => {
             TripStatus = :tripStatus, BaseFare = :fare WHERE TripID = :id
         `, { routeID, vehicleID, driverID, departureDateTime, arrivalDateTime, tripStatus, fare, id }, true);
 
-        res.json({ message: 'Trip updated successfully' });
+        // Synchronize all tickets for this trip when Trip is Completed or Cancelled
+        if (tripStatus === 'Completed') {
+            await executeQuery(conn, `
+                UPDATE Tickets SET TicketStatus = 'Completed' 
+                WHERE TripID = :id AND TicketStatus != 'Cancelled'
+            `, { id }, true);
+        } else if (tripStatus === 'Cancelled') {
+            await executeQuery(conn, `
+                UPDATE Tickets SET TicketStatus = 'Cancelled' 
+                WHERE TripID = :id
+            `, { id }, true);
+        }
+
+        res.json({ message: 'Trip and associated tickets updated successfully' });
     }, 'Failed to update trip');
 };
 
