@@ -1,21 +1,28 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Set the page character type and screen size -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Set the page title and connect CSS and animation files -->
     <title>SmartMove - Manage Drivers</title>
     <link rel="stylesheet" href="../global.css?v=2">
     <link rel="stylesheet" href="../css/portal-drivers.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
+    <!-- Header with logo and navigation menu -->
     <header class="standard-header">
         <a href="index.html" class="logo portal-header-brand-wrap">SmartMove <span class="portal-badge">System Portal</span></a>
         <nav class="standard-nav">
+            <!-- Link to the admin dashboard -->
             <a href="index.html" class="nav-icon" title="Dashboard">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
             </a>
             
+            <!-- Dropdown menu for trips, routes, and ticket booking -->
             <div class="nav-dropdown">
                 <div class="nav-dropdown-btn">Operations <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
                 <div class="nav-dropdown-content">
@@ -25,6 +32,7 @@
                 </div>
             </div>
             
+            <!-- Dropdown menu for drivers, passengers, and vehicles -->
             <div class="nav-dropdown">
                 <div class="nav-dropdown-btn">Entities <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
                 <div class="nav-dropdown-content">
@@ -34,6 +42,7 @@
                 </div>
             </div>
 
+            <!-- Dropdown menu for system management -->
             <div class="nav-dropdown">
                 <div class="nav-dropdown-btn">System <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
                 <div class="nav-dropdown-content">
@@ -43,6 +52,7 @@
                 </div>
             </div>
 
+            <!-- Link to the main website and sign-out option -->
             <a href="../index.html" class="nav-icon portal-icon-home" title="Home">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
             </a>
@@ -53,12 +63,15 @@
         </nav>
     </header>
 
+    <!-- Main section for managing drivers -->
     <main class="page-main">
         <div class="gsap-fade-down portal-header-row">
             <div>
                 <h1 class="section-title">Driver Management</h1>
                 <p class="portal-subtitle">Manage SmartMove drivers, licenses, availability, and assignments.</p>
             </div>
+
+            <!-- Buttons to refresh the driver list or register a new driver -->
             <div class="portal-action-btns">
                 <button onclick="fetchDrivers()" class="btn-refresh">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
@@ -68,6 +81,7 @@
             </div>
         </div>
 
+        <!-- Table displaying driver details and available actions -->
         <div id="tableContainer" class="gsap-fade-up">
             <table class="crud-table">
                 <thead>
@@ -81,6 +95,7 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
+                <!-- JavaScript loads the driver records into this section -->
                 <tbody id="driversBody">
                     <tr><td colspan="7">Loading...</td></tr>
                 </tbody>
@@ -88,7 +103,7 @@
         </div>
     </main>
 
-    <!-- Form Modal -->
+    <!-- Modal form used to register a new driver or edit an existing driver -->
     <div id="driverModal" class="modal-overlay">
         <div class="modal-content driver-modal-content">
             <div class="modal-header">
@@ -97,7 +112,10 @@
             </div>
             <div>
                 <form id="driverForm" novalidate>
+                    <!-- Stores the driver ID when editing an existing driver -->
                     <input type="hidden" id="driverId">
+
+                    <!-- Input fields for the driver's name -->
                     <div class="form-grid-2col">
                         <div>
                             <label class="form-label">First Name</label>
@@ -108,14 +126,20 @@
                             <input type="text" id="lastName" class="form-input" placeholder="e.g. Miller" required>
                         </div>
                     </div>
+
+                    <!-- Input field for the driver's license number -->
                     <div class="form-group-spaced">
                         <label class="form-label">License Number</label>
                         <input type="text" id="licenseNumber" class="form-input" placeholder="e.g. B1234567" maxlength="20" required>
                     </div>
+
+                    <!-- Input field for the driver's phone number -->
                     <div class="form-group-spaced">
                         <label class="form-label">Phone Number</label>
                         <input type="text" id="phone" class="form-input" placeholder="e.g. +94 71 987 6543" maxlength="15" required>
                     </div>
+
+                    <!-- Select the hire date and current employment status -->
                     <div class="form-grid-2col-spaced">
                         <div>
                             <label class="form-label">Hire Date</label>
@@ -130,19 +154,23 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Submit the form to save the driver details -->
                     <button type="submit" class="btn-primary btn-driver-submit" id="submitBtn">Save Driver</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Confirm Modal -->
+    <!-- Confirmation modal shown before deleting a driver -->
     <div id="confirmModal" class="modal-overlay">
         <div class="modal-content modal-content-confirm">
             <div class="portal-modal-danger-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
             </div>
             <h3 class="modal-confirm-title">Delete Driver?</h3>
+
+            <!-- Message asking the admin to confirm the deletion -->
             <p class="modal-confirm-text" id="confirmText">Are you sure you want to delete this driver?</p>
             <div class="modal-btn-row">
                 <button type="button" class="btn-cancel" onclick="SmartMoveUtils.closeModal('confirmModal')">Cancel</button>
@@ -151,9 +179,11 @@
         </div>
     </div>
 
+    <!-- Load shared functions and JavaScript for driver management -->
     <script src="../js/utils.js"></script>
     <script src="../js/admin-drivers.js"></script>
 
+    <!-- Footer -->
     <footer class="site-footer">
         <div class="site-footer-inner">
             <div class="site-footer-grid">
