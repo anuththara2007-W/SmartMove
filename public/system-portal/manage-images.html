@@ -1,33 +1,55 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartMove Admin - Media Management</title>
+
+
     <link rel="stylesheet" href="../global.css?v=2">
+
     <link rel="stylesheet" href="../css/portal-images.css">
+
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+
+    <!-- Load the GSAP library for animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
     <header class="standard-header">
+
+        <!-- Website name and system portal label -->
         <a href="index.html" class="logo portal-header-brand-wrap">SmartMove <span class="portal-badge">System Portal</span></a>
+
+        <!-- Navigation menu for moving between pages -->
         <nav class="standard-nav">
+
+            <!-- Link to the admin dashboard -->
             <a href="index.html" class="nav-icon" title="Dashboard">
+                <!-- Dashboard icon -->
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
             </a>
-            
+
+            <!-- Dropdown menu for operations -->
             <div class="nav-dropdown">
+                <!-- Button that shows the operations menu -->
                 <div class="nav-dropdown-btn">Operations <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+
+                <!-- Links related to operations -->
                 <div class="nav-dropdown-content">
                     <a href="trips.html">Trips</a>
                     <a href="routes.html">Routes</a>
                     <a href="book.html">Book Ticket</a>
                 </div>
             </div>
-            
+
+            <!-- Dropdown menu for managing system users and vehicles -->
             <div class="nav-dropdown">
+                <!-- Button that shows the entities menu -->
                 <div class="nav-dropdown-btn">Entities <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+
+                <!-- Links to drivers, passengers, and vehicles -->
                 <div class="nav-dropdown-content">
                     <a href="drivers.html">Drivers</a>
                     <a href="passengers.html">Passengers</a>
@@ -35,8 +57,12 @@
                 </div>
             </div>
 
+            <!-- Dropdown menu for system management -->
             <div class="nav-dropdown">
+                <!-- Button that shows the system menu -->
                 <div class="nav-dropdown-btn">System <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+
+                <!-- Links to financial, announcement, and media pages -->
                 <div class="nav-dropdown-content">
                     <a href="payments.html">Financials</a>
                     <a href="manage-announcements.html">Announcements</a>
@@ -44,40 +70,63 @@
                 </div>
             </div>
 
+            <!-- Link to the main website home page -->
             <a href="../index.html" class="nav-icon portal-icon-home" title="Home">
+                <!-- Home icon -->
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
             </a>
-            
+
+            <!-- Sign-out link for the admin -->
             <a href="#" id="logoutBtn" class="nav-icon portal-icon-logout" title="Sign Out">
+                <!-- Logout icon -->
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
             </a>
         </nav>
     </header>
 
+    <!-- Main section that displays the media management content -->
     <main class="page-main">
+
+        <!-- Page heading and Add Image Link button -->
         <div class="portal-header-row-spaced">
             <div>
+                <!-- Main title of this page -->
                 <h1 class="section-title portal-header-title-spaced">Media Management</h1>
+
+                <!-- Short explanation of the page -->
                 <p class="portal-subtitle">Manage vehicle and route images stored in MongoDB.</p>
             </div>
+
+            <!-- Open the form to add a new image link -->
             <button class="btn-primary" onclick="SmartMoveUtils.openModal('imageModal')">+ Add Image Link</button>
         </div>
 
+        <!-- Area where saved images will be displayed -->
         <div id="imagesGrid" class="grid">
+
+            <!-- Temporary loading card shown while images are loading -->
             <div class="skeleton-card"><div class="skeleton-text"></div></div>
             <div class="skeleton-card"><div class="skeleton-text"></div></div>
             <div class="skeleton-card"><div class="skeleton-text"></div></div>
         </div>
     </main>
 
-    <!-- Add Image Modal -->
+    <!-- Modal window for adding a new image link -->
     <div id="imageModal" class="modal-overlay">
         <div class="modal-content">
+
+            <!-- Modal heading and close button -->
             <div class="modal-header">
                 <h3 class="image-modal-title">Add New Image Link</h3>
+
+                <!-- Close the modal window -->
                 <button class="modal-close" onclick="SmartMoveUtils.closeModal('imageModal')">&times;</button>
             </div>
+
+            <!-- Form used to save a new image link -->
             <form id="imageForm">
+
+                <!-- Select whether the image belongs to a vehicle or route -->
                 <div class="form-group">
                     <label>Resource Type</label>
                     <select id="resourceType" class="form-control" required>
@@ -86,25 +135,35 @@
                         <option value="route">Route</option>
                     </select>
                 </div>
+
+                <!-- Select the ID of the chosen vehicle or route from Oracle DB -->
                 <div class="form-group">
                     <label>Resource ID (Oracle DB ID)</label>
                     <select id="resourceId" class="form-control" required disabled>
+                        <!-- The admin must select a resource type first -->
                         <option value="">Please select Resource Type first...</option>
                     </select>
                 </div>
+
+                <!-- Enter the web address of the image -->
                 <div class="form-group">
                     <label>Image URL</label>
                     <input type="url" id="imageUrl" class="form-control" required placeholder="https://example.com/image.jpg">
                 </div>
+
+                <!-- Enter a short description for the image (optional) -->
                 <div class="form-group">
                     <label>Caption (Optional)</label>
                     <input type="text" id="caption" class="form-control" placeholder="A short description">
                 </div>
+
+                <!-- Submit the form to save the image link -->
                 <button type="submit" class="btn-primary btn-save-image">Save Image Link</button>
             </form>
         </div>
     </div>
 
+    <!-- Footer -->
     <footer class="site-footer">
         <div class="site-footer-inner">
             <div class="site-footer-grid">
