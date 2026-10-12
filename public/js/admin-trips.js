@@ -126,9 +126,17 @@ window.openTripForm = function() {
     SmartMoveUtils.openModal('tripModal');
 }
 
-window.editTrip = function(id) {
+window.editTrip = async function(id) {
     const trip = allTrips.find(t => t.TRIPID == id);
     if (!trip) return;
+
+    // Refresh tickets data to ensure live booking statuses are shown
+    try {
+        const ticketsRes = await fetch('/api/tickets').then(r => r.json());
+        if (Array.isArray(ticketsRes)) allTickets = ticketsRes;
+    } catch (e) {
+        console.warn('Could not refresh tickets for trip modal:', e);
+    }
 
     document.getElementById('formTitle').textContent = 'Edit Trip';
     document.getElementById('submitBtn').textContent = 'Update Trip';
