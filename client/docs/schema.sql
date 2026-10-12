@@ -81,15 +81,15 @@ CREATE OR REPLACE FUNCTION CalculateTotalRevenue(p_StartDate IN DATE, p_EndDate 
 RETURN NUMBER IS
     v_TotalRevenue NUMBER(10,2);
 BEGIN
-    SELECT NVL(SUM(Amount), 0) INTO v_TotalRevenue
+    SELECT NVL(SUM(Amount), 0) INTO v_TotalRevenue -- Returns 0 if the total is NULL
     FROM Payments
     WHERE PaymentStatus = 'Completed' 
     AND PaymentDate BETWEEN p_StartDate AND p_EndDate;
     
     RETURN v_TotalRevenue;
 EXCEPTION
-    WHEN OTHERS THEN
-        RETURN -1;
+    WHEN OTHERS THEN-- Returns -1 if an unexpected error occurs
+        RETURN -1; --The negative value acts as an error indicator
 END;
 /
 

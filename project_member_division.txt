@@ -6,8 +6,7 @@ Architecture: Hybrid Enterprise System (Oracle RDBMS 19c/21c + MongoDB + Node.js
 Total Team Members: 3
 
 --------------------------------------------------------------------------------
-MEMBER 1: ANUTHTHARA (TEAM LEAD & LEAD FULL-STACK ARCHITECT)
-Workload Share: 50% (Major / Core Architecture & Advanced PL/SQL)
+MEMBER 1: ANUTHTHARA
 --------------------------------------------------------------------------------
 Key Responsibilities:
 1. System Architecture & Foundation:
@@ -49,8 +48,7 @@ Key Files:
 
 
 --------------------------------------------------------------------------------
-MEMBER 2: PABASARA (FRONTEND & INTEGRATION DEVELOPER)
-Workload Share: 30% (Ticketing, Routes & Public Travel Services)
+MEMBER 2: PABASARA 
 --------------------------------------------------------------------------------
 Key Responsibilities:
 1. Ticket Booking System:
@@ -84,8 +82,7 @@ config/MongoDB.js
 
 
 --------------------------------------------------------------------------------
-MEMBER 3: PAWAN (SUPPORTING DEVELOPER)
-Workload Share: 20% (Feedback, Media Assets & Secondary Portal Lists)
+MEMBER 3: PAWAN 
 --------------------------------------------------------------------------------
 Key Responsibilities:
 1. Passenger Feedback & Driver Reviews (MongoDB):
@@ -107,17 +104,16 @@ Key Responsibilities:
    - Sample test data population for reviews, feedback, and driver leaderboard records.
    - User documentation assistance and basic API endpoint testing.
 
+5. Help & Support Portal & Navigation:
+   - Public Help & Support Center (`public/support.html`, `public/js/support.js`, `public/css/support.css`).
+   - FAQ accordion interactivity, support channels directory, and live search.
+   - Homepage support integration and consultation routing (`public/index.html`).
+
 Key Files:
+- support.html, support.js, support.css
 - reviews.html, reviews.js
 - system-portal/manage-images.html, admin-media.js
 - system-portal/drivers.html, admin-drivers.js
 - system-portal/passengers.html, admin-passengers.js
 - system-portal/payments.html, admin-payments.js
 - seed_mongo.js, models/Review.js
-
-================================================================================
-SUMMARY MATRIX:
-- Anuththara (50%): Lead Architect, Server/DB Engine, Hero & Home UI, Admin Portal, PL/SQL Analytics (CalculateTotalRevenue, GetFrequentRoutes), Reports, Vehicles & Trips.
-- Pabasara (30%): Public Booking (book.html/js), Route Exploration (routes.html/js), Announcements (announcements.html/js), Admin Booking/Route/Announcement management.
-- Pawan (20%): Public Reviews (reviews.html/js), Media Uploads (manage-images.html), Driver/Passenger/Payment tables, MongoDB Review Seeding & Testing.
-================================================================================
