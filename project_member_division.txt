@@ -104,7 +104,13 @@ Key Responsibilities:
    - Sample test data population for reviews, feedback, and driver leaderboard records.
    - User documentation assistance and basic API endpoint testing.
 
+5. Help & Support Portal & Navigation:
+   - Public Help & Support Center (`public/support.html`, `public/js/support.js`, `public/css/support.css`).
+   - FAQ accordion interactivity, support channels directory, and live search.
+   - Homepage support integration and consultation routing (`public/index.html`).
+
 Key Files:
+- support.html, support.js, support.css
 - reviews.html, reviews.js
 - system-portal/manage-images.html, admin-media.js
 - system-portal/drivers.html, admin-drivers.js
